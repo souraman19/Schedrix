@@ -29,3 +29,6 @@ coverage/
 
 # Debug
 debug/
+
+# private files
+a.txt
