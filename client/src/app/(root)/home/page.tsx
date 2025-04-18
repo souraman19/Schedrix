@@ -4,9 +4,12 @@ import React from "react";
 import axios from 'axios';
 import { useEffect } from 'react';
 import {useRouter} from 'next/navigation';
+import { useUserStore } from "@/store/useUserStore";
 
 
 export default function HomePage() {
+  
+    const {setUser, user} = useUserStore(); // Get the Zustand store state
     const router = useRouter();
 
     useEffect(() => {
@@ -14,7 +17,8 @@ export default function HomePage() {
           try {
             const response = await axios.get('http://localhost:5000/auth/user', {
             withCredentials: true});
-            console.log('User info:', response.status);
+            console.log('User info:', response.data);
+            setUser(response.data); // Set the user info in the Zustand store
         } catch (error : any) {
             if (error.response && error.response.status === 401) {
                 console.log('User not authenticated');
@@ -27,6 +31,10 @@ export default function HomePage() {
         };
         fetchUserInfo();
     }, [])
+
+    useEffect(() => {
+      console.log('User state changed:', user);
+    }, [user])
 
 
     return(
