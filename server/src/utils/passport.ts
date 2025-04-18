@@ -11,7 +11,7 @@ passport.use("google", new GoogleStrategy({
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     callbackURL: process.env.GOOGLE_CALLBACK_URL || "",
   }, async(accessToken : string, refreshToken: string, profile: Profile, cb : VerifyCallback) => {
-    console.log(profile); 
+    // console.log(profile); 
     cb(null, profile);
 }));
 
