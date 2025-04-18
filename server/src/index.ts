@@ -5,6 +5,7 @@ import passport from 'passport';
 import './utils/passport';
 import authRoutes from './routes/auth.routes';
 import cors from 'cors';
+import { connectDB } from "./config/db";
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+connectDB();
 
 app.use('/api/auth', authRoutes);
 
