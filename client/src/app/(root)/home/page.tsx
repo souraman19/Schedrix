@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import {useRouter} from 'next/navigation';
 import { useUserStore } from "@/store/useUserStore";
+import { USER_INFO_ROUTE } from "@/lib/apiRoutes";
 
 
 export default function HomePage() {
@@ -15,7 +16,7 @@ export default function HomePage() {
     useEffect(() => {
         const fetchUserInfo = async () => {
           try {
-            const response = await axios.get('http://localhost:5000/auth/user', {
+            const response = await axios.get(`${USER_INFO_ROUTE}`, {
             withCredentials: true});
             console.log('User info:', response.data);
             setUser(response.data); // Set the user info in the Zustand store

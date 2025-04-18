@@ -5,11 +5,12 @@ import axios from "axios";
 import { Box, Typography, Paper, Divider } from "@mui/material";
 import { Button } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
+import { GOOGLE_AUTH_ROUTE } from "@/lib/apiRoutes";
 
 const LoginPage = () => {
   const loginDirect = async() => {
     try {
-      window.location.href = 'http://localhost:5000/auth/google'; 
+      window.location.href = `${GOOGLE_AUTH_ROUTE}`; 
     } catch (error) {
       console.error('Error initiating Google login:', error);
     }
