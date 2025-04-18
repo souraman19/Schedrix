@@ -5,17 +5,15 @@ import { User, IUser } from '../models/User';
 
 dotenv.config();
 
-// console.log(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.GOOGLE_CALLBACK_URL);
 
 passport.use("google", new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID || "",
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     callbackURL: process.env.GOOGLE_CALLBACK_URL || "",
   }, async(accessToken : string, refreshToken: string, profile: Profile, cb : VerifyCallback) => {
-    console.log(profile);
-    try{
-        const existingUser = await User.findOne({googleId: profile.id});
-        if(existingUser){
+      try{
+          const existingUser = await User.findOne({googleId: profile.id});
+          if(existingUser){
             return cb(null, existingUser as any);
         } else {
             const newUser = new User({
@@ -34,10 +32,20 @@ passport.use("google", new GoogleStrategy({
     }
 }));
 
-passport.serializeUser((user: Express.User, cb: (error: any, user?: Express.User | false) => void) => {
-    cb(null, user);
+passport.serializeUser((user: any, cb: (error: any, _id: IUser["_id"] | false) => void) => {
+    cb(null, user?._id);
 });
 
-passport.deserializeUser((obj: any, cb: (error: any, user?: Express.User | false) => void) => {
-    cb(null, obj);
+passport.deserializeUser(async(_id: IUser["_id"], cb: (error: any, user: any | false) => void) => {
+    try{
+        const user = await User.findById(_id);
+        if(!user) {
+            return cb(null, false);
+        } else {
+            return cb(null, user as any);
+        }
+    }catch(err){
+        console.error(err);
+        cb(err, false);
+    }
 });

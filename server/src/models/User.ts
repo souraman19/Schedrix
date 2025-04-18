@@ -1,6 +1,7 @@
-import mongoose , {Document, Schema, model} from 'mongoose';
+import mongoose , {Document, Schema, model, Types} from 'mongoose';
 
 export interface IUser extends Document {
+    
     googleId: string;
     name: string;
     email: string;
@@ -20,7 +21,7 @@ export interface IUser extends Document {
       currentStreak: number;
       longestStreak: number;
     };
-  }
+  };
 
 const userSchema = new Schema<IUser>({
     googleId: {type: String, required: true, unique: true},

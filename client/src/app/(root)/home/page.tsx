@@ -20,7 +20,6 @@ export default function HomePage() {
           try {
             const response = await axios.get(`${USER_INFO_ROUTE}`, {
             withCredentials: true});
-            console.log('User info:', response.data);
             setUser(response.data); // Set the user info in the Zustand store
         } catch (error : any) {
             if (error.response && error.response.status === 401) {
@@ -28,7 +27,6 @@ export default function HomePage() {
                 router.push('/'); // Redirect to the login page
               } else {
                 console.error('Error fetching user data:', error);
-                // Handle other errors as needed
               }
           }
         };

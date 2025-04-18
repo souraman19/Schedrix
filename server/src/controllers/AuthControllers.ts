@@ -12,7 +12,6 @@ export const googleAuthCallback = [ passport.authenticate('google', {
       (req : any, res : any) => {
           if (req.user) {
               console.log('Authentication successful');
-            //   console.log('User profile:', req.user);
               res.redirect('http://localhost:3000/home');
           } else {
               console.log('Authentication failed');
@@ -21,7 +20,7 @@ export const googleAuthCallback = [ passport.authenticate('google', {
       }
 ]
 
-export const getUser = (req: any, res: any) => {
+export const getUser = (req: any, res: any) => { 
     if (req.user) {
         res.status(200).json(req.user);
     } else {
