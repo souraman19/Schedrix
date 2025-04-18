@@ -25,7 +25,7 @@ export default function HomePage() {
             if (error.response && error.response.status === 401) {
                 console.log('User not authenticated');
                 router.push('/'); // Redirect to the login page
-              } else {
+              } else {  
                 console.error('Error fetching user data:', error);
               }
           }

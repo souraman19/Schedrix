@@ -9,7 +9,6 @@ type User = {
     userImage?: string;
     age?: number;
     phoneNo?: string;
-    points?: number;
     bio?: string;
     joinedAt?: string;
     mindStatus?: string;
@@ -17,7 +16,8 @@ type User = {
     progress?: {
         totalTasks: number;
         completedTasks: number;
-        pointsEarned: number;
+        overDueTasks: number;
+        points: number;
         currentStreak: number;
         longestStreak: number;
     };
