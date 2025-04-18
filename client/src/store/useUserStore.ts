@@ -21,7 +21,7 @@ type User = {
         currentStreak: number;
         longestStreak: number;
     };
-};
+} | null;
 
 type UserStore = {
     user: User | null;

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { googleAuth, googleAuthCallback, getUser } from '../controllers/AuthControllers';
+import { googleAuth, googleAuthCallback, getUser, logout } from '../controllers/AuthControllers';
 import { isAuthenticated } from '../middlewares/AuthMiddleWires';
 
 const router = Router();
@@ -8,6 +8,7 @@ const router = Router();
 router.get('/google/callback',  googleAuthCallback);
 router.get("/google",  googleAuth)
 router.get('/user', isAuthenticated, getUser);
+router.get('/logout', logout);
 
 
 export default router;
