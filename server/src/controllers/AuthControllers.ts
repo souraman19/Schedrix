@@ -12,7 +12,7 @@ export const googleAuthCallback = [ passport.authenticate('google', {
       (req : any, res : any) => {
           if (req.user) {
               console.log('Authentication successful');
-              res.redirect('http://localhost:3000/home');
+              res.redirect('http://localhost:3000/in/home');
           } else {
               console.log('Authentication failed');
               res.redirect('/auth/failure');
