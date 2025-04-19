@@ -21,10 +21,13 @@ const TaskCard = ({ task }: { task: any }) => {
   const [expanded, setExpanded] = useState(false);
   const router = useRouter();
 
-  const deadline = task.deadLine ? new Date(task.deadLine).toLocaleDateString() : null;
+  const deadline = task.deadLine ? new Date(task.deadLine) : null;
   const createdAt = task.createdAt ? new Date(task.createdAt).toLocaleString() : 'N/A';
   const endTime = task.endTime ? new Date(task.endTime).toLocaleString() : 'N/A';
   const duration = task.duration ? `${task.duration} min` : 'N/A';
+
+  // Check if the task is overdue
+  const isOverdue = deadline && new Date() > deadline;
 
   return (
     <div
@@ -75,7 +78,7 @@ const TaskCard = ({ task }: { task: any }) => {
           {task.status === 'pending' && deadline && (
             <div className="flex items-center gap-1 mt-2 text-xs text-gray-400">
               <Calendar size={14} />
-              <span>{deadline}</span>
+              <span>{deadline.toLocaleDateString()}</span>
             </div>
           )}
         </div>
@@ -103,10 +106,11 @@ const TaskCard = ({ task }: { task: any }) => {
             </div>
           )}
 
-          {task.pointsContributed?.length > 0 && (
+          {/* Show coins if completed, overdue, or passed the fixed time */}
+          {(task.status === 'completed' || 'overdue') && (
             <div className="flex items-center gap-2 text-yellow-400 font-semibold">
               <Coins size={20} />
-              {task.totalPointsContributed} pts contributed
+              {task.totalPointsContributed} pts
             </div>
           )}
 
