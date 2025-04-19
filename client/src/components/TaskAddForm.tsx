@@ -105,7 +105,7 @@ export default function TaskAddForm() {
          name="title"
         />
         {errors.title && 
-            <span>{errors.title}</span>
+            <div style={errorTextStyle}>{errors.title}</div>
         }
       </div>
 
@@ -118,28 +118,28 @@ export default function TaskAddForm() {
             <label style={labelStyle}>Duration (hours)</label>
             <input type="number" placeholder="E.g. 2" style={inputBase} name="duration" />
             {errors.duration && 
-                <span>{errors.duration}</span>
+                <div style={errorTextStyle}>{errors.duration}</div>
             }
           </div>
           <div style={{ flex: 1, minWidth: "220px" }}>
             <label style={labelStyle}>Start Time</label>
             <input type="datetime-local" style={inputBase} name="startTime"/>
             {errors.startTime && 
-                <span>{errors.startTime}</span>
+                <div style={errorTextStyle}>{errors.startTime}</div>
             }
           </div>
           <div style={{ flex: 1, minWidth: "220px" }}>
             <label style={labelStyle}>End Time</label>
             <input type="datetime-local" style={inputBase} name="endTime"/>
             {errors.endTime && 
-                <span>{errors.endTime}</span>
+                <div style={errorTextStyle}>{errors.endTime}</div>
             }
           </div>
           <div style={{ flex: 1, minWidth: "220px" }}>
             <label style={labelStyle}>Deadline</label>
             <input type="datetime-local" style={inputBase} name="deadLine"/>
             {errors.deadLine && 
-                <span>{errors.deadLine}</span>
+                <div style={errorTextStyle}>{errors.deadLine}</div>
             }
           </div>
         </div>
@@ -158,7 +158,7 @@ export default function TaskAddForm() {
             name="description"
           />
           {errors.description && 
-                <span>{errors.description}</span>
+                <div style={errorTextStyle}>{errors.description}</div>
             }
         </div>
 
@@ -166,7 +166,7 @@ export default function TaskAddForm() {
           <label style={labelStyle}>Upload Images</label>
           <input type="file" accept="image/*" multiple style={inputBase} name="image"/>
           {errors.image && 
-                <span>{errors.image}</span>
+                <div style={errorTextStyle}>{errors.image}</div>
           }
         </div>
 
@@ -174,7 +174,7 @@ export default function TaskAddForm() {
           <label style={labelStyle}>Upload Audio</label>
           <input type="file" accept="audio/*" style={inputBase} name="audio" />
             {errors.audio && 
-                    <span>{errors.audio}</span>
+                    <div style={errorTextStyle}>{errors.audio}</div>
             }
         </div>
       </div>
@@ -199,7 +199,7 @@ export default function TaskAddForm() {
               <option value="true">Yes</option>
             </select>
             {errors.locked && 
-                <span>{errors.locked}</span>
+                <div style={errorTextStyle}>{errors.locked}</div>
             }
           </div>
 
@@ -218,7 +218,7 @@ export default function TaskAddForm() {
               <option value="true">Yes</option>
             </select>
             {errors.fixed && 
-                <span>{errors.fixed}</span>
+                <div style={errorTextStyle}>{errors.fixed}</div>
             }
           </div>
         </div>
@@ -239,7 +239,7 @@ export default function TaskAddForm() {
                 name="category"
             />
             {errors.category && 
-                <span>{errors.category}</span>
+                <div style={errorTextStyle}>{errors.category}</div>
             }
           </div>
 
@@ -260,7 +260,7 @@ export default function TaskAddForm() {
               <option value="critical">Critical</option>
             </select>
             {errors.priority && 
-                <span>{errors.priority}</span>
+                <div style={errorTextStyle}>{errors.priority}</div>
             }
           </div>
         </div>
@@ -348,3 +348,13 @@ const sectionHeading = (icon: string, title: string) => (
     {icon} {title}
   </h3>
 );
+
+const errorTextStyle = {
+  color: "#f44336",
+  marginTop: "0.4rem",
+  fontSize: "0.75rem",
+  fontWeight: 500,
+  paddingLeft: "0.6rem",
+  animation: "fadeInError 0.3s ease-in-out",
+};
+
