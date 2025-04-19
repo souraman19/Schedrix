@@ -7,6 +7,7 @@ import {z} from "zod";
 import { taskSchema } from "@/lib/validation";
 import { CREATE_TASKS_ROUTE } from "@/lib/apiRoutes";
 import axios from "axios";
+import {toast} from "sonner";
 
 export default function TaskAddForm() {
   const { user } = useUserStore();
@@ -44,15 +45,21 @@ export default function TaskAddForm() {
         await taskSchema.parseAsync(formValues);
         const response = await axios.post(CREATE_TASKS_ROUTE, formValues, {withCredentials: true});
         console.log("task created => ", response.data);
+        if(response.status === 201) toast.success("Task created successfully!");
 
     }catch(error: any){
         if(error instanceof z.ZodError){
             const fieldErrors = error.flatten().fieldErrors;
 
             setErrors(fieldErrors as unknown as Record<string, string>);
+
+            toast.error("Validation failed! Please check your inputs.");
             
             return {...prevState, error: "Validation failed", status: "ERROR"}
         }
+
+
+        toast.error("An unexpected error occurred! Please try again.");
         return {
             ...prevState,
             error: "An unexpected error occurred",
