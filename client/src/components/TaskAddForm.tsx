@@ -5,7 +5,8 @@ import { useUserStore } from "@/store/useUserStore";
 import { Button } from "@mui/material";
 import {z} from "zod";
 import { taskSchema } from "@/lib/validation";
-import { createTask } from "@/lib/action";
+import { CREATE_TASKS_ROUTE } from "@/lib/apiRoutes";
+import axios from "axios";
 
 export default function TaskAddForm() {
   const { user } = useUserStore();
@@ -39,12 +40,10 @@ export default function TaskAddForm() {
           };
 
         
-          console.log("form values", formValues);
+          // console.log("form values", formValues);
         await taskSchema.parseAsync(formValues);
-        const result = createTask(prevState, formValues as any);
-        console.log("result", result);
-
-        return result;
+        const response = await axios.post(CREATE_TASKS_ROUTE, formValues, {withCredentials: true});
+        console.log("task created => ", response.data);
 
     }catch(error: any){
         if(error instanceof z.ZodError){

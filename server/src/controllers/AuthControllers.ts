@@ -21,6 +21,7 @@ export const googleAuthCallback = [ passport.authenticate('google', {
 ]
 
 export const getUser = (req: any, res: any) => { 
+    // console.log("req.user", req.user);
     if (req.user) {
         res.status(200).json(req.user);
     } else {
