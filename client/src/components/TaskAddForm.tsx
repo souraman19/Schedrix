@@ -238,13 +238,23 @@ export default function TaskAddForm() {
         <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
           <div style={{ flex: 1, minWidth: "220px" }}>
             <label style={labelStyle}>Category</label>
-            <input
-              type="text"
-              placeholder="e.g. Health, Work..."
-              style={inputBase}
-                
-                name="category"
-            />
+            <select
+              style={{
+                ...inputBase,
+                backgroundColor: "#1a1a1a",
+                color: "#fff",
+              }}
+              
+              name="category"
+            >
+              
+              <option value="health">Health</option>
+              <option value="family">Family</option>
+              <option value="work">Work</option>
+              <option value="personal">Personal</option>
+              <option value="learning">Learning</option>
+              <option value="other">Other</option>
+            </select>
             {errors.category && 
                 <div style={errorTextStyle}>{errors.category}</div>
             }

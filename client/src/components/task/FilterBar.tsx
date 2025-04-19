@@ -43,6 +43,7 @@ export default function TaskFilter({
 }) {
   const handleApply = () => {
     fetchTasks();
+    toast.success("Tasks fetched successfully!");
   };
 
   //   useEffect(() => {
