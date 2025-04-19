@@ -71,7 +71,7 @@
             points: {type: Number, required: true},
         }],
         totalPointsContributed: {type: Number, default: 0},
-        category: {type: String, required: true},
+        category: {type: String, required: true, enum: ['work', 'family', 'health', 'personal', 'other', 'learning']},
         createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         priority: {type: String, required: true, enum: ['low', 'medium', 'high', 'critical']},
         tags: [{type: String}],
