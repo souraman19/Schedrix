@@ -1,12 +1,12 @@
 import { ReactNode } from "react";
-import Sidebar from "@/components/Sidebar";
+import Navbar from "@/components/Navbar";
 
 export default function RootLayout({children}: {children: ReactNode}) {
     return (
         <main>
             <div className="flex">
-          <Sidebar />
-          <main className="flex-1">
+          <Navbar />
+          <main className="flex-1 mt-20">
             {children}
           </main>
         </div>

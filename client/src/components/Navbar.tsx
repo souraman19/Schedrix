@@ -27,7 +27,7 @@ export default function Navbar() {
 
       {/* Navbar */}
       <header
-        className="fixed top-0 left-0 w-full bg-[#0d0d0d] text-white p-4 z-50 
+        className="fixed top-0 left-0 w-full bg-[hsl(0,0%,5%)] text-white p-4 z-50 
         shadow-[0px_4px_10px_0px_rgba(0,200,83,0.7)]"
       >
         <div className="flex justify-between items-center">
