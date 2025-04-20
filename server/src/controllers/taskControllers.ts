@@ -19,6 +19,8 @@ export const createTask = async(req: any, res: any) => {
             audio,
         } = req.body;
 
+        // console.log("Request body: ", req.body);
+
         const userId = req.user._id; // Assuming you have user ID in req.user
 
         if(!duration && startTime && endTime){
@@ -72,11 +74,12 @@ export const createTask = async(req: any, res: any) => {
             tags:[],   
         })
        await newTask.save();
-       res.status(201).json({message: "Task created successfully", task: newTask});
+    //    console.log("New task created: ", newTask);
+       return res.status(201).json({message: "Task created successfully", task: newTask});
        
     }catch(error){
         console.error("Error creating task: ", error);
-        res.status(500).json({error: "Internal server error"});
+        return res.status(500).json({error: "Internal server error"});
     }
 }
 
@@ -184,15 +187,31 @@ export const getTaskDynamicDetails = async(req: any, res: any) => {
         // console.log("Hello", _id);
         const userId = req.user._id; 
         const task = await Task.findOne({_id: new Types.ObjectId(_id)})
-        .select(' _id userOutput status totalPointsContributed pointsContributed outputAnalysis')
+        .select(' _id userOutput status totalPointsContributed pointsContributed outputAnalysis deadline')
         .exec();
         if(!task){
             return res.status(404).json({error: "Task not found"});
         }
-        // console.log("Task found: ", task);
+        console.log("Task found: ", task);
         return res.status(200).json({task});
     }catch(err){
         console.error("Error getting task static details: ", err);
+        res.status(500).json({error: "Internal server error"});
+    }
+}
+
+
+export const resolveTask = async(req: any, res: any) => {
+    try {
+        const _id = req.params._id;
+        const userId = req.user._id;
+        const userInputText = req.body.userInputText;
+
+        
+ 
+
+    }catch(err){
+        console.error("Error resolving task: ", err);
         res.status(500).json({error: "Internal server error"});
     }
 }

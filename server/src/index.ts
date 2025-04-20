@@ -9,6 +9,7 @@ import cors from 'cors';
 import { connectDB } from "./config/db";
 import { isAuthenticated } from "./middlewares/AuthMiddleWires";
 import MongoStore from 'connect-mongo';
+import "./tasks/cronJob";
 
 dotenv.config();
 
