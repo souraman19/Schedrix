@@ -9,10 +9,8 @@ export default async function Task({params}: {params: Promise<{_id: string}>}) {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-center">Task Details</h1>
-
       {/* Static part */}
-      <div className=" rounded-lg shadow-lg p-6">
+      <div className=" rounded-lg shadow-lg p-3">
         <TaskDetailsPageStaticPart _id={_id} />
       </div>
 
