@@ -1,5 +1,6 @@
 import { start } from "repl";
 import { Task } from "../models/Task";
+import {Types} from "mongoose";
 
 export const createTask = async(req: any, res: any) => {
     try {
@@ -151,6 +152,47 @@ export const getFilteredTasks = async(req: any, res: any) => {
         res.status(200).json({tasks});
     }catch(err){
         console.error("Error getting filtered tasks: ", err);
+        res.status(500).json({error: "Internal server error"});
+    }
+}
+
+
+export const getTaskStaticDetails = async(req: any, res: any) => {
+    try{
+        const _id = req.params._id;
+        // console.log("Hello", _id);
+        const userId = req.user._id; 
+        const task = await Task.findOne({_id: new Types.ObjectId(_id)})
+        .select('title _id category userInput duration startTime endTime isLocked isFixed priority createdAt updatedAt')
+        .exec();
+        if(!task){
+            return res.status(404).json({error: "Task not found"});
+        }
+        // console.log("Task found: ", task);
+        return res.status(200).json({task});
+    }catch(err){
+        console.error("Error getting task static details: ", err);
+        res.status(500).json({error: "Internal server error"});
+    }
+}
+
+
+
+export const getTaskDynamicDetails = async(req: any, res: any) => {
+    try{
+        const _id = req.params._id;
+        // console.log("Hello", _id);
+        const userId = req.user._id; 
+        const task = await Task.findOne({_id: new Types.ObjectId(_id)})
+        .select(' _id userOutput status totalPointsContributed pointsContributed outputAnalysis')
+        .exec();
+        if(!task){
+            return res.status(404).json({error: "Task not found"});
+        }
+        // console.log("Task found: ", task);
+        return res.status(200).json({task});
+    }catch(err){
+        console.error("Error getting task static details: ", err);
         res.status(500).json({error: "Internal server error"});
     }
 }
