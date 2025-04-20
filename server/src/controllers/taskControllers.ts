@@ -211,6 +211,9 @@ export const resolveTask = async(req: any, res: any) => {
         if(!task){
             return res.status(404).json({error: "Task not found"});
         }
+        if(task.status === "completed"){
+            return res.status(400).json({error: "Task already completed"});
+        }
         let x = 1;
         if(task.deadline) x = Math.floor((new Date().getTime() - new Date(task.deadline).getTime()) / (1000 * 60 * 60 * 24)); // in days
         console.log("X: ", x);

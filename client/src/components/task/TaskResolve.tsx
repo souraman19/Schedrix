@@ -19,7 +19,7 @@ export default function Resolve({ _id }: { _id: string }) {
         const formData = new FormData();
         formData.append("userInputText", feedback);
 
-        const response = await axios.post(`${RESOLVE_TASK_ROUTE}/${_id}`,
+        const response: Response = await axios.post(`${RESOLVE_TASK_ROUTE}/${_id}`,
             formData,
             {
                 headers: {
@@ -28,16 +28,23 @@ export default function Resolve({ _id }: { _id: string }) {
                 withCredentials: true,
             }
         )
-        if(response.status !== 200){
-            toast.error("Failed to resolve task!");
-        }   else {
+        console.log("Response: ", response);
+
             toast.success("Task resolved successfully!");
             router.push(`/in/task/${_id}`); // Redirect to the task home page
-        }
+        
         console.log('Task resolved successfully:', response);
-    }catch(error){
+    }catch(error: any) {
         console.error('Error resolving task:', error);
-        toast.error('Error resolving task. Please try again.');
+        if(error.response && error.response.status === 400){
+            toast.error("Task already resolved!");
+        } else if(error.response && error.response.status === 404){
+            toast.error("Task not found!");
+        } else if(error.response && error.response.status === 500){
+            toast.error("Internal server error!");
+        } else {
+            toast.error("Error resolving task!");
+        }
     }
   }
 
