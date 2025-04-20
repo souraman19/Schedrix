@@ -1,6 +1,7 @@
 import { start } from "repl";
 import { Task } from "../models/Task";
 import {Types} from "mongoose";
+import { pointBase, PriorityLevelPointBase } from "../utils/points";
 
 export const createTask = async(req: any, res: any) => {
     try {
@@ -171,7 +172,6 @@ export const getTaskStaticDetails = async(req: any, res: any) => {
         if(!task){
             return res.status(404).json({error: "Task not found"});
         }
-        // console.log("Task found: ", task);
         return res.status(200).json({task});
     }catch(err){
         console.error("Error getting task static details: ", err);
@@ -207,9 +207,29 @@ export const resolveTask = async(req: any, res: any) => {
         const userId = req.user._id;
         const userInputText = req.body.userInputText;
 
-        
- 
-
+        const task = await Task.findOne({_id: new Types.ObjectId(_id)}).exec();
+        if(!task){
+            return res.status(404).json({error: "Task not found"});
+        }
+        let x = 1;
+        if(task.deadline) x = Math.floor((new Date().getTime() - new Date(task.deadline).getTime()) / (1000 * 60 * 60 * 24)); // in days
+        console.log("X: ", x);
+        // console.log("Task found: ", task);
+        const duration = task.duration || 1; // Default to 1 hour if duration is not set
+        console.log("Duration: ", duration);
+        const priority = task.priority as PriorityLevelPointBase;
+        console.log("Priority: ", priority);
+        // console.log("Priority: ", priority); 
+        const points_add = pointBase[priority] + duration * x;
+        console.log("Points: ", points_add);
+        const total = task.totalPointsContributed + points_add;
+        console.log("Total points: ", total);
+        task.totalPointsContributed = total;
+        task.pointsContributed.push({day: new Date(), points: points_add});
+        task.status = "completed";
+        task.userOutput.text = (userInputText && userInputText.trim() !== "" )? userInputText.trim() : "";
+        await task.save();
+        return res.status(200).json({message: "Task resolved successfully", task});
     }catch(err){
         console.error("Error resolving task: ", err);
         res.status(500).json({error: "Internal server error"});

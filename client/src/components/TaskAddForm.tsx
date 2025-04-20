@@ -144,7 +144,7 @@ export default function TaskAddForm() {
           </div>
           <div style={{ flex: 1, minWidth: "220px" }}>
             <label style={labelStyle}>Deadline</label>
-            <input type="datetime-local" style={inputBase} name="deadLine"/>
+            <input type="datetime-local" style={inputBase} name="deadline"/>
             {errors.deadLine && 
                 <div style={errorTextStyle}>{errors.deadLine}</div>
             }

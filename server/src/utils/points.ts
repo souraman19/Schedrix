@@ -13,3 +13,4 @@ export const penaltyPerDay = {
 } as const
 
 export type PriorityLevel = keyof typeof penaltyPerDay;
+export type PriorityLevelPointBase = keyof typeof pointBase;

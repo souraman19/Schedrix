@@ -1,14 +1,52 @@
 "use client";
 
 import { Button, TextField, Box } from "@mui/material";
+import { resolve } from "path";
 import React, { useState } from "react";
+import { toast } from "sonner";
+import axios from "axios";
+import { RESOLVE_TASK_ROUTE } from "@/lib/apiRoutes";
+import { useRouter } from "next/navigation";
 
 export default function Resolve({ _id }: { _id: string }) {
   const [showForm, setShowForm] = useState(false);
   const [feedback, setFeedback] = useState("");
 
+    const router = useRouter();
+
+  const resolveTask = async() => {
+    try {
+        const formData = new FormData();
+        formData.append("userInputText", feedback);
+
+        const response = await axios.post(`${RESOLVE_TASK_ROUTE}/${_id}`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+                withCredentials: true,
+            }
+        )
+        if(response.status !== 200){
+            toast.error("Failed to resolve task!");
+        }   else {
+            toast.success("Task resolved successfully!");
+            router.push(`/in/task/${_id}`); // Redirect to the task home page
+        }
+        console.log('Task resolved successfully:', response);
+    }catch(error){
+        console.error('Error resolving task:', error);
+        toast.error('Error resolving task. Please try again.');
+    }
+  }
+
   const handleResolveClick = () => {
-    setShowForm(true);
+    if(showForm === false){
+        setShowForm(true);
+    } else {
+        resolveTask();
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
