@@ -42,13 +42,12 @@ export default async function TaskDetailsPageStaticPart({ _id }: { _id: string }
     background: "linear-gradient(135deg, #121212, #111)",
     color: "white",
     padding: "40px",
-    paddingTop: "0px",
-    paddingBottom: "0px",
     borderRadius: "20px",
     boxShadow: "0 15px 30px rgba(0, 0, 0, 0.4)",
     maxWidth: "800px",
     margin: "40px auto",
     animation: "fadeIn 1.5s ease-out",
+    border: "1px solid rgba(255, 255, 255, 0.1)",
   };
 
   // Title Style with Bright Neon and glowing effect

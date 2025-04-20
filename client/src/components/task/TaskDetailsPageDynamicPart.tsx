@@ -45,6 +45,8 @@ export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string 
         maxWidth: "800px",
         margin: "3rem auto",
         padding: "2.5rem",
+        marginTop: "0px",
+        marginBottom: "0px",
         background: "linear-gradient(145deg, #0d0d0d, #1a1a1a)",
         borderRadius: "1.5rem",
         boxShadow: "0 0 30px rgba(0, 255, 128, 0.25)",
