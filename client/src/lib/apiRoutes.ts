@@ -13,4 +13,5 @@ export const USER_INFO_ROUTE = `${AUTH_ROUTES}/user`;
 export const CREATE_TASKS_ROUTE = `${TASK_ROUTES}/create`;
 export const GET_FILTERED_TASKS_ROUTE = `${TASK_ROUTES}/get/filtered`;
 export const GET_TASK_STATIC_DETAILS_ROUTE = `${TASK_ROUTES}/get/static/details`;
+export const GET_TASK_DYNAMIC_DETAILS_ROUTE = `${TASK_ROUTES}/get/dynamic/details`;
 
