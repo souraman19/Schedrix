@@ -32,7 +32,16 @@ const userSchema = new Schema<IUser>({
     age: {type: Number},
     bio: {type: String},
     joinedAt: {type: Date, default: Date.now},
-    mindStatus: {type: String},
+    mindStatus: {
+      type: String,
+      enum: [
+        "Relaxed", "Stressed", "Focused", "Anxious", "Tired", "Motivated", 
+        "Overwhelmed", "Productive", "Unmotivated", "Happy", "Sad", "Angry", 
+        "Calm", "Distracted", "Bored", "Inspired", "Confused", "Grateful", 
+        "Hopeful", "Depressed", "Indecisive", "Restless", "Content", "Default"
+      ],
+      default: "Default"
+    },    
     badgeList: [{type: String}],
     progress: {
         totalTasks: {type: Number, default: 0},

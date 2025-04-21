@@ -5,6 +5,7 @@ import { useUserStore } from "@/store/useUserStore";
 import { GET_USER_POINTS_ANALYTICS_ROUTE } from "@/lib/apiRoutes";
 import { toast } from "sonner";
 import PointsGrid from "@/components/user/PointsGrid";
+import ProfileAnalytics from "@/components/user/ProfileAnalytics";
 
 export default function UserAnalyticsPage() {
   const { user, setUser } = useUserStore();
@@ -44,7 +45,7 @@ export default function UserAnalyticsPage() {
             <div className="space-y-8">
               <div className="text-center">
                 <h3 className="text-xl font-semibold mb-2 text-green-500">
-                  Points Gained ({year})
+               Points Gained ({year})
                 </h3>
                 <PointsGrid pointsData={pointsData} year={year} ifGain={true} />
               </div>
@@ -58,6 +59,12 @@ export default function UserAnalyticsPage() {
             </div>
           </div>
         )}
+        <div>
+            <div>
+                <ProfileAnalytics />
+            </div>
+        </div>
+
       </div>
     </div>
   );

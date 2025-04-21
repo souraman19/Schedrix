@@ -19,4 +19,5 @@ export const RESOLVE_TASK_ROUTE = `${TASK_ROUTES}/resolve`;
 
 
 export const GET_USER_POINTS_ANALYTICS_ROUTE = `${USER_ROUTES}/get/points/analytics`;
+export const GET_USER_PROFILE_ROUTE = `${USER_ROUTES}/get/profile`;
 
