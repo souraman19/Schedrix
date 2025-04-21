@@ -5,6 +5,7 @@ import passport from 'passport';
 import './utils/passport';
 import authRoutes from './routes/auth.routes';
 import taskRoutes from './routes/tasks.routes';
+import userRoutes from './routes/user.routes';
 import cors from 'cors';
 import { connectDB } from "./config/db";
 import { isAuthenticated } from "./middlewares/AuthMiddleWires";
@@ -55,7 +56,7 @@ connectDB();
 
 app.use('/api/auth', authRoutes);
 app.use('/api/task', isAuthenticated, taskRoutes);
-
+app.use('/api/user', isAuthenticated, userRoutes)
 
 
 app.get('/', (req: Request, res: Response) => {

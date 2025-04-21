@@ -2,6 +2,7 @@ import { start } from "repl";
 import { Task } from "../models/Task";
 import {Types} from "mongoose";
 import { pointBase, PriorityLevelPointBase } from "../utils/points";
+import { UserPoints } from "../models/UserPoints";
 
 export const createTask = async(req: any, res: any) => {
     try {
@@ -20,7 +21,6 @@ export const createTask = async(req: any, res: any) => {
             audio,
         } = req.body;
 
-        // console.log("Request body: ", req.body);
 
         const userId = req.user._id; // Assuming you have user ID in req.user
 
@@ -75,7 +75,6 @@ export const createTask = async(req: any, res: any) => {
             tags:[],   
         })
        await newTask.save();
-    //    console.log("New task created: ", newTask);
        return res.status(201).json({message: "Task created successfully", task: newTask});
        
     }catch(error){
@@ -87,7 +86,6 @@ export const createTask = async(req: any, res: any) => {
 
 export const getFilteredTasks = async(req: any, res: any) => {
     try{
-        // console.log("req.body", req.body);
         const {status, priority, dateMode, isLocked, isFixed, month, year, date, dateField, category} = req.body;
         const userId = req.user._id; 
 
@@ -164,7 +162,6 @@ export const getFilteredTasks = async(req: any, res: any) => {
 export const getTaskStaticDetails = async(req: any, res: any) => {
     try{
         const _id = req.params._id;
-        // console.log("Hello", _id);
         const userId = req.user._id; 
         const task = await Task.findOne({_id: new Types.ObjectId(_id)})
         .select('title _id category userInput duration startTime endTime isLocked isFixed priority createdAt updatedAt')
@@ -184,7 +181,6 @@ export const getTaskStaticDetails = async(req: any, res: any) => {
 export const getTaskDynamicDetails = async(req: any, res: any) => {
     try{
         const _id = req.params._id;
-        // console.log("Hello", _id);
         const userId = req.user._id; 
         const task = await Task.findOne({_id: new Types.ObjectId(_id)})
         .select(' _id userOutput status totalPointsContributed pointsContributed outputAnalysis deadline')
@@ -192,7 +188,6 @@ export const getTaskDynamicDetails = async(req: any, res: any) => {
         if(!task){
             return res.status(404).json({error: "Task not found"});
         }
-        console.log("Task found: ", task);
         return res.status(200).json({task});
     }catch(err){
         console.error("Error getting task static details: ", err);
@@ -204,7 +199,6 @@ export const getTaskDynamicDetails = async(req: any, res: any) => {
 export const resolveTask = async(req: any, res: any) => {
     try {
         const _id = req.params._id;
-        const userId = req.user._id;
         const userInputText = req.body.userInputText;
 
         const task = await Task.findOne({_id: new Types.ObjectId(_id)}).exec();
@@ -216,22 +210,60 @@ export const resolveTask = async(req: any, res: any) => {
         }
         let x = 1;
         if(task.deadline) x = Math.floor((new Date().getTime() - new Date(task.deadline).getTime()) / (1000 * 60 * 60 * 24)); // in days
-        console.log("X: ", x);
-        // console.log("Task found: ", task);
+
         const duration = task.duration || 1; // Default to 1 hour if duration is not set
-        console.log("Duration: ", duration);
         const priority = task.priority as PriorityLevelPointBase;
-        console.log("Priority: ", priority);
-        // console.log("Priority: ", priority); 
         const points_add = pointBase[priority] + duration * x;
-        console.log("Points: ", points_add);
         const total = task.totalPointsContributed + points_add;
-        console.log("Total points: ", total);
         task.totalPointsContributed = total;
         task.pointsContributed.push({day: new Date(), points: points_add});
         task.status = "completed";
         task.userOutput.text = (userInputText && userInputText.trim() !== "" )? userInputText.trim() : "";
         await task.save();
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const day = now.getDate();
+        const month = now.getMonth(); 
+        const pointsAdd = points_add;
+        const taskId = task._id;
+        const userId = task.createdBy;
+
+        let userPointsBucket = await UserPoints.findOne({
+            userId: userId,
+            year: year,
+        })
+
+        if(!userPointsBucket){
+            userPointsBucket = new UserPoints({
+            userId: userId,
+            year: year,
+            points: [],
+            });
+        }
+            
+        let existingDayMonthIndex = userPointsBucket.points.findIndex((el) =>
+            el.day === day && el.month === month
+        )
+        console.log("Existing day month index: ", existingDayMonthIndex);
+
+        if(existingDayMonthIndex === -1){
+            userPointsBucket.points.push({
+            day: day,
+            month: month,
+            pointsGain: pointsAdd,
+            pointsDeduct: 0,
+            })
+        } else {
+            const totalPoints = userPointsBucket.points[existingDayMonthIndex].pointsGain + pointsAdd;
+            userPointsBucket.points[existingDayMonthIndex].pointsGain = totalPoints;
+        }
+        
+        userPointsBucket.markModified("points");
+
+        console.log("User points bucket: ", userPointsBucket);
+        await userPointsBucket.save();
+
         return res.status(200).json({message: "Task resolved successfully", task});
     }catch(err){
         console.error("Error resolving task: ", err);

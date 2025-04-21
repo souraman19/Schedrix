@@ -1,6 +1,8 @@
 import cron from "node-cron";
 import { pointBase, penaltyPerDay, PriorityLevel } from "../utils/points";
 import { Task } from "../models/Task";
+import { UserPoints } from "../models/UserPoints";
+
 
 
 export const customFunction = async() => {
@@ -45,6 +47,44 @@ export const customFunction = async() => {
         console.log(
         //   `Task ${task.title} is overdue. Points deducted: ${points}`
         );
+
+        const deadline = task.deadline as Date;
+        const year = deadline.getFullYear();
+        const day = deadline.getDate();
+        const month = deadline.getMonth(); 
+        const pointsDeduct = points;
+        const taskId = task._id;
+        const userId = task.createdBy;
+
+        let userPointsBucket = await UserPoints.findOne({
+          userId: userId,
+          year: year,
+        })
+
+        if(!userPointsBucket){
+          userPointsBucket = new UserPoints({
+            userId: userId,
+            year: year,
+            points: [],
+          });
+        }
+          
+        let existingDayMonthIndex = userPointsBucket.points.findIndex((el) =>
+          el.day === day && el.month === month
+      )
+      if(existingDayMonthIndex === -1){
+          userPointsBucket.points.push({
+          day: day,
+          month: month,
+          pointsGain: 0,
+          pointsDeduct: pointsDeduct,
+          })
+      } else {
+        const totalPoints = userPointsBucket.points[existingDayMonthIndex].pointsDeduct + pointsDeduct;
+        userPointsBucket.points[existingDayMonthIndex].pointsDeduct = totalPoints;
+      }
+        userPointsBucket.markModified("points");
+        await userPointsBucket.save();
       }
       console.log("Overdue tasks processed successfully.");
     } catch (err) {
@@ -52,4 +92,4 @@ export const customFunction = async() => {
     }
   };
 
-cron.schedule("0 0 * * *", customFunction);
+cron.schedule("25 12 * * *", customFunction);
