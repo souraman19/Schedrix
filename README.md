@@ -45,25 +45,6 @@ Schedrix is an AI-based task management platform with a unique blend of motivati
 - `isLocked`, `isFixed`, `output`
 - `category`, `createdBy`, `createdAt`
 
-### **MindStatus**
-- `{ type: String, default: "" }`
-- Enum values like: `focused, relaxed, anxious, overwhelmed, tired, distracted, energetic, low, procrastinating, neutral, motivated`
-
-### **MindStatusHistory**
-- Tracks user mood over time (daily snapshots)
-
-### **Progress**
-- Tracks total and completed tasks, points earned
-
-### **TaskOutputAnalysis**
-- `feedback`, `score/pointsGain` for a task's result
-
-### **MotivationContent**
-- Text/video/content based on user's behavior, missed tasks, or mood
-
-### **Badge**
-- `title`, `icon`, `description`
-
 ### **DailyPointsLog (GitHub Contribution Style)**
 - Document per `{userId, year}`
 - Has array of `{ day, month, pointsGain, pointsLoss }`
