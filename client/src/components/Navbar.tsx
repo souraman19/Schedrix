@@ -3,9 +3,28 @@
 import { useState } from 'react';
 import { Menu, X, Home, ListTodo, LogOut } from 'lucide-react';
 import Link from 'next/link';
+import { useUserStore } from '@/store/useUserStore';
+import { LOG_OUT_ROUTE } from '@/lib/apiRoutes';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import { Button } from '@mui/material';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, setUser } = useUserStore();
+
+  const router = useRouter();
+
+  const handleLogout = async() => {
+    try{
+      await axios.get(`${LOG_OUT_ROUTE}`, {
+        withCredentials: true});
+      setUser(null);
+      router.push('/'); 
+    } catch(error){
+      console.error('Error logging out:', error);
+    }
+  }
 
   return (
     <>
@@ -38,7 +57,9 @@ export default function Navbar() {
           <nav className="hidden md:flex gap-8">
             <NavbarLink href="/home" icon={<Home size={20} />}>Home</NavbarLink>
             <NavbarLink href="/tasks" icon={<ListTodo size={20} />}>Tasks</NavbarLink>
-            <NavbarLink href="/logout" icon={<LogOut size={20} />} red>Logout</NavbarLink>
+            <div onClick={handleLogout}>
+                <NavbarLink href={"/"}icon={<LogOut size={20} />} red>Logout</NavbarLink>
+            </div>
           </nav>
 
           {/* Mobile Hamburger Menu */}
