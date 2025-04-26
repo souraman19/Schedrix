@@ -14,6 +14,19 @@ export const taskSchema = z.object({
   tags: z.array(z.string()).optional(),
   isLocked: z.coerce.boolean(),
   isFixed: z.coerce.boolean(),
+  repeat: z.enum(["daily", "weekly", "monthly", "yearly", "custom", "no repeat"]),
+  customRepeat: z.object({
+    repeatInterval: z.coerce.number().min(1, "Interval must be greater than 0"),
+    repeatUnit: z.enum(["day", "week", "month", "year"]),
+    endsOn: z.object({
+      date: z.coerce.date().optional(),
+      afterOccurrences: z.coerce.number().optional(),
+      never: z.coerce.boolean().optional(),
+    }),
+    weekDaysIfWeekInterval: z.array(z.string()).optional(),
+    monthDaysIfMonthInterval: z.array(z.coerce.number()).optional(),
+    yearDaysIfYearInterval: z.array(z.coerce.date()).optional(),
+  }).optional(),
 })
   .superRefine((data, ctx) => {
     if (data.isFixed) {

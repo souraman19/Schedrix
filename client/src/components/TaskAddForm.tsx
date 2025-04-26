@@ -8,11 +8,13 @@ import { taskSchema } from "@/lib/validation";
 import { CREATE_TASKS_ROUTE } from "@/lib/apiRoutes";
 import axios from "axios";
 import {toast} from "sonner";
+import CustomRepeat from "./CustomRepeat";
 
 export default function TaskAddForm() {
   const { user } = useUserStore();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [repeat, setRepeat] = useState<string>("no repeat");
+  const [repeatsEvery, setRepeatsEvery] = useState<string>("week");
 
   const handleSubmitForm = async(prevState: any, formData: FormData)=> {
     try{
@@ -21,25 +23,39 @@ export default function TaskAddForm() {
         const sanitizeString = (val: FormDataEntryValue | null) =>
             typeof val === "string" && val.trim() === "" ? undefined : val;
 
+
         // check if input is file and size is 0 and set it to undefined
         // this is to prevent empty file inputs from being sent to the server
         const sanitizeFile = (val: FormDataEntryValue | null) =>
             val instanceof File && val.size ===  0? undefined : val;
           
-        const formValues = {
-            title: formData.get("title") as string,
-            duration: sanitizeString(formData.get("duration")) ?? undefined,
-            startTime: sanitizeString(formData.get("startTime")) ?? undefined,
-            endTime: sanitizeString(formData.get("endTime")) ?? undefined,
-            deadline: sanitizeString(formData.get("deadline")) ?? undefined,
-            description: sanitizeString(formData.get("description")) as string | undefined,
-            isLocked: formData.get("locked") === "true",
-            isFixed: formData.get("fixed") === "true",
-            category: sanitizeString(formData.get("category")) as string | undefined,
-            priority: formData.get("priority") as "low" | "medium" | "high" | "critical",
-            image: sanitizeFile(formData.get("image")),
-            audio: sanitizeFile(formData.get("audio")),
-          };
+          const formValues = {
+              title: formData.get("title") as string,
+              duration: sanitizeString(formData.get("duration")) ?? undefined,
+              startTime: sanitizeString(formData.get("startTime")) ?? undefined,
+              endTime: sanitizeString(formData.get("endTime")) ?? undefined,
+              deadline: sanitizeString(formData.get("deadline")) ?? undefined,
+              description: sanitizeString(formData.get("description")) as string | undefined,
+              isLocked: formData.get("locked") === "true",
+              isFixed: formData.get("fixed") === "true",
+              category: sanitizeString(formData.get("category")) as string | undefined,
+              priority: formData.get("priority") as "low" | "medium" | "high" | "critical",
+              image: sanitizeFile(formData.get("image")),
+              audio: sanitizeFile(formData.get("audio")),
+              repeat: formData.get("repeat") as string | undefined,
+              customRepeat: {
+                  repeatInterval: formData.get("repeatInterval") as string | undefined,
+                  repeatUnit: formData.get("repeatUnit") as string | undefined,
+                  endsOn:{
+                      date: formData.get("endsOnDate") as string | undefined,
+                      afterOccurrences: formData.get("endsOnOccurrences") as string | undefined,
+                      never: formData.get("endsOnNever") === "true",
+                  },
+                  weekDaysIfWeekInterval: formData.getAll("weekDaysIfWeekInterval") as string[] | undefined,
+                  monthDaysIfMonthInterval: formData.getAll("monthDaysIfMonthInterval") as string[] | undefined,
+                  yearDaysIfYearInterval: formData.getAll("yearDaysIfYearInterval") as string[] | undefined,
+              }
+            };
 
         
           // console.log("form values", formValues);
@@ -176,18 +192,16 @@ export default function TaskAddForm() {
                 <div style={errorTextStyle}>{errors.deadLine}</div>
             }
           </div>
-
             {
               repeat === "custom" && (
-              <div>
-                  <div>
-                    
-                  </div>
-                  <div></div>
-                  <div></div>
-              </div>
+                <CustomRepeat 
+                  setRepeat={setRepeat}
+                  repeat={repeat}
+                />
               )
             }
+          
+
 
         </div>
       </div>
