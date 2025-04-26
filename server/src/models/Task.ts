@@ -36,6 +36,16 @@
             points: number; 
         }];
         totalPointsContributed: number;
+        repeat: string;
+        customRepeat: {
+            everyWeekNumber: number; 
+            RepeatOn: string[]; 
+            endsOn: {
+                date: Date; 
+                after: number; 
+                never: boolean; 
+            };
+        }
     }
 
     
@@ -74,6 +84,19 @@
         category: {type: String, required: true, enum: ['work', 'family', 'health', 'personal', 'other', 'learning']},
         createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         priority: {type: String, required: true, enum: ['low', 'medium', 'high', 'critical']},
+        repeat: {type: String, required: true, enum: ['no repeat', 'daily', 'weekly', 'mothly', 'yearly', 'custom']},
+        customReapeat: {
+            everyWeekNumber: {type: Number, default: 1},
+            RepeatOn: {
+                type: [String],
+                enum: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
+            },
+            endsOn:{
+                date: {type: Date},
+                after: {type: Number}, // number of times to repeat
+                never: {type: Boolean}, // never ends
+            }
+        },
         tags: [{type: String}],
     }, {
         timestamps: true
