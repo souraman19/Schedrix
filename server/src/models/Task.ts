@@ -38,13 +38,16 @@
         totalPointsContributed: number;
         repeat: string;
         customRepeat: {
-            everyWeekNumber: number; 
-            RepeatOn: string[]; 
-            endsOn: {
+            inEvery: string; 
+            inEveryNumber: number; 
+            endsOn:{
                 date: Date; 
                 after: number; 
                 never: boolean; 
             };
+            weekDaysIfWeek: string[]; 
+            monthDaysIfMonth: number[];
+            yearDaysIfYear: Date[];
         }
     }
 
@@ -85,17 +88,17 @@
         createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         priority: {type: String, required: true, enum: ['low', 'medium', 'high', 'critical']},
         repeat: {type: String, required: true, enum: ['no repeat', 'daily', 'weekly', 'mothly', 'yearly', 'custom']},
-        customReapeat: {
-            everyWeekNumber: {type: Number, default: 1},
-            RepeatOn: {
-                type: [String],
-                enum: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
-            },
+        customRepeat: {
+            inEvery: {type: String, enum: ['day', 'week', 'month', 'year']},
+            inEveryNumber: {type: Number},
             endsOn:{
                 date: {type: Date},
                 after: {type: Number}, // number of times to repeat
                 never: {type: Boolean}, // never ends
-            }
+            },
+            weekDaysIfWeek: [{type: String, enum: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']}],
+            monthDaysIfMonth: [{type: Number}],
+            yearDaysIfYear: [{type: Date}],
         },
         tags: [{type: String}],
     }, {

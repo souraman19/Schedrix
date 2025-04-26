@@ -12,6 +12,7 @@ import {toast} from "sonner";
 export default function TaskAddForm() {
   const { user } = useUserStore();
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [repeat, setRepeat] = useState<string>("no repeat");
 
   const handleSubmitForm = async(prevState: any, formData: FormData)=> {
     try{
@@ -142,6 +143,7 @@ export default function TaskAddForm() {
                 <div style={errorTextStyle}>{errors.endTime}</div>
             }
           </div>
+
           <div style={{ flex: 1, minWidth: "220px" }}>
             <label style={labelStyle}>Deadline</label>
             <input type="datetime-local" style={inputBase} name="deadline"/>
@@ -149,6 +151,44 @@ export default function TaskAddForm() {
                 <div style={errorTextStyle}>{errors.deadLine}</div>
             }
           </div>
+
+          <div style={{ flex: 1, minWidth: "220px" }}>
+            <label style={labelStyle}>Repeat</label>
+            <select
+              style={{
+                ...inputBase,
+                backgroundColor: "#1a1a1a",
+                color: "#fff",
+              }}
+              value={repeat}
+              onChange={(e) => setRepeat(e.target.value)}
+              
+              name="repeat"
+            >
+              <option value="no repeat">No Repeat</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+              <option value="custom">Custom</option>
+            </select>
+            {errors.repeat && 
+                <div style={errorTextStyle}>{errors.deadLine}</div>
+            }
+          </div>
+
+            {
+              repeat === "custom" && (
+              <div>
+                  <div>
+                    
+                  </div>
+                  <div></div>
+                  <div></div>
+              </div>
+              )
+            }
+
         </div>
       </div>
 
