@@ -1,3 +1,4 @@
+
 import React from "react";
 import { cookies } from "next/headers";
 import { GET_TASK_DYNAMIC_DETAILS_ROUTE } from "@/lib/apiRoutes";
@@ -16,6 +17,7 @@ export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string 
       text?: string;
     };
     deadline?: Date;
+    masterTaskId?: string | null;
   };
 
   let taskData: TaskType | null = null;
@@ -32,6 +34,7 @@ export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string 
     });
     const result = await response.json();
     taskData = result.task;
+    // console.log("Task data fetched successfully: ", taskData);
   } catch (err) {
     console.error("Error fetching task details:", err);
   }

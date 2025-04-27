@@ -1,3 +1,4 @@
+import LinkForMasterTask from "@/components/task/LinkForMasterTask";
 import TaskDetailsPageDynamicPart from "@/components/task/TaskDetailsPageDynamicPart";
 import TaskDetailsPageStaticPart from "@/components/task/TaskDetailsPageStaticPart";
 import TaskResolve from "@/components/task/TaskResolve";
@@ -15,6 +16,9 @@ export default async function Task({params}: {params: Promise<{_id: string}>}) {
       <div className=" rounded-lg shadow-lg">
         <TaskDetailsPageStaticPart _id={_id} />
       </div>
+      <div className=" rounded-lg shadow-lg">
+        <LinkForMasterTask _id={_id} />
+      </div>
 
       {/* Dynamic part */}
       <Suspense fallback={<div>Loading...</div>}>
@@ -22,6 +26,7 @@ export default async function Task({params}: {params: Promise<{_id: string}>}) {
           <TaskDetailsPageDynamicPart _id={_id} />
         </div>
       </Suspense>
+      
       <div>
         <TaskResolve _id={_id} />
       </div>

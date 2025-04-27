@@ -2,6 +2,8 @@ import React from "react";
 import { cookies } from "next/headers";
 import { GET_TASK_STATIC_DETAILS_ROUTE } from "@/lib/apiRoutes";
 import { formatDate } from "@/lib/utils";
+import { Button } from "@mui/material";
+import { ArrowBigRight } from "lucide-react";
 
 export default async function TaskDetailsPageStaticPart({ _id }: { _id: string }) {
   type TaskType = {
@@ -17,9 +19,14 @@ export default async function TaskDetailsPageStaticPart({ _id }: { _id: string }
     priority: string;
     createdAt: Date;
     updatedAt: Date;
+    masterTaskId: string | null;
   };
 
+
+  const experimantal_ppr = "true";
+
   let taskData: TaskType | null = null;
+
 
   try {
     const cookieStore = await cookies();
@@ -33,6 +40,7 @@ export default async function TaskDetailsPageStaticPart({ _id }: { _id: string }
     });
     const result = await response.json();
     taskData = result.task;
+    // console.log("Task data fetched successfully: ", taskData);
   } catch (err) {
     console.error("Error fetching task details:", err);
   }
@@ -223,6 +231,9 @@ export default async function TaskDetailsPageStaticPart({ _id }: { _id: string }
             </div>
           </div>
         )}
+
+
+
       </div>
     </div>
   );

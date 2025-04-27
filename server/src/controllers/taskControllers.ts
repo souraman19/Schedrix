@@ -103,6 +103,7 @@ export const getFilteredTasks = async(req: any, res: any) => {
             createdBy?: string;
             category?: string;
             [key: string]: any;  // Dynamic keys
+            repeat?: string;
         }
 
         const filter: Taskfilter = {};
@@ -122,6 +123,8 @@ export const getFilteredTasks = async(req: any, res: any) => {
         filter.isLocked = isLocked;
         filter.isFixed = isFixed;
         filter.createdBy = userId;
+
+        filter.repeat = "no repeat"; 
 
 
         
@@ -170,7 +173,7 @@ export const getTaskStaticDetails = async(req: any, res: any) => {
         const _id = req.params._id;
         const userId = req.user._id; 
         const task = await Task.findOne({_id: new Types.ObjectId(_id)})
-        .select('title _id category userInput duration startTime endTime isLocked isFixed priority createdAt updatedAt')
+        .select('title _id category userInput duration startTime endTime isLocked isFixed priority createdAt updatedAt masterTaskId')
         .exec();
         if(!task){
             return res.status(404).json({error: "Task not found"});
@@ -189,7 +192,7 @@ export const getTaskDynamicDetails = async(req: any, res: any) => {
         const _id = req.params._id;
         const userId = req.user._id; 
         const task = await Task.findOne({_id: new Types.ObjectId(_id)})
-        .select(' _id userOutput status totalPointsContributed pointsContributed outputAnalysis deadline')
+        .select(' _id userOutput status totalPointsContributed pointsContributed outputAnalysis deadline masterTaskId')
         .exec();
         if(!task){
             return res.status(404).json({error: "Task not found"});
