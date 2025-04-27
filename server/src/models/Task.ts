@@ -46,10 +46,14 @@
                 afterOccurrences: number; 
                 never: boolean; 
             };
+            startDate: Date;
             weekDaysIfWeekInterval: string[]; 
             monthDaysIfMonthInterval: number[];
             yearDaysIfYearInterval: Date[];
-        }
+        },
+        isMaster: boolean;
+        masterTaskId: Types.ObjectId | null; 
+        masterStatus: string; // 'pending' | 'completed'
     }
 
     
@@ -88,7 +92,7 @@
         category: {type: String, required: true, enum: ['work', 'family', 'health', 'personal', 'other', 'learning']},
         createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         priority: {type: String, required: true, enum: ['low', 'medium', 'high', 'critical']},
-        repeat: {type: String, required: true, enum: ['no repeat', 'daily', 'weekly', 'mothly', 'yearly', 'custom']},
+        repeat: {type: String, enum: ['no repeat', 'repeat']},  //rember to make it reuired true at last
         customRepeat: {
             repeatInterval: {type: Number},
             repeatUnit: {type: String, enum: ['day', 'week', 'month', 'year']},
@@ -98,11 +102,16 @@
                 afterOccurrences: {type: Number}, // number of times to repeat
                 never: {type: Boolean}, // never ends
             },
+            startDate: {type: Date, default: () => new Date()}, 
             weekDaysIfWeekInterval: [{type: String}],
             monthDaysIfMonthInterval: [{type: Number}],
             yearDatesIfYearInterval: [{type: Date}],
         },
         tags: [{type: String}],
+        isMaster: {type: Boolean, default: true},
+        masterTaskId: {type: Schema.Types.ObjectId, ref: 'Task', default: null},
+        masterStatus: {type: String, enum: ['pending', 'completed', 'N/A'], default: 'pending'},
+
     }, {
         timestamps: true
     })

@@ -1,5 +1,5 @@
 import { Cronlog } from "../models/Cronlog";
-import { customFunction } from "./cronJob";
+import { customFunctionTaskStatus } from "./cronJob";
 
 
 export const checkMissedCron = async() => {
@@ -27,7 +27,7 @@ export const checkMissedCron = async() => {
             }
 
             while(dayofDiff > 0){
-                customFunction();
+                customFunctionTaskStatus();
                 // console.log("Running cron job for missed days:", dayofDiff);
                 dayofDiff--;
                 gotLastRun.lastRun = new Date(gotLastRun.lastRun.getTime() + (1000 * 3600 * 24));
