@@ -82,6 +82,7 @@ export default function TaskHomePage() {
             setChosenYear={setChosenYear}
             setChosenMonth={setChosenMonth}
             setChosenDate={setChosenDate}
+            fetchTasks={fetchTasks}
         />
       </div>
 

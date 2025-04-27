@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { number } from 'zod';
 
@@ -9,7 +9,7 @@ const months = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-export default function CalendarView({chosenDate, chosenMonth, chosenYear, setChosenYear, setChosenMonth, setChosenDate}: {chosenDate: number, chosenMonth: number, chosenYear: number, setChosenYear: (chosenYear: number) => void, setChosenMonth: (chosenMonth: number) => void, setChosenDate: (date: number) => void}) {
+export default function CalendarView({chosenDate, chosenMonth, chosenYear, setChosenYear, setChosenMonth, setChosenDate, fetchTasks}: {chosenDate: number, chosenMonth: number, chosenYear: number, setChosenYear: (chosenYear: number) => void, setChosenMonth: (chosenMonth: number) => void, setChosenDate: (date: number) => void, fetchTasks: () => void}) {
   const today = new Date().getDate();
 
   const handlePrevMonth = () => {
@@ -29,6 +29,10 @@ export default function CalendarView({chosenDate, chosenMonth, chosenYear, setCh
       setChosenMonth(prev => prev + 1);
     }
   };
+
+  useEffect(()=> {
+    fetchTasks();
+  }, [chosenDate, chosenMonth, chosenYear]);
 
   const getDaysInMonth = (chosenMonth: number, chosenYear: number) => {
     return new Date(chosenYear, chosenMonth + 1, 0).getDate();
@@ -76,7 +80,10 @@ export default function CalendarView({chosenDate, chosenMonth, chosenYear, setCh
               ${day !== today && day !== chosenDate ? 'hover:bg-green-700/30' : ''}
               ${day === today && day !== chosenDate ? 'bg-red-300' : ''}
               transition cursor-pointer`}
-            onClick={() => setChosenDate(day)}
+            onClick={() => {
+              setChosenDate(day);
+              
+            }}
             
           >
             {day}
