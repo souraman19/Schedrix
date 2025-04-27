@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useActionState, useState } from "react";
+import React, { useActionState, useEffect, useState } from "react";
 import { useUserStore } from "@/store/useUserStore";
 import { Button } from "@mui/material";
 import {z} from "zod";
@@ -9,12 +9,56 @@ import { CREATE_TASKS_ROUTE } from "@/lib/apiRoutes";
 import axios from "axios";
 import {toast} from "sonner";
 import CustomRepeat from "./CustomRepeat";
+import { flattenZodErrors } from "@/lib/flattenedZodErrors";
+
+
+
 
 export default function TaskAddForm() {
   const { user } = useUserStore();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [repeat, setRepeat] = useState<string>("no repeat");
   const [repeatsEvery, setRepeatsEvery] = useState<string>("week");
+  const [customModalOpen, setCustomModalOpen] = useState(false);
+  const [customRepeat, setCustomRepeat] = useState({
+    repeatInterval: "1",
+    repeatUnit: "week",
+    endsType: "",
+    endsOn: {
+      date: "",
+      afterOccurrences: "",
+      never: false,
+    },
+    weekDaysIfWeekInterval: [],
+    monthDaysIfMonthInterval: [],
+    yearDaysIfYearInterval: [],
+  });
+  const [customRepeatError, setCustomRepeatError] = useState<string>("");
+
+
+  useEffect(()=> {
+    if(repeat !== "custom"){
+      setCustomRepeat({
+        repeatInterval: "1",
+        repeatUnit: "week",
+        endsType: "",
+        endsOn: {
+          date: "",
+          afterOccurrences: "",
+          never: false,
+        },
+        weekDaysIfWeekInterval: [],
+        monthDaysIfMonthInterval: [],
+        yearDaysIfYearInterval: [],
+      })
+    }
+  }, [repeat]);
+
+
+  useEffect(()=>{
+    console.log("custom repeat", customRepeat);
+    console.log("errors", errors);
+  }, [errors])
 
   const handleSubmitForm = async(prevState: any, formData: FormData)=> {
     try{
@@ -29,7 +73,7 @@ export default function TaskAddForm() {
         const sanitizeFile = (val: FormDataEntryValue | null) =>
             val instanceof File && val.size ===  0? undefined : val;
           
-          const formValues = {
+          let formValues: any = {
               title: formData.get("title") as string,
               duration: sanitizeString(formData.get("duration")) ?? undefined,
               startTime: sanitizeString(formData.get("startTime")) ?? undefined,
@@ -43,37 +87,41 @@ export default function TaskAddForm() {
               image: sanitizeFile(formData.get("image")),
               audio: sanitizeFile(formData.get("audio")),
               repeat: formData.get("repeat") as string | undefined,
-              customRepeat: {
-                  repeatInterval: formData.get("repeatInterval") as string | undefined,
-                  repeatUnit: formData.get("repeatUnit") as string | undefined,
-                  endsOn:{
-                      date: formData.get("endsOnDate") as string | undefined,
-                      afterOccurrences: formData.get("endsOnOccurrences") as string | undefined,
-                      never: formData.get("endsOnNever") === "true",
-                  },
-                  weekDaysIfWeekInterval: formData.getAll("weekDaysIfWeekInterval") as string[] | undefined,
-                  monthDaysIfMonthInterval: formData.getAll("monthDaysIfMonthInterval") as string[] | undefined,
-                  yearDaysIfYearInterval: formData.getAll("yearDaysIfYearInterval") as string[] | undefined,
-              }
             };
+
+
+            if(formValues.repeat === "custom"){
+              formValues.customRepeat = {
+                repeatInterval: sanitizeString(customRepeat.repeatInterval) as string | undefined,
+                repeatUnit: sanitizeString(customRepeat.repeatUnit) as string | undefined,
+                endsType: sanitizeString(customRepeat.endsType) as string | undefined,
+                endsOn:{
+                    date: sanitizeString(customRepeat.endsOn.date) as string | undefined,
+                    afterOccurrences: sanitizeString(customRepeat.endsOn.afterOccurrences) as string | undefined,
+                    never: customRepeat.endsOn.never as boolean | undefined,
+                },
+                weekDaysIfWeekInterval: customRepeat.weekDaysIfWeekInterval as string[] | undefined,
+                monthDaysIfMonthInterval: customRepeat.monthDaysIfMonthInterval as string[] | undefined,
+                yearDaysIfYearInterval: customRepeat.yearDaysIfYearInterval as string[] | undefined,
+            }
+            }
 
         
           // console.log("form values", formValues);
         await taskSchema.parseAsync(formValues);
         const response = await axios.post(CREATE_TASKS_ROUTE, formValues, {withCredentials: true});
-        console.log("task created => ", response.data);
+        // console.log("task created => ", response.data);
         if(response.status === 201) toast.success("Task created successfully!");
 
     }catch(error: any){
-        if(error instanceof z.ZodError){
-            const fieldErrors = error.flatten().fieldErrors;
-
-            setErrors(fieldErrors as unknown as Record<string, string>);
-
-            toast.error("Validation failed! Please check your inputs.");
-            
-            return {...prevState, error: "Validation failed", status: "ERROR"}
-        }
+      if (error instanceof z.ZodError) {
+        const flattenedErrors = flattenZodErrors(error);
+        setErrors(flattenedErrors);
+    
+        toast.error("Validation failed! Please check your inputs.");
+    
+        return { ...prevState, error: "Validation failed", status: "ERROR" };
+    }
 
 
         toast.error("An unexpected error occurred! Please try again.");
@@ -194,9 +242,38 @@ export default function TaskAddForm() {
           </div>
             {
               repeat === "custom" && (
+                <Button
+                  onClick={() => setCustomModalOpen(true)}
+                  sx={{
+                    background: "linear-gradient(to right, #00c853, #b2ff59)",
+                    color: "#000",
+                    borderRadius: "999px",
+                    px: 4,
+                    py: 1.5,
+                    fontWeight: 600,
+                    textTransform: "none",
+                    fontSize: "1rem",
+                    "&:hover": {
+                      background: "linear-gradient(to right, #00e676, #ccff90)",
+                      boxShadow: "0 0 16px #00c85388",
+                    },
+                  }}>
+                    {`>`}
+                </Button>
+              )
+            }
+
+            {
+              repeat === "custom" && customModalOpen === true && (
                 <CustomRepeat 
                   setRepeat={setRepeat}
                   repeat={repeat}
+                  errors={errors}
+                  setErrors={setErrors}
+                  customModalOpen={customModalOpen}
+                  setCustomModalOpen={setCustomModalOpen}
+                  customRepeat={customRepeat}
+                  setCustomRepeat={setCustomRepeat}
                 />
               )
             }

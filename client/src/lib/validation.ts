@@ -14,10 +14,11 @@ export const taskSchema = z.object({
   tags: z.array(z.string()).optional(),
   isLocked: z.coerce.boolean(),
   isFixed: z.coerce.boolean(),
-  repeat: z.enum(["daily", "weekly", "monthly", "yearly", "custom", "no repeat"]),
+  repeat: z.enum(['no repeat', 'daily', 'weekly', 'mothly', 'yearly', 'custom']),
   customRepeat: z.object({
     repeatInterval: z.coerce.number().min(1, "Interval must be greater than 0"),
     repeatUnit: z.enum(["day", "week", "month", "year"]),
+    endsType: z.enum(["date", "afterOccurrences", "never"]),
     endsOn: z.object({
       date: z.coerce.date().optional(),
       afterOccurrences: z.coerce.number().optional(),
