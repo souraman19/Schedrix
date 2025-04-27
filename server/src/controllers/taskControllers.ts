@@ -19,7 +19,11 @@ export const createTask = async(req: any, res: any) => {
             priority,
             image,
             audio,
+            repeat,
+            customRepeat,
         } = req.body;
+
+        // console.log("Request body: ", req.body);
 
 
         const userId = req.user._id; // Assuming you have user ID in req.user
@@ -73,6 +77,8 @@ export const createTask = async(req: any, res: any) => {
             priority,
             createdBy: userId,
             tags:[],   
+            repeat, 
+            ...(customRepeat ? {customRepeat} : {}), // Spread customRepeat only if it exists
         })
        await newTask.save();
        return res.status(201).json({message: "Task created successfully", task: newTask});

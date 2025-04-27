@@ -38,8 +38,9 @@
         totalPointsContributed: number;
         repeat: string;
         customRepeat: {
-            repeatInteval: string; 
-            repeatUnit: number; 
+            repeatInteval: number;
+            repeatUnit: string;
+            endsType: string;
             endsOn:{
                 date: Date; 
                 afterOccurrences: number; 
@@ -89,14 +90,15 @@
         priority: {type: String, required: true, enum: ['low', 'medium', 'high', 'critical']},
         repeat: {type: String, required: true, enum: ['no repeat', 'daily', 'weekly', 'mothly', 'yearly', 'custom']},
         customRepeat: {
-            repeatInterval: {type: String, enum: ['day', 'week', 'month', 'year']},
-            repeatUnit: {type: Number},
+            repeatInterval: {type: Number},
+            repeatUnit: {type: String, enum: ['day', 'week', 'month', 'year']},
+            endsType: {type: String, enum: ['date', 'afterOccurrences', 'never']},
             endsOn:{
                 date: {type: Date},
                 afterOccurrences: {type: Number}, // number of times to repeat
                 never: {type: Boolean}, // never ends
             },
-            weekDaysIfWeekInterval: [{type: String, enum: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']}],
+            weekDaysIfWeekInterval: [{type: String}],
             monthDaysIfMonthInterval: [{type: Number}],
             yearDatesIfYearInterval: [{type: Date}],
         },
