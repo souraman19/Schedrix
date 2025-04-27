@@ -10,6 +10,7 @@ import axios from "axios";
 import {toast} from "sonner";
 import CustomRepeat from "./CustomRepeat";
 import { flattenZodErrors } from "@/lib/flattenedZodErrors";
+import { start } from "repl";
 
 
 
@@ -29,6 +30,7 @@ export default function TaskAddForm() {
       afterOccurrences: "",
       never: false,
     },
+    startDate: "",
     weekDaysIfWeekInterval: [],
     monthDaysIfMonthInterval: [],
     yearDaysIfYearInterval: [],
@@ -37,7 +39,7 @@ export default function TaskAddForm() {
 
 
   useEffect(()=> {
-    if(repeat !== "custom"){
+    if(repeat !== "repeat"){
       setCustomRepeat({
         repeatInterval: "1",
         repeatUnit: "week",
@@ -47,6 +49,7 @@ export default function TaskAddForm() {
           afterOccurrences: "",
           never: false,
         },
+        startDate: "",
         weekDaysIfWeekInterval: [],
         monthDaysIfMonthInterval: [],
         yearDaysIfYearInterval: [],
@@ -56,8 +59,8 @@ export default function TaskAddForm() {
 
 
   useEffect(()=>{
-    console.log("custom repeat", customRepeat);
-    console.log("errors", errors);
+    // console.log("custom repeat", customRepeat);
+    // console.log("errors", errors);
   }, [errors])
 
   const handleSubmitForm = async(prevState: any, formData: FormData)=> {
@@ -90,7 +93,7 @@ export default function TaskAddForm() {
             };
 
 
-            if(formValues.repeat === "custom"){
+            if(formValues.repeat === "repeat"){
               formValues.customRepeat = {
                 repeatInterval: sanitizeString(customRepeat.repeatInterval) as string | undefined,
                 repeatUnit: sanitizeString(customRepeat.repeatUnit) as string | undefined,
@@ -100,6 +103,7 @@ export default function TaskAddForm() {
                     afterOccurrences: sanitizeString(customRepeat.endsOn.afterOccurrences) as string | undefined,
                     never: customRepeat.endsOn.never as boolean | undefined,
                 },
+                startDate: sanitizeString(customRepeat.startDate) as string,
                 weekDaysIfWeekInterval: customRepeat.weekDaysIfWeekInterval as string[] | undefined,
                 monthDaysIfMonthInterval: customRepeat.monthDaysIfMonthInterval as string[] | undefined,
                 yearDaysIfYearInterval: customRepeat.yearDaysIfYearInterval as string[] | undefined,
@@ -230,18 +234,14 @@ export default function TaskAddForm() {
               name="repeat"
             >
               <option value="no repeat">No Repeat</option>
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="yearly">Yearly</option>
-              <option value="custom">Custom</option>
+              <option value="repeat">Repeat</option>
             </select>
             {errors.repeat && 
                 <div style={errorTextStyle}>{errors.deadLine}</div>
             }
           </div>
             {
-              repeat === "custom" && (
+              repeat === "repeat" && (
                 <Button
                   onClick={() => setCustomModalOpen(true)}
                   sx={{
@@ -264,7 +264,7 @@ export default function TaskAddForm() {
             }
 
             {
-              repeat === "custom" && customModalOpen === true && (
+              repeat === "repeat" && customModalOpen === true && (
                 <CustomRepeat 
                   setRepeat={setRepeat}
                   repeat={repeat}
