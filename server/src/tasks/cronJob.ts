@@ -9,6 +9,7 @@ import {
   getMonthsBetween,
   getYearsBetween,
 } from "./../utils/getTimeDiff";
+import { User } from "../models/User";
 
 
 // console.log("Cron job started.");
@@ -51,15 +52,23 @@ export const customFunctionTaskStatus = async () => {
       const total = task.totalPointsContributed - points;
       task.totalPointsContributed = total;
       task.pointsContributed.push({ day: new Date(), points: -points });
-      await task.save();
 
+      const userId = task.createdBy;
+      const user = await User.findById(userId);
+      if (!user) {
+        console.log("User not found. Skipping points deduction.");
+        continue;
+      }
+      user.progress.points -= points;
+      user.progress.overdueTasks += 1;
+
+      
       const deadline = task.deadline as Date;
       const year = deadline.getFullYear();
       const day = deadline.getDate();
       const month = deadline.getMonth();
       const pointsDeduct = points;
       const taskId = task._id;
-      const userId = task.createdBy;
 
       let userPointsBucket = await UserPoints.findOne({
         userId: userId,
@@ -73,7 +82,7 @@ export const customFunctionTaskStatus = async () => {
           points: [],
         });
       }
-
+      
       let existingDayMonthIndex = userPointsBucket.points.findIndex(
         (el) => el.day === day && el.month === month
       );
@@ -88,11 +97,14 @@ export const customFunctionTaskStatus = async () => {
         const totalPoints =
           userPointsBucket.points[existingDayMonthIndex].pointsDeduct +
           pointsDeduct;
-        userPointsBucket.points[existingDayMonthIndex].pointsDeduct =
+          userPointsBucket.points[existingDayMonthIndex].pointsDeduct =
           totalPoints;
-      }
-      userPointsBucket.markModified("points");
-      await userPointsBucket.save();
+        }
+        userPointsBucket.markModified("points");
+
+        await task.save();
+        await user.save();
+        await userPointsBucket.save();
     }
     console.log("Overdue tasks processed successfully.");
   } catch (err) {
@@ -136,8 +148,8 @@ export const createTaskInstance = async () => {
     } 
 
 
-    const masterTaskWithoutId = masterTask.toObject();
-    delete masterTaskWithoutId._id; 
+    const masterTaskWithoutId = masterTask.toObject(); // Convert Mongoose document to plain object
+    delete masterTaskWithoutId._id;  // Remove the _id field from the master task object
 
     const newTask = new Task({
         ...masterTaskWithoutId,
@@ -152,7 +164,18 @@ export const createTaskInstance = async () => {
         masterStatus: "N/A",
         deadline: new Date().setHours(23, 59, 59, 999), // Set to end of the day
       })
+      const userId = masterTask.createdBy;
+
+      const user = await User.findById({userId});
+      if(!user){
+        console.log("User not found. Skipping task instance creation.");
+        continue;
+      }
+
+      user.progress.totalTasks += 1;
+
       await newTask.save();
+      await user.save();
     }catch(err){
       console.error("Error in creating task instance:", err);
 

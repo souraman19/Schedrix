@@ -15,6 +15,7 @@ export interface IUser extends Document {
     progress: {
       totalTasks: number;
       completedTasks: number;
+      overdueTasks: number;
       points: number;
       currentStreak: number;
       longestStreak: number;

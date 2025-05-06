@@ -3,6 +3,7 @@ import { Task } from "../models/Task";
 import {Types} from "mongoose";
 import { pointBase, PriorityLevelPointBase } from "../utils/points";
 import { UserPoints } from "../models/UserPoints";
+import { User } from "../models/User";
 
 export const createTask = async(req: any, res: any) => {
     try {
@@ -28,6 +29,13 @@ export const createTask = async(req: any, res: any) => {
 
         const userId = req.user._id; // Assuming you have user ID in req.user
 
+        const user = await User.findById(userId).exec();
+        if(!user){
+            return res.status(404).json({error: "User not found"});
+        }
+
+        if(repeat ===  "no repeat") user.progress.totalTasks += 1;
+        
         if(!duration && startTime && endTime){
             const start = new Date(startTime).getTime();
             const end = new Date(endTime).getTime();
@@ -80,6 +88,7 @@ export const createTask = async(req: any, res: any) => {
             repeat, 
             ...(customRepeat ? {customRepeat} : {}), // Spread customRepeat only if it exists
         })
+        await user.save();
        await newTask.save();
        return res.status(201).json({message: "Task created successfully", task: newTask});
        
@@ -235,6 +244,14 @@ export const resolveTask = async(req: any, res: any) => {
             return res.status(200).json({message: "Task resolved successfully", task});
         }
 
+        const userId = req.user._id;
+        const user = await User.findById(userId).exec();
+        if(!user){
+            return res.status(404).json({error: "User not found"});
+        }
+
+        user.progress.completedTasks += 1;
+
         let x = 1;
         if(task.deadline) x = Math.floor((new Date().getTime() - new Date(task.deadline).getTime()) / (1000 * 60 * 60 * 24)); // in days
 
@@ -246,15 +263,15 @@ export const resolveTask = async(req: any, res: any) => {
         task.pointsContributed.push({day: new Date(), points: points_add});
         task.status = "completed";
         task.userOutput.text = (userInputText && userInputText.trim() !== "" )? userInputText.trim() : "";
-        await task.save();
 
+        user.progress.points += points_add;
+        
         const now = new Date();
         const year = now.getFullYear();
         const day = now.getDate();
         const month = now.getMonth(); 
         const pointsAdd = points_add;
         const taskId = task._id;
-        const userId = task.createdBy;
 
         let userPointsBucket = await UserPoints.findOne({
             userId: userId,
@@ -271,24 +288,27 @@ export const resolveTask = async(req: any, res: any) => {
             
         let existingDayMonthIndex = userPointsBucket.points.findIndex((el) =>
             el.day === day && el.month === month
-        )
-        console.log("Existing day month index: ", existingDayMonthIndex);
-
-        if(existingDayMonthIndex === -1){
+    )
+    console.log("Existing day month index: ", existingDayMonthIndex);
+    
+    if(existingDayMonthIndex === -1){
             userPointsBucket.points.push({
             day: day,
             month: month,
             pointsGain: pointsAdd,
             pointsDeduct: 0,
             })
-        } else {
+    } else {
             const totalPoints = userPointsBucket.points[existingDayMonthIndex].pointsGain + pointsAdd;
             userPointsBucket.points[existingDayMonthIndex].pointsGain = totalPoints;
         }
         
         userPointsBucket.markModified("points");
-
+        
         console.log("User points bucket: ", userPointsBucket);
+
+        await user.save();
+        await task.save();
         await userPointsBucket.save();
 
         return res.status(200).json({message: "Task resolved successfully", task});
