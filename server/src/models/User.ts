@@ -37,11 +37,13 @@ const userSchema = new Schema<IUser>({
     mindStatus: {
       type: String,
       enum: [
-        "Relaxed", "Stressed", "Focused", "Anxious", "Tired", "Motivated", 
-        "Overwhelmed", "Productive", "Unmotivated", "Happy", "Sad", "Angry", 
-        "Calm", "Distracted", "Bored", "Inspired", "Confused", "Grateful", 
-        "Hopeful", "Depressed", "Indecisive", "Restless", "Content", "Default"
-      ],
+        "Focused",      // ✅ High productivity, deep work
+        "Distracted",   // ❗ Not engaged, easily diverted
+        "Tired",        // 😴 Low energy, need rest
+        "Stressed",     // ⚠️ Overwhelmed, urgent attention
+        "Motivated",    // 💪 Energized, positive drive
+        "Default",     // 🔄 Neutral state, no specific feeling
+      ],      
       default: "Default"
     },    
     badgeList: [{type: String}],

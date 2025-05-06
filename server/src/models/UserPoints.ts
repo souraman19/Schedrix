@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema, model, Types } from 'mongoose';
 
+
 export interface IUserPoints extends Document {
     userId: Schema.Types.ObjectId,
     year: number,
