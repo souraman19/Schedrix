@@ -225,7 +225,16 @@ export const resolveTask = async(req: any, res: any) => {
                     return res.status(499).json({error: "Resolve or delete slave tasks before resolving the master task"});
                 }
             }
+            task.masterStatus = "completed";
         }
+        
+        if(task.repeat === "repeat"){
+            task.status = "completed";
+            task.userOutput.text = (userInputText && userInputText.trim() !== "" )? userInputText.trim() : "";
+            await task.save();
+            return res.status(200).json({message: "Task resolved successfully", task});
+        }
+
         let x = 1;
         if(task.deadline) x = Math.floor((new Date().getTime() - new Date(task.deadline).getTime()) / (1000 * 60 * 60 * 24)); // in days
 
