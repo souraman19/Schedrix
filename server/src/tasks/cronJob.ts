@@ -242,7 +242,7 @@ export const shouldCreateInstance = (today: Date, masterTask: any) => {
 
 
 
-cron.schedule("* * * * *", createTaskInstance);   //set to every minute for testing, change to 0 0 * * * for daily
+// cron.schedule("* * * * *", createTaskInstance);   //set to every minute for testing, change to 0 0 * * * for daily
 
-cron.schedule("* * * * *", customFunctionTaskStatus); //set to every minute for testing, change to 0 0 * * * for daily
+// cron.schedule("* * * * *", customFunctionTaskStatus); //set to every minute for testing, change to 0 0 * * * for daily
 

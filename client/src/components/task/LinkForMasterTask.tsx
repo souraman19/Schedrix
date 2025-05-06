@@ -66,6 +66,9 @@ export default function LinkForMasterTask({ _id }: { _id: string }) {
       if (taskData === null) {
         return <div>Loading task data...</div>;
       }
+      if(taskData?.masterTaskId === null){
+        return <></>
+      }
 
     return (
         <>

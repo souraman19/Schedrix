@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { createTask, getFilteredTasks, getTaskStaticDetails, getTaskDynamicDetails, resolveTask } from '../controllers/TaskControllers';
+import { createTask, getFilteredTasks, getTaskStaticDetails, getTaskDynamicDetails, resolveTask, getTaskRepeatInfo } from '../controllers/TaskControllers';
 import multer from 'multer';
 
 const upload = multer();
@@ -9,6 +9,7 @@ router.post('/create', createTask);
 router.post('/get/filtered', getFilteredTasks);
 router.get('/get/static/details/:_id', getTaskStaticDetails);
 router.get('/get/dynamic/details/:_id', getTaskDynamicDetails);
+router.get('/get/repeatInfo/:_id', getTaskRepeatInfo); 
 router.post('/resolve/:_id', upload.none(), resolveTask);
 
 

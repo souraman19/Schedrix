@@ -1,4 +1,5 @@
 import LinkForMasterTask from "@/components/task/LinkForMasterTask";
+import RepeatInfo from "@/components/task/RepeatInfo";
 import TaskDetailsPageDynamicPart from "@/components/task/TaskDetailsPageDynamicPart";
 import TaskDetailsPageStaticPart from "@/components/task/TaskDetailsPageStaticPart";
 import TaskResolve from "@/components/task/TaskResolve";
@@ -18,6 +19,10 @@ export default async function Task({params}: {params: Promise<{_id: string}>}) {
       </div>
       <div className=" rounded-lg shadow-lg">
         <LinkForMasterTask _id={_id} />
+      </div>
+
+      <div className=" rounded-lg shadow-lg">
+        <RepeatInfo _id={_id} />
       </div>
 
       {/* Dynamic part */}

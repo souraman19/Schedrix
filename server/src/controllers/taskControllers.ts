@@ -279,3 +279,20 @@ export const resolveTask = async(req: any, res: any) => {
         res.status(500).json({error: "Internal server error"});
     }
 }
+
+
+export const getTaskRepeatInfo = async(req: any, res: any) => {
+    try{
+        const _id = req.params._id;
+        const task = await Task.findOne({_id: new Types.ObjectId(_id)})
+        .select(' _id repeat customRepeat isMaster')
+        .exec();
+        if(!task){
+            return res.status(404).json({error: "Task not found"});
+        }
+        return res.status(200).json({task});
+    }catch(err){
+        console.error("Error getting task repeat info: ", err);
+        res.status(500).json({error: "Internal server error"});
+    }
+}
