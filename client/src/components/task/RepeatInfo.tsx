@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Chip, Divider } from "@mui/material";
+import { Box, Chip, Divider } from "@mui/material";
 import { GET_TASK_REPEAT_INFO_ROUTE } from "@/lib/apiRoutes";
 
 export default function RepeatInfo({ _id }: { _id: string }) {
@@ -102,36 +102,36 @@ export default function RepeatInfo({ _id }: { _id: string }) {
         />
       )}
 
-      <Typography variant="h5" gutterBottom>
+      <h5 style={{ fontSize: "1.25rem", fontWeight: 600, marginBottom: "20px" }}>
         Repeat Information
-      </Typography>
+      </h5>
 
       <Divider sx={{ my: 2, background: "#333" }} />
 
-      <Typography variant="body1">
+      <div style={{ fontSize: "1rem", marginBottom: "10px" }}>
         <strong>Repeat:</strong>{" "}
         <Chip label={repeat} size="small" sx={chipStyle} />
-      </Typography>
+      </div>
 
       {repeat === "repeat" && (
         <Box sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 2 }}>
           {startDate && (
-            <Typography variant="body1">
+            <div style={{ fontSize: "1rem", marginBottom: "10px" }}>
               📅 <strong>Start Date:</strong>{" "}
               <Chip label={new Date(startDate).toLocaleDateString()} size="small" sx={chipStyle} />
-            </Typography>
+            </div>
           )}
 
-          <Typography variant="body1">
+          <div style={{ fontSize: "1rem", marginBottom: "10px" }}>
             🔁 <strong>Repeats every:</strong>{" "}
             <Chip label={`${repeatInterval} ${repeatUnit}(s)`} size="small" sx={chipStyle} />
-          </Typography>
+          </div>
 
           {repeatUnit === "week" && weekDaysIfWeekInterval?.length > 0 && (
             <Box>
-              <Typography variant="body1" gutterBottom>
+              <div style={{ fontSize: "1rem", marginBottom: "10px" }}>
                 📆 <strong>Repeats On (Weekdays):</strong>
-              </Typography>
+              </div>
               {weekDaysIfWeekInterval.map((day) => (
                 <Chip key={day} label={day} sx={{ ...chipStyle, m: 0.5 }} />
               ))}
@@ -140,9 +140,9 @@ export default function RepeatInfo({ _id }: { _id: string }) {
 
           {repeatUnit === "month" && monthDaysIfMonthInterval?.length > 0 && (
             <Box>
-              <Typography variant="body1" gutterBottom>
+              <div style={{ fontSize: "1rem", marginBottom: "10px" }}>
                 📆 <strong>Repeats On (Month Days):</strong>
-              </Typography>
+              </div>
               {monthDaysIfMonthInterval.map((day) => (
                 <Chip key={day} label={`Day ${day}`} sx={{ ...chipStyle, m: 0.5 }} />
               ))}
@@ -151,9 +151,9 @@ export default function RepeatInfo({ _id }: { _id: string }) {
 
           {repeatUnit === "year" && yearDatesIfYearInterval?.length > 0 && (
             <Box>
-              <Typography variant="body1" gutterBottom>
+              <div style={{ fontSize: "1rem", marginBottom: "10px" }}>
                 📆 <strong>Repeats On (Year Dates):</strong>
-              </Typography>
+              </div>
               {yearDatesIfYearInterval.map((date, idx) => (
                 <Chip
                   key={idx}
@@ -173,7 +173,7 @@ export default function RepeatInfo({ _id }: { _id: string }) {
             </Box>
           )}
 
-          <Typography variant="body1">
+          <div style={{ fontSize: "1rem", marginBottom: "10px" }}>
             🔚 <strong>Ends:</strong>{" "}
             {endsType === "date" ? (
               <Chip label={`On ${new Date(endsOn?.date || "").toLocaleDateString()}`} size="small" sx={chipStyle} />
@@ -182,7 +182,7 @@ export default function RepeatInfo({ _id }: { _id: string }) {
             ) : (
               <Chip label="Never" size="small" sx={chipStyle} />
             )}
-          </Typography>
+          </div>
         </Box>
       )}
     </Box>

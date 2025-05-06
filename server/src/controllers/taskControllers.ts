@@ -215,7 +215,16 @@ export const resolveTask = async(req: any, res: any) => {
             return res.status(404).json({error: "Task not found"});
         }
         if(task.status === "completed"){
-            return res.status(400).json({error: "Task already completed"});
+            return res.status(499).json({error: "Task already completed"});
+        }
+
+        if(task.isMaster){
+            const slaveTasks = await Task.find({masterTaskId: task._id});
+            for(const slaveTask of slaveTasks){
+                if(slaveTask.status !== "completed"){
+                    return res.status(499).json({error: "Resolve or delete slave tasks before resolving the master task"});
+                }
+            }
         }
         let x = 1;
         if(task.deadline) x = Math.floor((new Date().getTime() - new Date(task.deadline).getTime()) / (1000 * 60 * 60 * 24)); // in days

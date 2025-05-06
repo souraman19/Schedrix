@@ -36,8 +36,8 @@ export default function Resolve({ _id }: { _id: string }) {
         console.log('Task resolved successfully:', response);
     }catch(error: any) {
         console.error('Error resolving task:', error);
-        if(error.response && error.response.status === 400){
-            toast.error("Task already resolved!");
+        if(error.response && error.response.status === 499){
+            toast.error(error);
         } else if(error.response && error.response.status === 404){
             toast.error("Task not found!");
         } else if(error.response && error.response.status === 500){
