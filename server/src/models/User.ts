@@ -17,6 +17,7 @@ export interface IUser extends Document {
       completedTasks: number;
       overdueTasks: number;
       points: number;
+      pointsGained: number;
       currentStreak: number;
       longestStreak: number;
     };
@@ -47,8 +48,9 @@ const userSchema = new Schema<IUser>({
     progress: {
         totalTasks: {type: Number, default: 0},
         completedTasks: {type: Number, default: 0},
-        overDueTasks: {type: Number, default: 0},
+        overdueTasks: {type: Number, default: 0},
         points: {type: Number, default: 0},
+        pointsGained: {type: Number, default: 0},
         currentStreak: {type: Number, default: 0},
         longestStreak: {type: Number, default: 0}
     }, 

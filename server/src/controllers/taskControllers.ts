@@ -265,6 +265,7 @@ export const resolveTask = async(req: any, res: any) => {
         task.userOutput.text = (userInputText && userInputText.trim() !== "" )? userInputText.trim() : "";
 
         user.progress.points += points_add;
+        user.progress.pointsGained += points_add;
         
         const now = new Date();
         const year = now.getFullYear();
