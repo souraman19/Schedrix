@@ -10,6 +10,9 @@ export interface IUserPoints extends Document {
             month: number,
             pointsGain: number,
             pointsDeduct: number,
+            taskCompleted: number,
+            taskMissed: number,
+            mindStatus: string,
         }
     ]
 }
@@ -24,6 +27,9 @@ const userPointSchema = new Schema<IUserPoints>({
             month: {type: Number, required: true},
             pointsGain: {type: Number, default: 0},
             pointsDeduct: {type: Number, default: 0},
+            taskCompleted: {type: Number, default: 0},
+            taskMissed: {type: Number, default: 0}, //tasks which had deadline upto that day but missed
+            mindStatus: {type: String, default: "Default"},
         }
     ]
 })

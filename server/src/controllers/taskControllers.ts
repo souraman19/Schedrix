@@ -298,10 +298,14 @@ export const resolveTask = async(req: any, res: any) => {
             month: month,
             pointsGain: pointsAdd,
             pointsDeduct: 0,
+            taskCompleted: 1,
+            taskMissed: 0,
+            mindStatus: "Default",
             })
     } else {
             const totalPoints = userPointsBucket.points[existingDayMonthIndex].pointsGain + pointsAdd;
             userPointsBucket.points[existingDayMonthIndex].pointsGain = totalPoints;
+            userPointsBucket.points[existingDayMonthIndex].taskCompleted += 1;
         }
         
         userPointsBucket.markModified("points");

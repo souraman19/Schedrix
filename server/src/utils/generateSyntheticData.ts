@@ -1,215 +1,215 @@
 import { faker } from '@faker-js/faker';
 import mongoose from "mongoose";
-import { UserPoints } from "./../models/UserPoints"; 
+import { UserPoints } from "./../models/UserPoints";
 import { connectDB } from '../config/db';
 import dotenv from "dotenv";
+import { pointBase, penaltyPerDay, PriorityLevel } from './../utils/points'; 
+
+dotenv.config({ path: "./../../.env" });
 
 
 
-dotenv.config({path: "./../../.env"});
+const priorities: PriorityLevel[] = ["low", "medium", "high", "critical"];
 
+const randomPriority = (): PriorityLevel =>
+  faker.helpers.arrayElement(priorities);
+
+const getPointsFromTasks = (completed: number, missed: number) => {
+  let pointsGain = 0;
+  let pointsDeduct = 0;
+
+  for (let i = 0; i < completed; i++) {
+    const priority = randomPriority();
+    pointsGain += Math.floor(pointBase[priority] / 5); // ~20% of base value as reward
+  }
+
+  for (let i = 0; i < missed; i++) {
+    const priority = randomPriority();
+    pointsDeduct += penaltyPerDay[priority];
+  }
+
+  return { pointsGain, pointsDeduct };
+};
 
 const generateDefaultData = (days = 7) => {
-    let points = [];
-    let mindStatus = "Default"; // Default state initially
-  
-    for (let day = 1; day <= days; day++) {
-      const pointsGain = faker.number.int({ min: 5, max: 10 });
-      const pointsDeduct = faker.number.int({ min: 0, max: 2 });
-  
-      points.push({
-        day,
-        month: faker.number.int({ min: 1, max: 12 }), // Random month
-        pointsGain,
-        pointsDeduct,
-        mindStatus,
-      });
-    }
-  
-    return points;
-  };
+  let points = [];
+  let mindStatus = "Default";
 
+  for (let day = 1; day <= days; day++) {
+    const taskCompleted = faker.number.int({ min: 1, max: 3 });
+    const taskMissed = faker.number.int({ min: 1, max: 2 });
+    const { pointsGain, pointsDeduct } = getPointsFromTasks(taskCompleted, taskMissed);
 
-  const generateMotivatedData = (days = 7) => {
-    let points = [];
-    let mindStatus = "Motivated";
-    let previousPointsGain = 5;
-  
-    for (let day = 1; day <= days; day++) {
-      const pointsGain = previousPointsGain + faker.number.int({ min: 1, max: 3 }); // Gradual increase
-      const pointsDeduct = faker.number.int({ min: 0, max: 1 });
-  
-      points.push({
-        day,
-        month: faker.number.int({ min: 1, max: 12 }),
-        pointsGain,
-        pointsDeduct,
-        mindStatus,
-      });
-  
-      previousPointsGain = pointsGain; // Update previous gain for next day
-    }
-  
-    return points;
-  };
+    points.push({
+      day,
+      month: faker.number.int({ min: 1, max: 12 }),
+      taskCompleted,
+      taskMissed,
+      pointsGain,
+      pointsDeduct,
+      mindStatus,
+    });
+  }
 
-  
-  const generateDistractedData = (days = 7) => {
-    let points = [];
-    let mindStatus = "Distracted";
-    let previousPointsGain = 10; // Start with good points, then drop suddenly
-  
-    for (let day = 1; day <= days; day++) {
-      let pointsGain = previousPointsGain;
-  
-      // Simulate a sudden drop in points
-      if (day === 3) {
-        pointsGain = faker.number.int({ min: 0, max: 2 }); // Sudden drop
-      }
-  
-      const pointsDeduct = faker.number.int({ min: 2, max: 5 });
-  
-      points.push({
-        day,
-        month: faker.number.int({ min: 1, max: 12 }),
-        pointsGain,
-        pointsDeduct,
-        mindStatus,
-      });
-  
-      previousPointsGain = pointsGain;
-    }
-  
-    return points;
-  };
+  return points;
+};
 
-  
-  const generateTiredData = (days = 7) => {
-    let points = [];
-    let mindStatus = "Tired";
-    let previousPointsGain = 8;
-  
-    for (let day = 1; day <= days; day++) {
-      const pointsGain = previousPointsGain - faker.number.int({ min: 0, max: 2 }); // Gradual decrease
-      const pointsDeduct = faker.number.int({ min: 0, max: 3 });
-  
-      points.push({
-        day,
-        month: faker.number.int({ min: 1, max: 12 }),
-        pointsGain,
-        pointsDeduct,
-        mindStatus,
-      });
-  
-      previousPointsGain = pointsGain;
-    }
-  
-    return points;
-  };
+const generateMotivatedData = (days = 7) => {
+  let points = [];
+  let mindStatus = "Motivated";
 
-  
-  const generateStressedData = (days = 7) => {
-    let points = [];
-    let mindStatus = "Stressed";
-    let previousPointsGain = 10;
-  
-    for (let day = 1; day <= days; day++) {
-      let pointsGain = previousPointsGain;
-  
-      // Sudden drop in points
-      if (day === 3) {
-        pointsGain = faker.number.int({ min: 1, max: 3 }); // Sudden low
-      }
-  
-      const pointsDeduct = faker.number.int({ min: 2, max: 4 });
-  
-      points.push({
-        day,
-        month: faker.number.int({ min: 1, max: 12 }),
-        pointsGain,
-        pointsDeduct,
-        mindStatus,
-      });
-  
-      previousPointsGain = pointsGain;
-    }
-  
-    return points;
-  };
+  for (let day = 1; day <= days; day++) {
+    const taskCompleted = faker.number.int({ min: 3, max: 5 });
+    const taskMissed = faker.number.int({ min: 0, max: 1 });
+    const { pointsGain, pointsDeduct } = getPointsFromTasks(taskCompleted, taskMissed);
 
-  
-  const generateFocusedData = (days = 30) => {
-    let points = [];
-    let mindStatus = "Focused";
-    let previousPointsGain = 10;
-  
-    for (let day = 1; day <= days; day++) {
-      const pointsGain = previousPointsGain; // Constant high performance
-      const pointsDeduct = faker.number.int({ min: 0, max: 1 });
-  
-      points.push({
-        day,
-        month: faker.number.int({ min: 1, max: 12 }),
-        pointsGain,
-        pointsDeduct,
-        mindStatus,
-      });
-  
-      previousPointsGain = pointsGain;
-    }
-  
-    return points;
-  };
+    points.push({
+      day,
+      month: faker.number.int({ min: 1, max: 12 }),
+      taskCompleted,
+      taskMissed,
+      pointsGain,
+      pointsDeduct,
+      mindStatus,
+    });
+  }
 
-  
-  const generateDataForTraining = async(userId: mongoose.Types.ObjectId) => {
-      
-    await connectDB();
+  return points;
+};
 
-    const defaultData = generateDefaultData(7);
-    const motivatedData = generateMotivatedData(7);
-    const distractedData = generateDistractedData(7);
-    const tiredData = generateTiredData(7);
-    const stressedData = generateStressedData(7);
-    const focusedData = generateFocusedData(30);
-  
-    // Combine all data for training
-    const allData = [
-      ...defaultData,
-      ...motivatedData,
-      ...distractedData,
-      ...tiredData,
-      ...stressedData,
-      ...focusedData,
-    ];
+const generateDistractedData = (days = 7) => {
+  let points = [];
+  let mindStatus = "Distracted";
 
-    const exisitngDoc = await UserPoints.findOne({userId: userId, year: new Date().getFullYear()});
-    if (!exisitngDoc) {
-        console.log("No existing document found for the user. Creating a new one.");
-        return;
-    }
+  for (let day = 1; day <= days; day++) {
+    const taskCompleted = day < 3 ? faker.number.int({ min: 3, max: 4 }) : faker.number.int({ min: 0, max: 1 });
+    const taskMissed = day < 3 ? faker.number.int({ min: 0, max: 1 }) : faker.number.int({ min: 2, max: 4 });
+    const { pointsGain, pointsDeduct } = getPointsFromTasks(taskCompleted, taskMissed);
 
-    exisitngDoc.points.push(...allData);
-    exisitngDoc.markModified("points");
+    points.push({
+      day,
+      month: faker.number.int({ min: 1, max: 12 }),
+      taskCompleted,
+      taskMissed,
+      pointsGain,
+      pointsDeduct,
+      mindStatus,
+    });
+  }
 
+  return points;
+};
 
+const generateTiredData = (days = 7) => {
+  let points = [];
+  let mindStatus = "Tired";
 
-    try {
-        await exisitngDoc.save();
-        console.log("User points data saved successfully!");
-      } catch (err) {
-        console.error("Error saving user points data:", err);
-    }
+  for (let day = 1; day <= days; day++) {
+    const taskCompleted = faker.number.int({ min: 1, max: 3 });
+    const taskMissed = faker.number.int({ min: 1, max: 3 });
+    const { pointsGain, pointsDeduct } = getPointsFromTasks(taskCompleted, taskMissed);
 
-  };
+    points.push({
+      day,
+      month: faker.number.int({ min: 1, max: 12 }),
+      taskCompleted,
+      taskMissed,
+      pointsGain,
+      pointsDeduct,
+      mindStatus,
+    });
+  }
 
+  return points;
+};
 
-  
-  (async () => {
-    const userId = new mongoose.Types.ObjectId('6802475234c526656db5c9da')
-    await generateDataForTraining(userId);
-  })();
-  
+const generateStressedData = (days = 7) => {
+  let points = [];
+  let mindStatus = "Stressed";
 
-  
+  for (let day = 1; day <= days; day++) {
+    const taskCompleted = day === 3 ? faker.number.int({ min: 0, max: 1 }) : faker.number.int({ min: 2, max: 3 });
+    const taskMissed = day === 3 ? faker.number.int({ min: 2, max: 4 }) : faker.number.int({ min: 0, max: 1 });
+    const { pointsGain, pointsDeduct } = getPointsFromTasks(taskCompleted, taskMissed);
 
+    points.push({
+      day,
+      month: faker.number.int({ min: 1, max: 12 }),
+      taskCompleted,
+      taskMissed,
+      pointsGain,
+      pointsDeduct,
+      mindStatus,
+    });
+  }
+
+  return points;
+};
+
+const generateFocusedData = (days = 30) => {
+  let points = [];
+  let mindStatus = "Focused";
+
+  for (let day = 1; day <= days; day++) {
+    const taskCompleted = faker.number.int({ min: 4, max: 6 });
+    const taskMissed = faker.number.int({ min: 0, max: 1 });
+    const { pointsGain, pointsDeduct } = getPointsFromTasks(taskCompleted, taskMissed);
+
+    points.push({
+      day,
+      month: faker.number.int({ min: 1, max: 12 }),
+      taskCompleted,
+      taskMissed,
+      pointsGain,
+      pointsDeduct,
+      mindStatus,
+    });
+  }
+
+  return points;
+};
+
+const generateDataForTraining = async (userId: mongoose.Types.ObjectId) => {
+  await connectDB();
+
+  const defaultData = generateDefaultData(7);
+  const motivatedData = generateMotivatedData(7);
+  const distractedData = generateDistractedData(7);
+  const tiredData = generateTiredData(7);
+  const stressedData = generateStressedData(7);
+  const focusedData = generateFocusedData(30);
+
+  const allData = [
+    ...defaultData,
+    ...motivatedData,
+    ...distractedData,
+    ...tiredData,
+    ...stressedData,
+    ...focusedData,
+  ];
+
+  const existingDoc = await UserPoints.findOne({
+    userId: userId,
+    year: new Date().getFullYear(),
+  });
+
+  if (!existingDoc) {
+    console.log("No existing document found for the user. Creating a new one.");
+    return;
+  }
+
+  existingDoc.points.push(...allData);
+  existingDoc.markModified("points");
+
+  try {
+    await existingDoc.save();
+    console.log("User points data saved successfully!");
+  } catch (err) {
+    console.error("Error saving user points data:", err);
+  }
+};
+
+(async () => {
+  const userId = new mongoose.Types.ObjectId("6802475234c526656db5c9da");
+  await generateDataForTraining(userId);
+})();

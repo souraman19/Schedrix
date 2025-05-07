@@ -92,6 +92,9 @@ export const customFunctionTaskStatus = async () => {
           month: month,
           pointsGain: 0,
           pointsDeduct: pointsDeduct,
+          taskCompleted: 0,
+          taskMissed: 1,
+          mindStatus: "Default",
         });
       } else {
         const totalPoints =
@@ -99,6 +102,7 @@ export const customFunctionTaskStatus = async () => {
           pointsDeduct;
           userPointsBucket.points[existingDayMonthIndex].pointsDeduct =
           totalPoints;
+          userPointsBucket.points[existingDayMonthIndex].taskMissed += 1;
         }
         userPointsBucket.markModified("points");
 
