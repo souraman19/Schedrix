@@ -5,12 +5,19 @@ interface Point {
     pointsDeduct: number;
     taskCompleted: number;
     taskMissed: number; //today tasks which had deadline but missed
+    mindStatus: string;
 }
 
-interface ProcessedPoint extends Point {
+export interface ProcessedPoint extends Point {
     totalPoints: number;
     cumulativePoints: number;
     rollingAvgPoints: number;
+}
+
+
+export interface LabeledDataPoint {
+    features: number[][],
+    labels: string[],
 }
 
 
