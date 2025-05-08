@@ -1,6 +1,6 @@
 "use client";
 
-import { GET_USER_PROFILE_ROUTE } from "@/lib/apiRoutes";
+import { GET_USER_MIND_STATUS_ROUTE, GET_USER_PROFILE_ROUTE } from "@/lib/apiRoutes";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import TaskProgress from "../task/TaskProgress";
@@ -28,8 +28,33 @@ export default function ProfileAnalytics() {
     }
   };
 
+  const getMindStatus = async() => {
+    try{
+      const response = await fetch(GET_USER_MIND_STATUS_ROUTE, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (response.status === 200) {
+        const data = await response.json();
+        console.log("Mind Status: ", data.mindStatus);
+        setUserAnalysisData((prevData: any) => ({
+          ...prevData,
+          mindStatus: data.mindStatus,
+        }));
+        toast.success("Fetched mind status successfully!");
+      }
+    }catch(err: any){
+      console.log("Error fetching mind status: ", err);
+      toast.error("Error fetching mind status: ", err);
+    }
+  }
+
   useEffect(() => {
     getProfileAnalytics();
+  }, []);
+  useEffect(() => {
+    getMindStatus();
   }, []);
 
 
