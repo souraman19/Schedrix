@@ -12,3 +12,13 @@
             process.exit(1);
         }
     }
+
+
+    export const disconnectDB = async() => {
+        try{
+            await mongoose.disconnect();
+            console.log("Mongodb disConnected");
+        }catch(err){
+            console.log("Error in MongoDB Dissconnection");
+        }
+    }

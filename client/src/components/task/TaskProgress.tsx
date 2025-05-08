@@ -127,7 +127,7 @@ const TaskProgress: React.FC<RepeatTaskProgressProps> = ({
         <foreignObject x="90" y="100" width="120" height="100">
 
           <div
-            xmlns="http://www.w3.org/1999/xhtml"
+            // xmlns="http://www.w3.org/1999/xhtml"
             style={{
               display: "flex",
               flexDirection: "column",
