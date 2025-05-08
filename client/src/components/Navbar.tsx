@@ -55,8 +55,8 @@ export default function Navbar() {
 
           {/* Desktop Navigation Links */}
           <nav className="hidden md:flex gap-8">
-            <NavbarLink href="/home" icon={<Home size={20} />}>Home</NavbarLink>
-            <NavbarLink href="/tasks" icon={<ListTodo size={20} />}>Tasks</NavbarLink>
+            <NavbarLink href="/in/home" icon={<Home size={20} />}>Home</NavbarLink>
+            <NavbarLink href="/in/task/home" icon={<ListTodo size={20} />}>Tasks</NavbarLink>
             <div onClick={handleLogout}>
                 <NavbarLink href={"/"}icon={<LogOut size={20} />} red>Logout</NavbarLink>
             </div>
