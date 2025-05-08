@@ -1,5 +1,9 @@
+import { getlast7daysPointsData } from "../config/db";
 import { User } from "../models/User";
 import { UserPoints } from "../models/UserPoints"
+import { preProcessData, ProcessedPoint } from "../utils/dataPreProcessing";
+import { convertToFeaturesAndLabels } from "../utils/formatToModelIO";
+import axios from "axios";
 
 export const getPointAnalytics = async(req: any, res: any) => {
     try{
@@ -27,6 +31,39 @@ export const getUserProfile = async(req: any, res: any) => {
             return res.status(404).json({message: "User not found"})
         }
         return res.status(200).json({user})
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message: "Internal server error"})
+    }
+}
+
+
+export const getMindStatus = async(req: any, res: any) => {
+
+    try{
+        const userId = req.user._id; 
+        const getRecentData = await getlast7daysPointsData(userId);
+        if(!getRecentData){
+            return res.status(200).json({message: "No data found", mindStatus: null})
+        }
+        // console.log("Recent data:", getRecentData)
+        // console.log("Recent data length:", getRecentData.length)
+        const rawData = getRecentData.map((point: any) => point).flat(); // Flatten the array of points
+        const processedData = preProcessData(rawData);
+        const inputData = convertToFeaturesAndLabels(processedData).features;
+        // console.log("Input data:", inputData);
+
+        //send data to python ml service
+        const predictedResponse = await axios.post("http://localhost:6000/predict", {
+            input: inputData
+        });
+
+        const predictedMindStatus = predictedResponse.data.predictedMindStatus;
+        console.log("Predicted Mind Status:", predictedMindStatus);
+
+        return res.status(200).json({message: "Mind status fetched successfully", mindStatus: predictedMindStatus})
+
+
     }catch(err){
         console.log(err)
         res.status(500).json({message: "Internal server error"})
