@@ -1,6 +1,9 @@
 "use client";
 
-import { GET_USER_MIND_STATUS_ROUTE, GET_USER_PROFILE_ROUTE } from "@/lib/apiRoutes";
+import {
+  GET_USER_MIND_STATUS_ROUTE,
+  GET_USER_PROFILE_ROUTE,
+} from "@/lib/apiRoutes";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import TaskProgress from "../task/TaskProgress";
@@ -28,8 +31,8 @@ export default function ProfileAnalytics() {
     }
   };
 
-  const getMindStatus = async() => {
-    try{
+  const getMindStatus = async () => {
+    try {
       const response = await fetch(GET_USER_MIND_STATUS_ROUTE, {
         method: "GET",
         credentials: "include",
@@ -44,11 +47,11 @@ export default function ProfileAnalytics() {
         }));
         toast.success("Fetched mind status successfully!");
       }
-    }catch(err: any){
+    } catch (err: any) {
       console.log("Error fetching mind status: ", err);
       toast.error("Error fetching mind status: ", err);
     }
-  }
+  };
 
   useEffect(() => {
     getProfileAnalytics();
@@ -57,7 +60,6 @@ export default function ProfileAnalytics() {
     getMindStatus();
   }, []);
 
-
   return (
     <>
       <div>
@@ -65,37 +67,55 @@ export default function ProfileAnalytics() {
           Profile Analytics
         </h3>
         {userAnalysisData && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div className="p-4 rounded-lg shadow-md">
-              <TaskProgress
-                completed={userAnalysisData.progress.completedTasks}
-                overdue={userAnalysisData.progress.overdueTasks}
-                pending={
-                  userAnalysisData.progress.totalTasks -
-                  userAnalysisData.progress.overdueTasks -
-                  userAnalysisData.progress.completedTasks
-                }
-                total={userAnalysisData.progress.totalTasks}
-              />
+          <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="p-4 rounded-lg shadow-md">
+                <TaskProgress
+                  completed={userAnalysisData.progress.completedTasks}
+                  overdue={userAnalysisData.progress.overdueTasks}
+                  pending={
+                    userAnalysisData.progress.totalTasks -
+                    userAnalysisData.progress.overdueTasks -
+                    userAnalysisData.progress.completedTasks
+                  }
+                  total={userAnalysisData.progress.totalTasks}
+                />
+              </div>
+
+              <div className=" p-4 rounded-lg shadow-md">
+                <PointProgress
+                  pointsGained={userAnalysisData.progress.pointsGained}
+                  pointsLost={
+                    userAnalysisData.progress.points -
+                    userAnalysisData.progress.pointsGained
+                  }
+                  total={userAnalysisData.progress.points}
+                />
+              </div>
             </div>
 
-            <div className=" p-4 rounded-lg shadow-md">
-              <PointProgress
-                pointsGained={userAnalysisData.progress.pointsGained}
-                pointsLost={
-                  userAnalysisData.progress.points -
-                  userAnalysisData.progress.pointsGained
-                }
-                total={userAnalysisData.progress.points}
-              />
-            </div>
+            <div className="flex items-center justify-center mt-6">
+  <div className="relative w-full max-w-md p-6 rounded-2xl bg-gradient-to-br from-[#0f0f0f] via-[#111111] to-[#0c0c0c] backdrop-blur-lg border border-green-700 shadow-[0_0_60px_#00c85333] overflow-hidden group transition-all duration-500 hover:shadow-[0_0_90px_#00e67677] hover:scale-[1.02]">
 
-            <div className="flex items-center gap-2 mt-4">
-              {getMindStatusIcon(userAnalysisData.mindStatus)}
-              <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-900 text-green-300">
-                {userAnalysisData.mindStatus}
-              </span>
-            </div>
+    {/* Aura glow layer */}
+    <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-[#00c853] to-[#b2ff59] blur-2xl opacity-10 group-hover:opacity-20 transition-opacity duration-700 animate-[pulse_3.5s_ease-in-out_infinite] pointer-events-none" />
+
+    <div className="relative z-10 flex flex-col items-center gap-5">
+      <div className="text-6xl text-green-400 drop-shadow-[0_0_20px_#00e676] animate-[pulse_3.5s_ease-in-out_infinite]">
+        {getMindStatusIcon(userAnalysisData.mindStatus)}
+      </div>
+
+      <span className="px-6 py-2 text-lg font-semibold uppercase tracking-wider rounded-full bg-green-900 text-green-200 shadow-inner shadow-green-700/60 ring-1 ring-green-600 hover:bg-green-800 transition-all duration-300">
+        {userAnalysisData.mindStatus}
+      </span>
+
+      <p className="text-sm text-green-100/80 italic tracking-wide text-center max-w-xs">
+        Your current mind state
+      </p>
+    </div>
+  </div>
+</div>
+
           </div>
         )}
       </div>

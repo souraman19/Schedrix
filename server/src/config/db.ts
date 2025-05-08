@@ -28,7 +28,7 @@ import { UserPoints } from '../models/UserPoints';
         try{
             //get the points data of last 7 days
             const today = new Date();
-            today.setDate(today.getDate() + 4); 
+            today.setDate(today.getDate()); 
             const last7days: {day: number; month: number}[] = [];
 
             for(let i = 0; i < 7; i++){

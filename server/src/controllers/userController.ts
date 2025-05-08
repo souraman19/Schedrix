@@ -59,7 +59,7 @@ export const getMindStatus = async(req: any, res: any) => {
         });
 
         const predictedMindStatus = predictedResponse.data.predictedMindStatus;
-        console.log("Predicted Mind Status:", predictedMindStatus);
+        // console.log("Predicted Mind Status:", predictedMindStatus);
 
         return res.status(200).json({message: "Mind status fetched successfully", mindStatus: predictedMindStatus})
 
