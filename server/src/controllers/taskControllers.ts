@@ -1,4 +1,3 @@
-import { start } from "repl";
 import { Task } from "../models/Task";
 import {Types} from "mongoose";
 import { pointBase, PriorityLevelPointBase } from "../utils/points";
@@ -215,6 +214,7 @@ export const getTaskDynamicDetails = async(req: any, res: any) => {
 
 
 export const resolveTask = async(req: any, res: any) => {
+    // console.log("Resolving task: ", req.params);
     try {
         const _id = req.params._id;
         const userInputText = req.body.userInputText;
@@ -336,6 +336,69 @@ export const getTaskRepeatInfo = async(req: any, res: any) => {
         return res.status(200).json({task});
     }catch(err){
         console.error("Error getting task repeat info: ", err);
+        res.status(500).json({error: "Internal server error"});
+    }
+}
+
+
+export const getTaskTimings = async(req: any, res: any) => {
+    try{
+        // console.log("Getting task timings: ", req.params._id);
+        const _id = req.params._id;
+        const task = await Task.findOne({_id: new Types.ObjectId(_id)})
+        .select('_id startTime endTime deadline')
+        .exec();
+        if(!task){
+            console.log("Task not found: ", _id);
+            return res.status(404).json({error: "Task not found"});
+        }
+        console.log("Task timings: ", task);
+
+        return res.status(200).json({task});
+    }catch(err){
+        console.error("Error getting task timings: ", err);
+        res.status(500).json({error: "Internal server error"});
+    }
+}
+
+
+export const rescheduleTask = async(req: any, res: any) => {
+    try{
+        const _id = req.params._id;
+        const {startTime, endTime, deadline} = req.body;
+
+        const task = await Task.findOne({_id: new Types.ObjectId(_id)}).exec();
+        if(!task){
+            return res.status(404).json({error: "Task not found"});
+        }
+
+        const formattedStartTime = startTime ? new Date(startTime) : null;
+        const formattedEndTime = endTime ? new Date(endTime) : null;
+        const formattedDeadline = deadline ? new Date(deadline) : null;
+        
+        const sameStart = task.startTime?.getTime() === formattedStartTime?.getTime();
+        const sameEnd = task.endTime?.getTime() === formattedEndTime?.getTime();
+        const sameDeadline = task.deadline?.getTime() === formattedDeadline?.getTime();
+
+        if (sameStart && sameEnd && sameDeadline) {
+            return res.status(204).send(); // No content, nothing to update
+        }
+
+
+        if(startTime){
+            task.startTime = formattedStartTime ? formattedStartTime : task.startTime;
+        }
+        if(endTime){
+            task.endTime = formattedEndTime ? formattedEndTime : task.endTime;
+        }
+        if(deadline){
+            task.deadline = formattedDeadline ? formattedDeadline : task.deadline; 
+        }
+
+        await task.save();
+        return res.status(200).json({message: "Task rescheduled successfully", task});
+    }catch(err){
+        console.error("Error rescheduling task: ", err);
         res.status(500).json({error: "Internal server error"});
     }
 }
