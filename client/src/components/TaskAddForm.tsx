@@ -12,6 +12,7 @@ import CustomRepeat from "./CustomRepeat";
 import { flattenZodErrors } from "@/lib/flattenedZodErrors";
 import { start } from "repl";
 import { Mic } from "lucide-react"; 
+import QuickTask from "./voiceAssitant/QuickTask";
 
 export default function TaskAddForm() {
   const { user } = useUserStore();
@@ -195,24 +196,7 @@ export default function TaskAddForm() {
           ✏️ Add a New Task
         </div>
 
-<Button
-  // onClick={handleVoiceTaskCreation}
-  style={{
-    background: "linear-gradient(to right, #00c853, #b2ff59)",
-    borderRadius: "150rem",
-    width: "44px",
-    height: "60px",
-    padding: "0",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    boxShadow: "0 0 12px rgba(0, 200, 83, 0.4)",
-    position: "absolute",
-    right: "5rem",
-  }}
->
-  <Mic size={20} color="#000" />
-</Button>
+        <QuickTask />
 
       </div>
       {/* Title */}
