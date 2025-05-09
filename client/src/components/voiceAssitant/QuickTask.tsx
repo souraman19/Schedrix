@@ -4,7 +4,9 @@ import React from "react";
 
 
 
-export default function QuickTask() {
+export default function QuickTask(
+    {setTitle, setDuration}: {setTitle: React.Dispatch<React.SetStateAction<string>>, setDuration: React.Dispatch<React.SetStateAction<string>>}
+) {
 
    const handleVoiceTaskCreation = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; 
@@ -55,6 +57,7 @@ export default function QuickTask() {
             stage = "confirmTitle";
         } else if(stage === "confirmTitle"){
             if(speech.includes("confirm")){
+                setTitle(taskTitle); //set the title of the task
                 speak("How long the task will take? Say in hours");
                 stage = "askDuration";
             } else if(speech.includes("repeat")){
@@ -74,6 +77,7 @@ export default function QuickTask() {
             }
         } else if(stage === "confirmDuration"){
             if(speech.includes("confirm")){
+                setDuration(taskDuration); //set the duration of the task
                 speak(`You want to create a task with title ${taskTitle} and duration ${taskDuration} hours. Say confirm to create it or, repeat to try again from start or, cancel to exit`);
                 stage = "finalConfirm";
             } else if(speech.includes("repeat")){
@@ -84,10 +88,6 @@ export default function QuickTask() {
             }
         } else if(stage === "finalConfirm"){
             if(speech.includes("confirm")){
-                const titleInput = document.querySelector(`input[name="title"]`) as HTMLInputElement
-                const durationInput = document.querySelector('input[name="duration"]') as HTMLInputElement
-                titleInput.value = taskTitle; 
-                durationInput.value = taskDuration; 
                 document.querySelector('form')?.requestSubmit(); //submit the form
                 speak("Task created successfully. Exiting now.");
                 isActive = false; 

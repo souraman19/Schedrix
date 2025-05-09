@@ -20,6 +20,10 @@ export default function TaskAddForm() {
   const [repeat, setRepeat] = useState<string>("no repeat");
   const [repeatsEvery, setRepeatsEvery] = useState<string>("week");
   const [customModalOpen, setCustomModalOpen] = useState(false);
+  const [title, setTitle] = useState<string>("");
+  const [duration, setDuration] = useState<string>("");
+
+
   const [customRepeat, setCustomRepeat] = useState({
     repeatInterval: "1",
     repeatUnit: "week",
@@ -72,8 +76,8 @@ export default function TaskAddForm() {
         val instanceof File && val.size === 0 ? undefined : val;
 
       let formValues: any = {
-        title: formData.get("title") as string,
-        duration: sanitizeString(formData.get("duration")) ?? undefined,
+        title: title as string,
+        duration: sanitizeString(duration) ?? undefined,
         startTime: sanitizeString(formData.get("startTime")) ?? undefined,
         endTime: sanitizeString(formData.get("endTime")) ?? undefined,
         deadline: sanitizeString(formData.get("deadline")) ?? undefined,
@@ -133,6 +137,9 @@ export default function TaskAddForm() {
       });
       // console.log("task created => ", response.data);
       if (response.status === 201) toast.success("Task created successfully!");
+      setTitle("");
+      setDuration("");
+      setRepeat("no repeat");
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         const flattenedErrors = flattenZodErrors(error);
@@ -196,7 +203,10 @@ export default function TaskAddForm() {
           ✏️ Add a New Task
         </div>
 
-        <QuickTask />
+        <QuickTask 
+          setTitle={setTitle}
+          setDuration={setDuration}
+        />
 
       </div>
       {/* Title */}
@@ -206,6 +216,8 @@ export default function TaskAddForm() {
           type="text"
           placeholder="Enter task title..."
           style={inputBase}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           //
           name="title"
         />
@@ -224,6 +236,8 @@ export default function TaskAddForm() {
               placeholder="E.g. 2"
               style={inputBase}
               name="duration"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
             />
             {errors.duration && (
               <div style={errorTextStyle}>{errors.duration}</div>
