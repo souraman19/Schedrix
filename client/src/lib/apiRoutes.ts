@@ -17,6 +17,8 @@ export const GET_TASK_STATIC_DETAILS_ROUTE = `${TASK_ROUTES}/get/static/details`
 export const GET_TASK_DYNAMIC_DETAILS_ROUTE = `${TASK_ROUTES}/get/dynamic/details`;
 export const GET_TASK_REPEAT_INFO_ROUTE = `${TASK_ROUTES}/get/repeatInfo`;
 export const RESOLVE_TASK_ROUTE = `${TASK_ROUTES}/resolve`;
+export const RESCHEDULE_TASK_ROUTE = `${TASK_ROUTES}/reschedule`;
+export const GET_TASK_TIMINGS_ROUTE = `${TASK_ROUTES}/get/timings`;
 
 
 export const GET_USER_POINTS_ANALYTICS_ROUTE = `${USER_ROUTES}/get/points/analytics`;

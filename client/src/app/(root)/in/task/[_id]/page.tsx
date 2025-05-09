@@ -2,7 +2,7 @@ import LinkForMasterTask from "@/components/task/LinkForMasterTask";
 import RepeatInfo from "@/components/task/RepeatInfo";
 import TaskDetailsPageDynamicPart from "@/components/task/TaskDetailsPageDynamicPart";
 import TaskDetailsPageStaticPart from "@/components/task/TaskDetailsPageStaticPart";
-import TaskResolve from "@/components/task/TaskResolve";
+import TaskResolve from "@/components/task/TaskActions";
 import { Button } from "@mui/material";
 import React, { Suspense } from "react";
 

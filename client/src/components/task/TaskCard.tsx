@@ -117,7 +117,10 @@ const TaskCard = ({ task }: { task: any }) => {
           {/* Redirect Button */}
           <div className="col-span-2 text-right">
             <button
-              className="mt-4 px-6 py-2 bg-gradient-to-r from-[#00c853] to-[#b2ff59] hover:from-[#00e676] hover:to-[#ccff90] text-black font-bold rounded-full flex items-center gap-2 ml-auto shadow-md shadow-[#00c85355] hover:shadow-[#b2ff5944]"
+              style={{
+                cursor:"pointer",
+              }}
+              className=" mt-4 px-6 py-2 bg-gradient-to-r from-[#00c853] to-[#b2ff59] hover:from-[#00e676] hover:to-[#ccff90] text-black font-bold rounded-full flex items-center gap-2 ml-auto shadow-md shadow-[#00c85355] hover:shadow-[#b2ff5944]"
               onClick={() => router.push(`/in/task/${task._id}`)}
             >
               View Full Task
