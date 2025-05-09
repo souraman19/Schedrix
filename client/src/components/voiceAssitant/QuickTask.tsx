@@ -22,8 +22,8 @@ export default function QuickTask({
 
   const handleStopVoiceAssistance = () => {
     if (recognitionRef.current) {
-      recognitionRef.current = null; //stop the recognitionRef.current
-      recognitionRef.current.stop();
+        recognitionRef.current.stop();
+        recognitionRef.current = null;
       setMessages((prevMessages) => [
         ...prevMessages,
         "Voice Assistant stopped.",
@@ -34,15 +34,12 @@ export default function QuickTask({
         "Voice Assistant is not active.",
       ]);
     }
-    speechSynthesis.cancel(); //stop the speech synthesis
+    speechSynthesis.cancel(); //stop the speech synthesi
   };
 
   const handleVoiceTaskCreation = () => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     recognitionRef.current = new SpeechRecognition();
-
-    // alert("cl");
 
     //configure
     recognitionRef.current.continuous = false;
@@ -53,28 +50,38 @@ export default function QuickTask({
     let taskTitle = "";
     let taskDuration = "";
 
-    let isActive = true; //flag to check if the recognition is active
+
+
+  //------------------------------------------------------------------------------------------
+
+    //below flags is VVI
+    //first one to prevent call listen() function again after stop
+    //second one to prevent call listen() multiple times when the recognition is active
+
+    let isActive = true; //flag to check if the recognition is active  
     let recognitionStarted = false; //flag to check if the recognition has started
+
+   //------------------------------------------------------------------------------------------
+
 
     const speak = (message: string, callback?: () => void) => {
       const utterance = new SpeechSynthesisUtterance(message);
+      speechSynthesis.speak(utterance); //speak the message
       if (callback) {
         utterance.onend = callback; //call the callback function after the speech ends
       }
-      speechSynthesis.speak(utterance); //speak the message
     };
 
     const listen = () => {
       if (!speechSynthesis.speaking && !recognitionStarted) {
-        const SpeechRecognition =
-          window.SpeechRecognition || window.webkitSpeechRecognition;
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!recognitionRef.current) {
           recognitionRef.current = new SpeechRecognition();
           recognitionRef.current.continuous = true;
           recognitionRef.current.interimResults = true;
           recognitionRef.current.lang = "en-US";
         }
-
+        recognitionStarted = true; //set the flag to true
         recognitionRef.current.start();
       } else {
         setTimeout(listen, 300);
@@ -208,6 +215,7 @@ export default function QuickTask({
       }
     };
 
+
     recognitionRef.current.onerror = (event: any) => {
       console.error("Speech error:", event.error);
       speak("Sorry, I couldn't understand. Please try again.");
@@ -219,6 +227,7 @@ export default function QuickTask({
       recognitionRef.current.stop(); //stop the recognition
     };
 
+
     setIsChatOpen(true);
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -228,14 +237,16 @@ export default function QuickTask({
       listen();
     });
 
+
     recognitionRef.current.onend = () => {
       recognitionStarted = false; //reset the flag
       setTimeout(() => {
-        if (isActive) listen(); //start listening again after 700ms
+        if (isActive) listen(); //start listening again after 300ms
       }, 300);
     };
   };
 
+  
   return (
     <>
       <Button
