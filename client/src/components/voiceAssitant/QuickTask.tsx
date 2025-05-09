@@ -18,6 +18,7 @@ export default function QuickTask({
   const handleChatClose = () => {
     handleStopVoiceAssistance(); //stop the voice assistance when the chat is closed
     setIsChatOpen(false);
+    setMessages([]); 
   };
 
   const handleStopVoiceAssistance = () => {
@@ -246,7 +247,7 @@ export default function QuickTask({
     };
   };
 
-  
+
   return (
     <>
       <Button
