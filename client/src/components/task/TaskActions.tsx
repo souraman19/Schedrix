@@ -161,11 +161,6 @@ export default function TaskActions({ _id }: { _id: string }) {
     fetchTimings();
   }, []);
 
-  useEffect(() => {
-    console.log("Reschedule Start Time: ", rescheduleStartTime);
-    console.log("Reschedule End Time: ", rescheduleEndTime);
-    console.log("Reschedule Deadline: ", rescheduleDeadline);
-  }, [rescheduleStartTime, rescheduleEndTime, rescheduleDeadline]);
 
   return (
     <div
@@ -183,51 +178,85 @@ export default function TaskActions({ _id }: { _id: string }) {
         gap: "6rem",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "2rem",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Button onClick={handleRescheduleClick}>Reschedule</Button>
+      <div className="flex flex-col items-center justify-center gap-8 px-6 py-8 bg-[#0d0d0d] rounded-2xl shadow-2xl">
+ <button
+  onClick={handleRescheduleClick}
+  className="px-8 py-4 text-lg font-bold text-white bg-[#00c853] border-2 border-[#00c853] rounded-lg shadow-xl transform transition-all duration-300 ease-in-out hover:bg-transparent hover:text-[#00c853] hover:scale-110 focus:outline-none focus:ring-4 focus:ring-[#00c853] focus:ring-opacity-80 active:scale-95"
+  style={{
+    cursor: 'pointer',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
+    transform: 'translateY(4px)',
+    transition: 'transform 0.1s ease, box-shadow 0.2s ease',
+  }}
+  onMouseEnter={(e) => {
+    e.target.style.transform = 'translateY(0px)';
+    e.target.style.boxShadow = '0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.08)';
+  }}
+  onMouseLeave={(e) => {
+    e.target.style.transform = 'translateY(4px)';
+    e.target.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)';
+  }}
+  onMouseDown={(e) => {
+    e.target.style.transform = 'translateY(1px)'; // Simulate a button press
+    e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08)';
+  }}
+  onMouseUp={(e) => {
+    e.target.style.transform = 'translateY(4px)'; // Return to original position
+    e.target.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)';
+  }}
+>
+  Reschedule
+</button>
 
-        {showRescheduleForm && (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-            }}
-          >
-            <div>
-              <label htmlFor="">Start Time</label>
-              <input
-                type="datetime-local"
-                value={rescheduleStartTime}
-                onChange={(e) => setRescheduleStartTime(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="">End Time</label>
-              <input
-                type="datetime-local"
-                value={rescheduleEndTime}
-                onChange={(e) => setRescheduleEndTime(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="">Deadline</label>
-              <input
-                type="date"
-                value={rescheduleDeadline}
-                onChange={(e) => setRescheduleDeadline(e.target.value)}
-              />
-            </div>
-          </div>
-        )}
+
+
+
+
+
+
+  {showRescheduleForm && (
+    <div className="relative bg-[#111111] rounded-3xl p-6 md:p-8 w-full max-w-3xl shadow-xl">
+      <h3 className="text-xl font-semibold text-[#00c853] mb-6 text-center p-2 bg-black rounded-xl shadow-md shadow-[#00c853]/50">
+        Update Task Timings
+      </h3>
+
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex flex-col gap-2 w-full">
+          <label className="text-sm font-medium text-[#b2ff59]">Start Time</label>
+          <input
+            type="datetime-local"
+            value={rescheduleStartTime}
+            onChange={(e) => setRescheduleStartTime(e.target.value)}
+            className="bg-transparent border-2 border-[#00c853] text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c853] focus:ring-opacity-60 shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+          />
+        </div>
+
+        <div className="flex flex-col gap-2 w-full">
+          <label className="text-sm font-medium text-[#b2ff59]">End Time</label>
+          <input
+            type="datetime-local"
+            value={rescheduleEndTime}
+            onChange={(e) => setRescheduleEndTime(e.target.value)}
+            className="bg-transparent border-2 border-[#00c853] text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c853] focus:ring-opacity-60 shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+          />
+        </div>
+
+        <div className="flex flex-col gap-2 w-full">
+          <label className="text-sm font-medium text-[#b2ff59]">Deadline</label>
+          <input
+            type="date"
+            value={rescheduleDeadline}
+            onChange={(e) => setRescheduleDeadline(e.target.value)}
+            className="bg-transparent border-2 border-[#00c853] text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c853] focus:ring-opacity-60 shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+          />
+        </div>
       </div>
+    </div>
+  )}
+</div>
+
+
+
 
       <div style={{ textAlign: "center", maxWidth: "400px", width: "100%" }}>
         <Button
@@ -337,6 +366,7 @@ export default function TaskActions({ _id }: { _id: string }) {
             opacity: 1;
           }
         }
+
       `}</style>
     </div>
   );

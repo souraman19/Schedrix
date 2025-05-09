@@ -368,6 +368,7 @@ export const rescheduleTask = async(req: any, res: any) => {
         const {startTime, endTime, deadline} = req.body;
 
         const task = await Task.findOne({_id: new Types.ObjectId(_id)}).exec();
+        
         if(!task){
             return res.status(404).json({error: "Task not found"});
         }
