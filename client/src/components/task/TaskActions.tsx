@@ -127,7 +127,7 @@ export default function TaskActions({ _id }: { _id: string }) {
         if(response.status === 200){
           toast.success("Task rescheduled successfully!");
           setShowRescheduleForm(false);
-          // router.push(`/in/task/${_id}`); // Redirect to the task home page
+          router.push(`/in/task/${_id}`); // Redirect to the task home page
         } else {
           toast.error("You have to chose new time!");
         }

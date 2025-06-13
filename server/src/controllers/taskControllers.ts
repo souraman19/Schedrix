@@ -395,8 +395,71 @@ export const rescheduleTask = async(req: any, res: any) => {
         if(deadline){
             task.deadline = formattedDeadline ? formattedDeadline : task.deadline; 
         }
+        
+        const priority = task.priority as PriorityLevelPointBase;
+        const pointsCut = pointBase[priority];
 
+
+        const userId = req.user._id;
+        const user = await User.findById(userId).exec();
+        if(!user){
+            return res.status(404).json({error: "User not found"});
+        }
+
+        user.progress.points -= pointsCut;
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const day = now.getDate();
+        const month = now.getMonth(); 
+        const taskId = task._id;
+
+        let userPointsBucket = await UserPoints.findOne({
+            userId: userId,
+            year: year,
+        })
+
+        if(!userPointsBucket){
+            userPointsBucket = new UserPoints({
+            userId: userId,
+            year: year,
+            points: [],
+            });
+        }
+            
+        let existingDayMonthIndex = userPointsBucket.points.findIndex((el) =>
+            el.day === day && el.month === month
+    )
+    // console.log("Existing day month index: ", existingDayMonthIndex);
+    
+    if(existingDayMonthIndex === -1){
+        userPointsBucket.points.push({
+        day: day,
+        month: month,
+        pointsGain: 0,
+        pointsDeduct: pointsCut,
+        taskCompleted: 0,
+        taskMissed: 0,
+        mindStatus: "Default",
+        })
+    } else {
+            const totalPoints = userPointsBucket.points[existingDayMonthIndex].pointsDeduct + pointsCut;
+            userPointsBucket.points[existingDayMonthIndex].pointsDeduct = totalPoints;
+        }
+        
+        userPointsBucket.markModified("points");
+        
+        console.log("Updated: ", userPointsBucket.points[existingDayMonthIndex]);
+
+        const total = task.totalPointsContributed - pointsCut;
+        task.totalPointsContributed = total;
+        task.pointsContributed.push({day: new Date(), points: -1 * pointsCut});
+
+
+        await user.save();
         await task.save();
+        await userPointsBucket.save();
+
         return res.status(200).json({message: "Task rescheduled successfully", task});
     }catch(err){
         console.error("Error rescheduling task: ", err);
