@@ -520,3 +520,40 @@ export const rescheduleTask = async(req: any, res: any) => {
         res.status(500).json({error: "Internal server error"});
     }
 }
+
+export const rescheduleTaskLists = async(req: any, res: any) => {
+    try{
+    const taskList = req.body.tasks;
+    if(!Array.isArray(taskList)){
+        return res.status(400).json({error: "Invalid task format"});
+    } 
+    const updates = [];
+
+    for(const updatedTask of taskList){
+        const exisitngTask = await Task.findById(updatedTask._id);
+        if(!exisitngTask) continue;
+
+        const newStart = new Date(updatedTask.startTime);
+        const newEnd = new Date(updatedTask.endTime);
+
+        const isStartChanged = exisitngTask.startTime?.getTime() !== newStart.getTime();
+        const isEndChanged = exisitngTask.endTime?.getTime() !== newEnd.getTime();
+
+        if(isStartChanged || isEndChanged){
+            exisitngTask.startTime = newStart;
+            exisitngTask.endTime = newEnd;
+            await exisitngTask.save();
+            updates.push(exisitngTask._id);
+        }
+
+        res.status(200).json({
+            message: "Tasks rescheduled successfully",
+            updatedCount: updates.length,
+            updatedTasks: updates
+        })
+    }
+    }catch(err){
+        console.error("Error in rescheduling tasks:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}

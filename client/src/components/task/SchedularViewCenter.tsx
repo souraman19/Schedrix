@@ -1,6 +1,8 @@
 "use client";
-import { GET_TASK_7days } from "@/lib/apiRoutes";
+import { GET_TASK_7days, RESCHEDULE_TASKLISTS_ROUTE } from "@/lib/apiRoutes";
 import React, { useEffect, useRef, useState } from "react";
+import { toast } from 'sonner';
+
 
 type Task = {
   _id: string;
@@ -135,9 +137,9 @@ export default function SchedulerViewCenter({
 
   const timeSlots = generateTimeSlots(); //Creates the array of minute labels once.
 
-  useEffect(() => {
-    console.log("taksks", tasks);
-  }, [tasks]);
+//   useEffect(() => {
+//     console.log("taksks", tasks);
+//   }, [tasks]);
 
   useEffect(() => {
     setUpTimeMarkings();
@@ -214,6 +216,29 @@ export default function SchedulerViewCenter({
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);
   };
+
+  const handleRescheduleSubmit = async () => {
+      const updatedTasks = Object.values(changedTasks);
+    //   console.log(updatedTasks);
+      try{
+         const response = await fetch(RESCHEDULE_TASKLISTS_ROUTE, {
+            method: "POST",
+            headers: {"Content-type": "application/json"},
+            credentials: "include",
+            body: JSON.stringify({tasks: updatedTasks})
+         });
+         if(response.ok){
+            setChangedTasks({});
+            await get7DaysTasks();
+            toast.success("Task rescheduled successfully");
+         } else {
+            toast.error("Error rescheduling tasks");
+         }
+      }catch(err){
+        console.error("Error in rescheduling task lists, err");
+        toast.error("Error rescheduling tasks");
+      }
+  }
 
 
   return (
@@ -295,6 +320,16 @@ export default function SchedulerViewCenter({
             </div>
           );
         })}
+        {Object.keys(changedTasks).length > 0 && (
+        <div className="fixed bottom-20 right-4">
+          <button
+            onClick={handleRescheduleSubmit}
+            className="bg-gradient-to-r from-blue-600 to-green-500 hover:from-green-500 hover:to-blue-600 text-white font-bold px-6 py-2 rounded-full shadow-lg"
+          >
+            Reschedule ({Object.keys(changedTasks).length})
+          </button>
+        </div>
+      )}
       </div>
 
       {/* Slider to control slot height */}
