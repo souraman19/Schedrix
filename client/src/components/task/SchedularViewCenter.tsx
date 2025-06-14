@@ -9,7 +9,7 @@ type Task = {
 };
 
 const MINUTES_IN_DAY = 1440;
-const SLOT_HEIGHT = 20; // 1 minute = 20px
+const SLOT_HEIGHT = 20; // 1 minute = ? px
 
 const generateTimeSlots = () => {
   const slots = [];
@@ -23,6 +23,7 @@ const generateTimeSlots = () => {
 
 const parseMinutesFromMidnight = (date: Date) => date.getHours() * 60 + date.getMinutes();
 
+const formatDate = (d: Date) => d.toLocaleDateString('en-CA'); // Format: yyyy-mm-dd  //Used to compare only the date portion (ignores time), for matching task dates.
 
 export default function SchedulerViewCenter({
   day,
@@ -35,29 +36,36 @@ export default function SchedulerViewCenter({
 }) {
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  const baseDate = new Date(`${year}-${month}-${day}`);
+  const baseDate = new Date(`${year}-${parseInt(month)+1}-${day}`); //YYYY-MM-DD => proper format like in write in real
+
+
+  //Builds an array of 7 Dates: from day-1 to day+5. 
+  //Used to render each day's column.
   const daysArray = Array.from({ length: 7 }, (_, i) => {
     const date = new Date(baseDate);
-    date.setDate(date.getDate() + i);
+    date.setDate(date.getDate() + i - 1); 
     return date;
   });
 
-  const timeSlots = generateTimeSlots();
+  const timeSlots = generateTimeSlots(); //Creates the array of minute labels once.
 
   useEffect(() => {
     setTasks([
         {
           id: '1',
-          title: 'Sample Task',
-          startTime: new Date(`${year}-${month}-${day}T10:15:00`),
-          endTime: new Date(`${year}-${month}-${day}T11:45:00`),
+          title: 'Morning Routine',
+          //in below + 1 in month added as we have to write YYYY_MM-DD in proper look 
+          startTime: new Date(new Date(`${year}-${parseInt(month)+1}-${day}`).getTime() +  60 * 60 * 1000 + 8 * 60 * 60 * 1000),
+          endTime: new Date(new Date(`${year}-${parseInt(month)+1}-${day}`).getTime() + 60 * 60 * 1000 + 9 * 60 * 60 * 1000),
         },
-      ]);      
+      ]);
+         
   }, [day, month, year]);
 
-  useEffect(()=> {
-    console.log("taksks", tasks);
-  }, [tasks])
+//   useEffect(()=> {
+//     console.log("taksks", tasks);
+//     console.log("today", baseDate);
+//   }, [tasks])
 
   return (
     <div className="flex overflow-x-auto scrollbar-thin scrollbar-thumb-green-500">
@@ -80,15 +88,14 @@ export default function SchedulerViewCenter({
       <div className="flex-1 flex">
         {daysArray.map((date, dayIndex) => {
           const dayTasks = tasks.filter(task => {
-            const taskDateStr = task.startTime.toISOString().split('T')[0];
-            const currDateStr = date.toISOString().split('T')[0];
+            const taskDateStr = formatDate(task.startTime);
+            const currDateStr = formatDate(date);
             return taskDateStr === currDateStr;
           });          
-          console.log(date, "=> ", tasks);
 
           return (
             <div key={dayIndex} className="relative w-48 border-l border-gray-800">
-              {/* Sticky Header */}
+              {/* Sticky Day Header */}
               <div className="sticky top-0 bg-black text-green-400 text-center text-sm py-2 border-b border-gray-700 z-10">
                 {date.toLocaleDateString('en-US', {
                   weekday: 'short',
