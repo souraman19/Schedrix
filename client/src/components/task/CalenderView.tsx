@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { number } from 'zod';
+import { useRouter } from 'next/navigation';
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -11,6 +12,8 @@ const months = [
 
 export default function CalendarView({chosenDate, chosenMonth, chosenYear, setChosenYear, setChosenMonth, setChosenDate, fetchTasks}: {chosenDate: number, chosenMonth: number, chosenYear: number, setChosenYear: (chosenYear: number) => void, setChosenMonth: (chosenMonth: number) => void, setChosenDate: (date: number) => void, fetchTasks: () => void}) {
   const today = new Date().getDate();
+  const router = useRouter();
+
 
   const handlePrevMonth = () => {
     if (chosenMonth === 0) {
@@ -90,6 +93,23 @@ export default function CalendarView({chosenDate, chosenMonth, chosenYear, setCh
           </div>
         ))}
       </div>
+      <div className="mt-6 flex justify-center">
+  <button
+    className="
+      bg-gradient-to-r from-[#00c853] to-[#b2ff59]
+      hover:from-[#00e676] hover:to-[#ccff90]
+      text-black font-semibold px-6 py-2 rounded-full
+      shadow-md hover:shadow-green-500/40
+      transition-all duration-300
+      mb-7 mt-5 cursor-pointer
+    "
+    onClick={() => router.push(`/in/task/ui_schedular/${chosenYear}/${chosenMonth}/${chosenDate}`)}
+  >
+
+    🚀 UI Scheduling
+  </button>
+</div>
+
     </div>
   );
 }
