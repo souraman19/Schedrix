@@ -90,7 +90,26 @@ export default function SchedulerViewCenter({
   year: string;
 }) {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [SLOT_HEIGHT, SET_SLOT_HEIGHT] = useState(1);
+  const [SLOT_HEIGHT, SET_SLOT_HEIGHT] = useState(16);
+  const [timeMarksList, setTimeMarksList] = useState<String[]>(["00", "10", "20", "30", "40", "50"]);
+
+  const setUpTimeMarkings = () => {
+    if(SLOT_HEIGHT === 1){
+        setTimeMarksList(["00"])
+    } else if(SLOT_HEIGHT === 6){
+        setTimeMarksList(["00", "30"])
+    } else if(SLOT_HEIGHT === 11){
+        setTimeMarksList(["00", "30", "15", "45"])
+    } else if(SLOT_HEIGHT === 16){
+        setTimeMarksList(["00", "10", "20", "30", "40", "50"])
+    } else if(SLOT_HEIGHT === 21){
+        setTimeMarksList(["00", "10", "20", "30", "40", "50", "05", "15", "25", "35", "45", "55"]);
+    }
+  }
+
+  const checkIfSlotsEndsWidth = (slot: string) => {
+    return timeMarksList.some((timeMark) => slot.endsWith(timeMark));
+  }
 
   const baseDate = new Date(`${year}-${parseInt(month) + 1}-${day}`); //YYYY-MM-DD => proper format like in write in real
 
@@ -107,6 +126,11 @@ export default function SchedulerViewCenter({
   useEffect(() => {
     console.log("taksks", tasks);
   }, [tasks]);
+
+  useEffect(() => {
+    setUpTimeMarkings();
+  }, [SLOT_HEIGHT]);
+  
 
   const get7DaysTasks = async () => {
     try {
@@ -147,14 +171,7 @@ export default function SchedulerViewCenter({
           <div
             key={i}
             style={{ height: SLOT_HEIGHT }}
-            className={`w-full pr-1 text-[10px] text-gray-400 ${
-              slot.endsWith(":00") ||
-              slot.endsWith(":10") ||
-              slot.endsWith(":20") ||
-              slot.endsWith(":30") ||
-              slot.endsWith(":40") ||
-              slot.endsWith(":50")
-                ? ""
+            className={`w-full pr-1 text-[10px] text-gray-400 ${ checkIfSlotsEndsWidth(slot) ? ""
                 : "text-transparent"
             }`}
           >
@@ -168,9 +185,10 @@ export default function SchedulerViewCenter({
         {daysArray.map((date, dayIndex) => {
           const dayTasks = tasks.filter((task) => {
             if (!task.startTime || !task.endTime) return false;
-            const taskDateStr = formatDate(task.startTime);
+            const taskStartDateStr = formatDate(task.startTime);
+            const taskEndDateStr = formatDate(task.endTime);
             const currDateStr = formatDate(date);
-            return taskDateStr === currDateStr;
+            return taskStartDateStr === currDateStr || taskEndDateStr === currDateStr;
           });
 
           return (
@@ -184,6 +202,7 @@ export default function SchedulerViewCenter({
                   weekday: "short",
                   day: "2-digit",
                   month: "short",
+                  year: "numeric",
                 })}
               </div>
 
@@ -206,8 +225,9 @@ export default function SchedulerViewCenter({
                 return (
                   <div
                     key={task._id}
+                    title={`priority - ${task.priority}\n locked - ${task.isLocked}`}
                     className="absolute left-2 right-2 bg-green-600/80 text-xs text-white px-2 py-1 rounded-md shadow-md overflow-hidden"
-                    style={{ top, height }}
+                    style={{ top, height, transition: 'top 0.2s, height 0.2s'}}
                   >
                     {task.title}
                   </div>
@@ -227,7 +247,9 @@ export default function SchedulerViewCenter({
           max={21}
           step={5}
           value={SLOT_HEIGHT}
-          onChange={(e) => SET_SLOT_HEIGHT(Number(e.target.value))}
+          onChange={(e) => {
+            SET_SLOT_HEIGHT(Number(e.target.value));
+          }}
           className="w-32 accent-green-500 cursor-pointer"
         />
       </div>

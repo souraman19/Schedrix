@@ -234,7 +234,7 @@ export const fetch7DaysTasks = async(req: any, res: any) => {
                 }
             ],
         })
-        .select('_id status outputAnalysis deadline masterTaskId duration startTime endTime isLocked isFixed title')
+        .select('_id status outputAnalysis deadline masterTaskId duration startTime endTime isLocked isFixed title priority')
         .exec();
 
         if(!tasks){
