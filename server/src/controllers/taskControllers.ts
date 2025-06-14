@@ -176,6 +176,7 @@ export const getFilteredTasks = async(req: any, res: any) => {
 }
 
 
+
 export const getTaskStaticDetails = async(req: any, res: any) => {
     try{
         const _id = req.params._id;
@@ -187,6 +188,59 @@ export const getTaskStaticDetails = async(req: any, res: any) => {
             return res.status(404).json({error: "Task not found"});
         }
         return res.status(200).json({task});
+    }catch(err){
+        console.error("Error getting task static details: ", err);
+        res.status(500).json({error: "Internal server error"});
+    }
+}
+
+
+export const fetch7DaysTasks = async(req: any, res: any) => {
+    try{
+        const day = req.params.day;
+        const baseDate = new Date(day);
+
+        const startDay = new Date(baseDate);
+        startDay.setHours(0, 0, 0, 0);
+
+        const endDay = new Date(baseDate);
+        endDay.setDate(endDay.getDate() + 6);
+        endDay.setHours(23, 59, 59, 999);
+
+        const userId = req.user._id; 
+        
+        const tasks = await Task.find({
+            createdBy: userId, 
+            repeat: "no repeat",
+            $or: [
+                {
+                    $and: [
+                        {startTime: {$gte: startDay}},
+                        {startTime: {$lte: endDay}},
+                    ]
+                }, 
+                {
+                    $and: [
+                        {endTime: {$gte: startDay}},
+                        {endTime: {$lte: endDay}},
+                    ]
+                }, 
+                {
+                    $and: [
+                        {deadline: {$gte: startDay}}, 
+                        {deadline: {$lte: endDay}}, 
+                        {status: {$ne: "completed"}}
+                    ]
+                }
+            ],
+        })
+        .select('_id status outputAnalysis deadline masterTaskId duration startTime endTime isLocked isFixed title')
+        .exec();
+
+        if(!tasks){
+            return res.status(404).json({error: "No Task found"});
+        }
+        return res.status(200).json({tasks});
     }catch(err){
         console.error("Error getting task static details: ", err);
         res.status(500).json({error: "Internal server error"});
