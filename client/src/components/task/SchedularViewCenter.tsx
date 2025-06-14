@@ -90,8 +90,8 @@ export default function SchedulerViewCenter({
   year: string;
 }) {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [SLOT_HEIGHT, SET_SLOT_HEIGHT] = useState(16);
-  const [timeMarksList, setTimeMarksList] = useState<String[]>(["00", "10", "20", "30", "40", "50"]);
+  const [SLOT_HEIGHT, SET_SLOT_HEIGHT] = useState(1);
+  const [timeMarksList, setTimeMarksList] = useState<String[]>(["00"]);
 
   const setUpTimeMarkings = () => {
     if(SLOT_HEIGHT === 1){
@@ -106,6 +106,14 @@ export default function SchedulerViewCenter({
         setTimeMarksList(["00", "10", "20", "30", "40", "50", "05", "15", "25", "35", "45", "55"]);
     }
   }
+
+  const priorityColors = {
+    low: "bg-green-600/70",
+    medium: "bg-yellow-500/70",
+    high: "bg-orange-500/80",
+    critical: "bg-red-600/80",
+  };
+  
 
   const checkIfSlotsEndsWidth = (slot: string) => {
     return timeMarksList.some((timeMark) => slot.endsWith(timeMark));
@@ -226,8 +234,8 @@ export default function SchedulerViewCenter({
                   <div
                     key={task._id}
                     title={`priority - ${task.priority}\n locked - ${task.isLocked}`}
-                    className="absolute left-2 right-2 bg-green-600/80 text-xs text-white px-2 py-1 rounded-md shadow-md overflow-hidden"
-                    style={{ top, height, transition: 'top 0.2s, height 0.2s'}}
+                    className={`absolute left-2 right-2 ${priorityColors[task.priority]} text-xs text-white px-2 py-1 rounded-md shadow-md overflow-hidden`}
+                    style={{ top, height, transition: 'top 0.2s, height 0.2s',display:"flex", justifyContent:"center", alignItems:"center"}}
                   >
                     {task.title}
                   </div>
