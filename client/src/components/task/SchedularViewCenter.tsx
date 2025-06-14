@@ -1,6 +1,6 @@
 "use client";
 import { GET_TASK_7days } from "@/lib/apiRoutes";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 type Task = {
   _id: string;
@@ -91,7 +91,11 @@ export default function SchedulerViewCenter({
 }) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [SLOT_HEIGHT, SET_SLOT_HEIGHT] = useState(1);
+  const [changedTasks, setChangedTasks] = useState<Record<string, Task>>({});
   const [timeMarksList, setTimeMarksList] = useState<String[]>(["00"]);
+
+  const draggingTaskRef = useRef<Task | null>(null);
+  const offsetYRef = useRef<number>(0);
 
   const setUpTimeMarkings = () => {
     if(SLOT_HEIGHT === 1){
@@ -171,6 +175,47 @@ export default function SchedulerViewCenter({
     get7DaysTasks();
   }, []);
 
+  const handleMouseDown = (task: Task, e: React.MouseEvent<HTMLDivElement>) => {
+    draggingTaskRef.current = task;
+    offsetYRef.current = e.clientY - e.currentTarget.getBoundingClientRect().top;
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!draggingTaskRef.current) return;
+    const container = document.querySelector(".timeline-container");
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const y = e.clientY - rect.top - offsetYRef.current;
+    const minutes = Math.round(y / SLOT_HEIGHT);
+    const clampedMinutes = Math.max(0, Math.min(minutes, MINUTES_IN_DAY - 1));
+    const newStart = new Date(draggingTaskRef.current.startTime!);
+    newStart.setHours(0, clampedMinutes, 0, 0);
+    const newEnd = new Date(newStart.getTime() + draggingTaskRef.current.duration! * 60 * 60 * 1000);
+
+    setTasks((prev) =>
+      prev.map((t) =>
+        t._id === draggingTaskRef.current!._id ? { ...t, startTime: newStart, endTime: newEnd } : t
+      )
+    );
+    setChangedTasks((prev) => ({
+      ...prev,
+      [draggingTaskRef.current!._id]: {
+        ...draggingTaskRef.current!,
+        startTime: newStart,
+        endTime: newEnd,
+      },
+    }));
+  };
+
+  const handleMouseUp = () => {
+    draggingTaskRef.current = null;
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  };
+
+
   return (
     <div className="flex overflow-x-auto scrollbar-thin scrollbar-thumb-green-500">
       {/* Time Column */}
@@ -189,7 +234,7 @@ export default function SchedulerViewCenter({
       </div>
 
       {/* Day Columns */}
-      <div className="flex-1 flex">
+      <div className="flex-1 flex timeline-container">
         {daysArray.map((date, dayIndex) => {
           const dayTasks = tasks.filter((task) => {
             if (!task.startTime || !task.endTime) return false;
@@ -225,18 +270,17 @@ export default function SchedulerViewCenter({
 
               {/* Tasks */}
               {dayTasks.map((task) => {
-                const start = parseMinutesFromMidnight(task.startTime);
-                const end = parseMinutesFromMidnight(task.endTime);
+                const start = parseMinutesFromMidnight(task.startTime!);
+                const end = parseMinutesFromMidnight(task.endTime!);
                 const height = (end - start) * SLOT_HEIGHT;
                 const top = start * SLOT_HEIGHT;
 
                 return (
                   <div
                     key={task._id}
-                    title={`priority - ${task.priority}\n locked - ${task.isLocked}`}
-                    className={`absolute left-2 right-2 ${priorityColors[task.priority]} text-xs text-white px-2 py-1 rounded-md shadow-md overflow-hidden`}
-                    style={{ top, height, transition: 'top 0.2s, height 0.2s',display:"flex", justifyContent:"center", alignItems:"center"}}
-                  >
+                    onMouseDown={(e) => handleMouseDown(task, e)}
+                    className={`absolute left-2 right-2 cursor-grab ${priorityColors[task.priority]} text-xs text-white px-2 py-1 rounded-md shadow-md flex items-center justify-between`}
+                    style={{ top, height, transition: "top 0.2s", zIndex: 20 }}                  >
                     <div className="flex items-center gap-1">
                        {task.isLocked && (
                           <span className="text-white text-xs">
@@ -268,6 +312,7 @@ export default function SchedulerViewCenter({
           className="w-32 accent-green-500 cursor-pointer"
         />
       </div>
+      
     </div>
   );
 }
