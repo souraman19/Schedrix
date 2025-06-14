@@ -37,7 +37,7 @@ export default function LinkForMasterTask({ _id }: { _id: string }) {
         try {
             const response: Response = await fetch(`${GET_TASK_STATIC_DETAILS_ROUTE}/${_id}`, {
               method: "GET",
-                credentials: "include",
+              credentials: "include",
             });
             const result = await response.json();
             setTaskData(result.task);
