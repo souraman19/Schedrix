@@ -237,7 +237,14 @@ export default function SchedulerViewCenter({
                     className={`absolute left-2 right-2 ${priorityColors[task.priority]} text-xs text-white px-2 py-1 rounded-md shadow-md overflow-hidden`}
                     style={{ top, height, transition: 'top 0.2s, height 0.2s',display:"flex", justifyContent:"center", alignItems:"center"}}
                   >
-                    {task.title}
+                    <div className="flex items-center gap-1">
+                       {task.isLocked && (
+                          <span className="text-white text-xs">
+                             🔒
+                          </span>
+                       )}
+                      <span>{task.title}</span>
+                    </div>
                   </div>
                 );
               })}
