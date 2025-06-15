@@ -1,12 +1,14 @@
 "use client";
 import { GET_TASK_7days, RESCHEDULE_TASKLISTS_ROUTE } from "@/lib/apiRoutes";
 import React, { useEffect, useRef, useState } from "react";
+import { start } from "repl";
 import { toast } from "sonner";
 
 type UndoStep = {
   taskId: string;
   prevStart: Date;
   prevEnd: Date;
+  rescheduleStatus: boolean;
 };
 
 type Task = {
@@ -97,9 +99,19 @@ export default function SchedulerViewCenter({
   month: string;
   year: string;
 }) {
+  const [originalTasks, setOriginalTasks] = useState<Task[]>([]);
+  //for storing original tasks fetched from backend, used to compare with changed tasks for rescheduling
+  //This is used to reset the tasks if user cancels rescheduling or to compare with changed tasks
+
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [SLOT_HEIGHT, SET_SLOT_HEIGHT] = useState(1);
+  //to show tasks in the timeline view
+  //state is updated here when user slide or reschedule tasks
+
   const [changedTasks, setChangedTasks] = useState<Record<string, Task>>({});
+  //to store tasks that have been changed by the user during drag and drop to send to backend for rescheduling
+  //key is task._id, value is the updated task object
+
+  const [SLOT_HEIGHT, SET_SLOT_HEIGHT] = useState(1);
   const [timeMarksList, setTimeMarksList] = useState<String[]>(["00"]);
   const [undoStack, setUndoStack] = useState<UndoStep[]>([]);
 
@@ -141,8 +153,52 @@ export default function SchedulerViewCenter({
   };
 
   const handleUndoStep = () => {
-    if (undoStack.length === 0) return;
-    console.log("stack", undoStack);
+    setUndoStack((prevStack) => {
+      if (prevStack.length === 0) return prevStack;
+
+      const newStack = [...prevStack];
+      const lastStep = newStack.pop();
+      if (!lastStep) return prevStack;
+
+      const { taskId, prevStart, prevEnd, rescheduleStatus } = lastStep;
+
+      setTasks((prev) =>
+        prev.map((task) =>
+          task._id === taskId
+            ? {
+                ...task,
+                startTime: prevStart,
+                endTime: prevEnd,
+                rescheduleStatus,
+              }
+            : task
+        )
+      );
+
+      const originalTask = originalTasks.find((task) => task._id === taskId);
+      const isSameAsOriginal =
+        originalTask &&
+        originalTask.startTime?.getTime() === prevStart.getTime() &&
+        originalTask.endTime?.getTime() === prevEnd.getTime();
+
+      setChangedTasks((prev) => {
+        const updated = { ...prev };
+        if (isSameAsOriginal) {
+          delete updated[taskId];
+        } else {
+          updated[taskId] = {
+            ...updated[taskId],
+            startTime: prevStart,
+            endTime: prevEnd,
+            rescheduleStatus,
+          };
+        }
+        return updated;
+      });
+
+      toast.info("Undo successful");
+      return newStack;
+    });
   };
 
   const checkIfSlotsEndsWidth = (slot: string) => {
@@ -178,6 +234,8 @@ export default function SchedulerViewCenter({
       });
       const result = await response.json();
       // console.log(result);
+
+      //calculate startTime and endTime for each task
       result.tasks.forEach((task: Task) => {
         if (task.startTime) task.startTime = new Date(task.startTime);
         if (task.endTime) task.endTime = new Date(task.endTime);
@@ -190,6 +248,8 @@ export default function SchedulerViewCenter({
             task.endTime.getTime() - task.duration * 60 * 60 * 1000
           );
       });
+
+      setOriginalTasks(result.tasks);
       setTasks(result.tasks);
     } catch (err) {
       console.error("Error in fetching task of 7 days", err);
@@ -207,48 +267,47 @@ export default function SchedulerViewCenter({
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
-const handleMouseMove = (e: MouseEvent) => {
-  if (!draggingTaskRef.current) return;
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!draggingTaskRef.current) return;
 
-  const container = document.querySelector(".timeline-container");
-  if (!container) return;
+    const container = document.querySelector(".timeline-container");
+    if (!container) return;
 
-  const rect = container.getBoundingClientRect();
-  const y = e.clientY - rect.top - offsetYRef.current;
+    const rect = container.getBoundingClientRect();
+    const y = e.clientY - rect.top - offsetYRef.current;
 
-  const minutes = Math.floor(y / SLOT_HEIGHT); // Use floor instead of round
-  const clampedMinutes = Math.max(0, Math.min(minutes, MINUTES_IN_DAY - 1));
+    const minutes = Math.floor(y / SLOT_HEIGHT); // Use floor instead of round
+    const clampedMinutes = Math.max(0, Math.min(minutes, MINUTES_IN_DAY - 1));
 
-  const newStart = new Date(draggingTaskRef.current.startTime!);
-  newStart.setHours(0, 0, 0, 0); // reset time to midnight first
-  newStart.setMinutes(clampedMinutes); // then set total minutes directly
+    const newStart = new Date(draggingTaskRef.current.startTime!);
+    newStart.setHours(0, 0, 0, 0); // reset time to midnight first
+    newStart.setMinutes(clampedMinutes); // then set total minutes directly
 
-  const durationInMs = draggingTaskRef.current.duration! * 60 * 60 * 1000;
-  const newEnd = new Date(newStart.getTime() + durationInMs);
+    const durationInMs = draggingTaskRef.current.duration! * 60 * 60 * 1000;
+    const newEnd = new Date(newStart.getTime() + durationInMs);
 
-  setTasks((prev) =>
-    prev.map((t) =>
-      t._id === draggingTaskRef.current!._id
-        ? {
-            ...t,
-            startTime: newStart,
-            endTime: newEnd,
-            rescheduleStatus: true,
-          }
-        : t
-    )
-  );
+    setTasks((prev) =>
+      prev.map((t) =>
+        t._id === draggingTaskRef.current!._id
+          ? {
+              ...t,
+              startTime: newStart,
+              endTime: newEnd,
+              rescheduleStatus: true,
+            }
+          : t
+      )
+    );
 
-  setChangedTasks((prev) => ({
-    ...prev,
-    [draggingTaskRef.current!._id]: {
-      ...draggingTaskRef.current!,
-      startTime: newStart,
-      endTime: newEnd,
-    },
-  }));
-};
-
+    setChangedTasks((prev) => ({
+      ...prev,
+      [draggingTaskRef.current!._id]: {
+        ...draggingTaskRef.current!,
+        startTime: newStart,
+        endTime: newEnd,
+      },
+    }));
+  };
 
   const handleMouseUp = async () => {
     const draggingTask = draggingTaskRef.current; //saving before nullifying it
@@ -259,6 +318,7 @@ const handleMouseMove = (e: MouseEvent) => {
         taskId: draggingTask!._id,
         prevStart: draggingTask!.startTime!,
         prevEnd: draggingTask!.endTime!,
+        rescheduleStatus: draggingTask!.rescheduleStatus,
       },
     ]);
     draggingTaskRef.current = null;
@@ -268,7 +328,7 @@ const handleMouseMove = (e: MouseEvent) => {
 
   const handleRescheduleSubmit = async () => {
     const updatedTasks = Object.values(changedTasks);
-    //   console.log(updatedTasks);
+    // console.log(updatedTasks);
     try {
       const response = await fetch(RESCHEDULE_TASKLISTS_ROUTE, {
         method: "POST",
@@ -367,7 +427,8 @@ const handleMouseMove = (e: MouseEvent) => {
                 const start = parseMinutesFromMidnight(task.startTime!);
                 const end = parseMinutesFromMidnight(task.endTime!);
                 const height = (end - start) * SLOT_HEIGHT;
-                const headerOffsetHeight = document.querySelector(".day-header")?.clientHeight || 40;
+                const headerOffsetHeight =
+                  document.querySelector(".day-header")?.clientHeight || 40;
                 const top = start * SLOT_HEIGHT + headerOffsetHeight;
 
                 return (
@@ -429,7 +490,7 @@ const handleMouseMove = (e: MouseEvent) => {
             {undoStack.length > 0 && (
               <button
                 onClick={handleUndoStep}
-                className="bg-yellow-500 text-white font-bold px-4 py-2 rounded-full shadow-md ml-2"
+                className="bg-yellow-500 text-white font-bold px-4 py-2 rounded-full shadow-md ml-2 cursor-pointer"
               >
                 Undo ({undoStack.length})
               </button>
