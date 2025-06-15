@@ -593,19 +593,32 @@ export default function SchedulerViewCenter({
           className="w-36 h-2 rounded-full bg-[#00ff8822] appearance-none cursor-pointer accent-[#00ff88] shadow-inner"
         />
       </div>
-      <div className="fixed bottom-4 left-4 z-50 flex items-center gap-2">
-  <span className="text-sm text-white font-semibold">Cross-Day Drag</span>
-  <label className="relative inline-flex items-center cursor-pointer">
+      <div className="fixed bottom-4 left-4 z-50 flex items-center gap-3 px-4 py-2 bg-zinc-900/80 backdrop-blur-md rounded-xl border border-[#00ff88] shadow-[0_0_12px_#00ff8844]">
+  <span className="text-sm text-[#b2ff59] font-semibold tracking-wide">
+    Cross-Day Drag
+  </span>
+
+  <label className="relative inline-flex items-center cursor-pointer group">
     <input
       type="checkbox"
       checked={isCrossDayDragging}
       onChange={(e) => setIsCrossDayDragging(e.target.checked)}
       className="sr-only peer"
     />
-    <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:bg-green-500 transition-colors duration-300" />
-    <div className="absolute left-0.5 top-0.5 bg-white w-5 h-5 rounded-full transition-transform duration-300 peer-checked:translate-x-full" />
+    <div
+      className={`w-12 h-7 rounded-full transition-colors duration-300 
+        peer-checked:bg-gradient-to-r peer-checked:from-[#00c853] peer-checked:to-[#b2ff59]
+        bg-gray-700 border border-gray-500 shadow-inner`}
+    />
+    <div
+      className={`absolute left-0.5 top-0.5 w-6 h-6 rounded-full bg-white 
+        transition-transform duration-300 
+        peer-checked:translate-x-[20px]
+        shadow-md group-hover:shadow-[0_0_12px_#00ff88aa]`}
+    />
   </label>
 </div>
+
 
     </div>
   );
