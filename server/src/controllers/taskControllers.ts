@@ -523,6 +523,7 @@ export const rescheduleTask = async(req: any, res: any) => {
 
 export const rescheduleTaskLists = async(req: any, res: any) => {
     try{
+    console.log("Rescheduling task lists: ", req.body);
     const taskList = req.body.tasks;
     if(!Array.isArray(taskList)){
         return res.status(400).json({error: "Invalid task format"});

@@ -116,6 +116,8 @@ export default function SchedulerViewCenter({
   const [undoStack, setUndoStack] = useState<UndoStep[]>([]);
 
   const draggingTaskRef = useRef<Task | null>(null);
+  const [isCrossDayDragging, setIsCrossDayDragging] = useState(false);
+  
   const [hoveringDayIndex, setHoveringDayIndex] = useState<number | null>(null);
   const offsetYRef = useRef<number>(0);
 
@@ -329,6 +331,10 @@ export default function SchedulerViewCenter({
 
  const handleDrop = (e: React.DragEvent, targetDayIndex: number) => {
   e.preventDefault();
+  draggingTaskRef.current = null;
+  document.removeEventListener("mousemove", handleMouseMove);
+  document.removeEventListener("mouseup", handleMouseUp);
+
 
   const taskId = e.dataTransfer.getData("taskId");
   if (!taskId) return;
@@ -505,7 +511,7 @@ export default function SchedulerViewCenter({
                 return (
                   <div
                     key={task._id}
-                    draggable
+                    draggable={!task.isFixed && isCrossDayDragging}
                     onDragStart={(e) => {
                       e.dataTransfer.setData("taskId", task._id);
                     }}
@@ -587,6 +593,20 @@ export default function SchedulerViewCenter({
           className="w-36 h-2 rounded-full bg-[#00ff8822] appearance-none cursor-pointer accent-[#00ff88] shadow-inner"
         />
       </div>
+      <div className="fixed bottom-4 left-4 z-50 flex items-center gap-2">
+  <span className="text-sm text-white font-semibold">Cross-Day Drag</span>
+  <label className="relative inline-flex items-center cursor-pointer">
+    <input
+      type="checkbox"
+      checked={isCrossDayDragging}
+      onChange={(e) => setIsCrossDayDragging(e.target.checked)}
+      className="sr-only peer"
+    />
+    <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:bg-green-500 transition-colors duration-300" />
+    <div className="absolute left-0.5 top-0.5 bg-white w-5 h-5 rounded-full transition-transform duration-300 peer-checked:translate-x-full" />
+  </label>
+</div>
+
     </div>
   );
 }
