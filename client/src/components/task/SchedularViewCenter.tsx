@@ -1,8 +1,13 @@
 "use client";
 import { GET_TASK_7days, RESCHEDULE_TASKLISTS_ROUTE } from "@/lib/apiRoutes";
 import React, { useEffect, useRef, useState } from "react";
-import { toast } from 'sonner';
+import { toast } from "sonner";
 
+type UndoStep = {
+  taskId: string;
+  prevStart: Date;
+  prevEnd: Date;
+};
 
 type Task = {
   _id: string;
@@ -14,6 +19,7 @@ type Task = {
   deadline?: Date;
   isLocked: boolean;
   isFixed: boolean;
+  rescheduleStatus: boolean;
   userOutput: {
     text: string;
     image: string[];
@@ -95,23 +101,37 @@ export default function SchedulerViewCenter({
   const [SLOT_HEIGHT, SET_SLOT_HEIGHT] = useState(1);
   const [changedTasks, setChangedTasks] = useState<Record<string, Task>>({});
   const [timeMarksList, setTimeMarksList] = useState<String[]>(["00"]);
+  const [undoStack, setUndoStack] = useState<UndoStep[]>([]);
 
   const draggingTaskRef = useRef<Task | null>(null);
   const offsetYRef = useRef<number>(0);
 
   const setUpTimeMarkings = () => {
-    if(SLOT_HEIGHT === 1){
-        setTimeMarksList(["00"])
-    } else if(SLOT_HEIGHT === 6){
-        setTimeMarksList(["00", "30"])
-    } else if(SLOT_HEIGHT === 11){
-        setTimeMarksList(["00", "30", "15", "45"])
-    } else if(SLOT_HEIGHT === 16){
-        setTimeMarksList(["00", "10", "20", "30", "40", "50"])
-    } else if(SLOT_HEIGHT === 21){
-        setTimeMarksList(["00", "10", "20", "30", "40", "50", "05", "15", "25", "35", "45", "55"]);
+    if (SLOT_HEIGHT === 1) {
+      setTimeMarksList(["00"]);
+    } else if (SLOT_HEIGHT === 6) {
+      setTimeMarksList(["00", "30"]);
+    } else if (SLOT_HEIGHT === 11) {
+      setTimeMarksList(["00", "30", "15", "45"]);
+    } else if (SLOT_HEIGHT === 16) {
+      setTimeMarksList(["00", "10", "20", "30", "40", "50"]);
+    } else if (SLOT_HEIGHT === 21) {
+      setTimeMarksList([
+        "00",
+        "10",
+        "20",
+        "30",
+        "40",
+        "50",
+        "05",
+        "15",
+        "25",
+        "35",
+        "45",
+        "55",
+      ]);
     }
-  }
+  };
 
   const priorityColors = {
     low: "bg-green-600/70",
@@ -119,11 +139,15 @@ export default function SchedulerViewCenter({
     high: "bg-orange-500/80",
     critical: "bg-red-600/80",
   };
-  
+
+  const handleUndoStep = () => {
+    if (undoStack.length === 0) return;
+    console.log("stack", undoStack);
+  };
 
   const checkIfSlotsEndsWidth = (slot: string) => {
     return timeMarksList.some((timeMark) => slot.endsWith(timeMark));
-  }
+  };
 
   const baseDate = new Date(`${year}-${parseInt(month) + 1}-${day}`); //YYYY-MM-DD => proper format like in write in real
 
@@ -137,14 +161,13 @@ export default function SchedulerViewCenter({
 
   const timeSlots = generateTimeSlots(); //Creates the array of minute labels once.
 
-//   useEffect(() => {
-//     console.log("taksks", tasks);
-//   }, [tasks]);
+  //   useEffect(() => {
+  //     console.log("taksks", tasks);
+  //   }, [tasks]);
 
   useEffect(() => {
     setUpTimeMarkings();
   }, [SLOT_HEIGHT]);
-  
 
   const get7DaysTasks = async () => {
     try {
@@ -179,67 +202,92 @@ export default function SchedulerViewCenter({
 
   const handleMouseDown = (task: Task, e: React.MouseEvent<HTMLDivElement>) => {
     draggingTaskRef.current = task;
-    offsetYRef.current = e.clientY - e.currentTarget.getBoundingClientRect().top;
+    offsetYRef.current =
+      e.clientY - e.currentTarget.getBoundingClientRect().top;
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
+const handleMouseMove = (e: MouseEvent) => {
+  if (!draggingTaskRef.current) return;
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!draggingTaskRef.current) return;
-    const container = document.querySelector(".timeline-container");
-    if (!container) return;
-    const rect = container.getBoundingClientRect();
-    const y = e.clientY - rect.top - offsetYRef.current;
-    const minutes = Math.round(y / SLOT_HEIGHT);
-    const clampedMinutes = Math.max(0, Math.min(minutes, MINUTES_IN_DAY - 1));
-    const newStart = new Date(draggingTaskRef.current.startTime!);
-    newStart.setHours(0, clampedMinutes, 0, 0);
-    const newEnd = new Date(newStart.getTime() + draggingTaskRef.current.duration! * 60 * 60 * 1000);
+  const container = document.querySelector(".timeline-container");
+  if (!container) return;
 
-    setTasks((prev) =>
-      prev.map((t) =>
-        t._id === draggingTaskRef.current!._id ? { ...t, startTime: newStart, endTime: newEnd } : t
-      )
-    );
-    setChangedTasks((prev) => ({
+  const rect = container.getBoundingClientRect();
+  const y = e.clientY - rect.top - offsetYRef.current;
+
+  const minutes = Math.floor(y / SLOT_HEIGHT); // Use floor instead of round
+  const clampedMinutes = Math.max(0, Math.min(minutes, MINUTES_IN_DAY - 1));
+
+  const newStart = new Date(draggingTaskRef.current.startTime!);
+  newStart.setHours(0, 0, 0, 0); // reset time to midnight first
+  newStart.setMinutes(clampedMinutes); // then set total minutes directly
+
+  const durationInMs = draggingTaskRef.current.duration! * 60 * 60 * 1000;
+  const newEnd = new Date(newStart.getTime() + durationInMs);
+
+  setTasks((prev) =>
+    prev.map((t) =>
+      t._id === draggingTaskRef.current!._id
+        ? {
+            ...t,
+            startTime: newStart,
+            endTime: newEnd,
+            rescheduleStatus: true,
+          }
+        : t
+    )
+  );
+
+  setChangedTasks((prev) => ({
+    ...prev,
+    [draggingTaskRef.current!._id]: {
+      ...draggingTaskRef.current!,
+      startTime: newStart,
+      endTime: newEnd,
+    },
+  }));
+};
+
+
+  const handleMouseUp = async () => {
+    const draggingTask = draggingTaskRef.current; //saving before nullifying it
+    if (!draggingTask) return;
+    setUndoStack((prev) => [
       ...prev,
-      [draggingTaskRef.current!._id]: {
-        ...draggingTaskRef.current!,
-        startTime: newStart,
-        endTime: newEnd,
+      {
+        taskId: draggingTask!._id,
+        prevStart: draggingTask!.startTime!,
+        prevEnd: draggingTask!.endTime!,
       },
-    }));
-  };
-
-  const handleMouseUp = () => {
+    ]);
     draggingTaskRef.current = null;
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);
   };
 
   const handleRescheduleSubmit = async () => {
-      const updatedTasks = Object.values(changedTasks);
+    const updatedTasks = Object.values(changedTasks);
     //   console.log(updatedTasks);
-      try{
-         const response = await fetch(RESCHEDULE_TASKLISTS_ROUTE, {
-            method: "POST",
-            headers: {"Content-type": "application/json"},
-            credentials: "include",
-            body: JSON.stringify({tasks: updatedTasks})
-         });
-         if(response.ok){
-            setChangedTasks({});
-            await get7DaysTasks();
-            toast.success("Task rescheduled successfully");
-         } else {
-            toast.error("Error rescheduling tasks");
-         }
-      }catch(err){
-        console.error("Error in rescheduling task lists, err");
+    try {
+      const response = await fetch(RESCHEDULE_TASKLISTS_ROUTE, {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ tasks: updatedTasks }),
+      });
+      if (response.ok) {
+        setChangedTasks({});
+        await get7DaysTasks();
+        toast.success("Task rescheduled successfully");
+      } else {
         toast.error("Error rescheduling tasks");
       }
-  }
-
+    } catch (err) {
+      console.error("Error in rescheduling task lists, err");
+      toast.error("Error rescheduling tasks");
+    }
+  };
 
   return (
     <div className="flex overflow-x-auto scrollbar-thin scrollbar-thumb-green-500">
@@ -247,10 +295,17 @@ export default function SchedulerViewCenter({
       <div className="w-20 shrink-0 flex flex-col items-end pt-[32px] relative">
         {timeSlots.map((slot, i) => (
           <div
+            onClick={() => {
+              const hour = Math.floor(i / 60)
+                .toString()
+                .padStart(2, "0");
+              const minute = (i % 60).toString().padStart(2, "0");
+              toast.info(`Time: ${hour}:${minute}`);
+            }}
             key={i}
             style={{ height: SLOT_HEIGHT }}
-            className={`w-full pr-1 text-[10px] text-gray-400 ${ checkIfSlotsEndsWidth(slot) ? ""
-                : "text-transparent"
+            className={`w-full pr-1 text-[10px] text-gray-400 ${
+              checkIfSlotsEndsWidth(slot) ? "" : "text-transparent"
             }`}
           >
             {slot}
@@ -266,7 +321,9 @@ export default function SchedulerViewCenter({
             const taskStartDateStr = formatDate(task.startTime);
             const taskEndDateStr = formatDate(task.endTime);
             const currDateStr = formatDate(date);
-            return taskStartDateStr === currDateStr || taskEndDateStr === currDateStr;
+            return (
+              taskStartDateStr === currDateStr || taskEndDateStr === currDateStr
+            );
           });
 
           return (
@@ -275,7 +332,7 @@ export default function SchedulerViewCenter({
               className="relative w-48 border-l border-gray-800"
             >
               {/* Sticky Day Header */}
-              <div className="sticky top-0 bg-black text-green-400 text-center text-sm py-2 border-b border-gray-700 z-10">
+              <div className="day-header sticky top-0 bg-black text-green-400 text-center text-sm py-2 border-b border-gray-700 z-10">
                 {date.toLocaleDateString("en-US", {
                   weekday: "short",
                   day: "2-digit",
@@ -285,34 +342,74 @@ export default function SchedulerViewCenter({
               </div>
 
               {/* Minute slots */}
-              {timeSlots.map((_, i) => (
-                <div
-                  key={i}
-                  style={{ height: SLOT_HEIGHT }}
-                  className="border-t border-gray-700"
-                />
-              ))}
+              {timeSlots.map((slot, i) => {
+                const isMarked = checkIfSlotsEndsWidth(slot);
+                return (
+                  <div
+                    key={i}
+                    style={{ height: SLOT_HEIGHT }}
+                    className={`border-t ${
+                      isMarked ? "border-green-500" : "border-gray-700"
+                    }`}
+                    onClick={() => {
+                      const hour = Math.floor(i / 60)
+                        .toString()
+                        .padStart(2, "0");
+                      const minute = (i % 60).toString().padStart(2, "0");
+                      toast.info(`Time: ${hour}:${minute}`);
+                    }}
+                  />
+                );
+              })}
 
               {/* Tasks */}
               {dayTasks.map((task) => {
                 const start = parseMinutesFromMidnight(task.startTime!);
                 const end = parseMinutesFromMidnight(task.endTime!);
                 const height = (end - start) * SLOT_HEIGHT;
-                const top = start * SLOT_HEIGHT;
+                const headerOffsetHeight = document.querySelector(".day-header")?.clientHeight || 40;
+                const top = start * SLOT_HEIGHT + headerOffsetHeight;
 
                 return (
                   <div
                     key={task._id}
                     onMouseDown={(e) => handleMouseDown(task, e)}
-                    className={`absolute left-2 right-2 cursor-grab ${priorityColors[task.priority]} text-xs text-white px-2 py-1 rounded-md shadow-md flex items-center justify-between`}
-                    style={{ top, height, transition: "top 0.2s", zIndex: 20 }}                  >
+                    title={`Start: ${task.startTime}\nEnd: ${task.endTime}`}
+                    className={`absolute left-2 right-2 cursor-grab ${
+                      priorityColors[task.priority]
+                    } text-xs text-white px-2 py-1 rounded-md shadow-md flex items-center justify-between`}
+                    style={{
+                      top,
+                      height,
+                      transition: "top 0.2s",
+                      zIndex: 20,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <div className="flex items-center gap-1">
-                       {task.isLocked && (
-                          <span className="text-white text-xs">
-                             🔒
-                          </span>
-                       )}
+                      {task.isLocked && (
+                        <span className="text-white text-xs">🔒</span>
+                      )}
                       <span>{task.title}</span>
+                      {task.rescheduleStatus && (
+                        <span
+                          style={{
+                            backgroundColor: "white",
+                            color: "black",
+                            height: "20px",
+                            width: "20px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            border: "1px solid black",
+                            borderRadius: "100px",
+                          }}
+                        >
+                          R
+                        </span>
+                      )}
                     </div>
                   </div>
                 );
@@ -321,20 +418,31 @@ export default function SchedulerViewCenter({
           );
         })}
         {Object.keys(changedTasks).length > 0 && (
-        <div className="fixed bottom-20 right-4">
-          <button
-            onClick={handleRescheduleSubmit}
-            className="bg-gradient-to-r from-blue-600 to-green-500 hover:from-green-500 hover:to-blue-600 text-white font-bold px-6 py-2 rounded-full shadow-lg"
-          >
-            Reschedule ({Object.keys(changedTasks).length})
-          </button>
-        </div>
-      )}
+          <div className="fixed bottom-25 right-4">
+            <button
+              onClick={handleRescheduleSubmit}
+              className="bg-gradient-to-r from-blue-600 to-green-500 hover:from-green-500 hover:to-blue-600 text-white font-bold px-6 py-2 rounded-full shadow-lg cursor-pointer"
+            >
+              Reschedule ({Object.keys(changedTasks).length})
+            </button>
+
+            {undoStack.length > 0 && (
+              <button
+                onClick={handleUndoStep}
+                className="bg-yellow-500 text-white font-bold px-4 py-2 rounded-full shadow-md ml-2"
+              >
+                Undo ({undoStack.length})
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Slider to control slot height */}
       <div className="fixed bottom-4 right-4 bg-black/80 border border-green-500 rounded-xl p-3 shadow-lg z-50">
-        <label className="text-green-400 text-xs block mb-1">Zoom in-out slider</label>
+        <label className="text-green-400 text-xs block mb-1">
+          Zoom in-out slider
+        </label>
         <input
           type="range"
           min={1}
@@ -347,7 +455,6 @@ export default function SchedulerViewCenter({
           className="w-32 accent-green-500 cursor-pointer"
         />
       </div>
-      
     </div>
   );
 }
