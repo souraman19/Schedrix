@@ -350,6 +350,8 @@ export default function SchedulerViewCenter({
     parseMinutesFromMidnight(taskToUpdate.startTime);
 
   const oldStart = new Date(taskToUpdate.startTime);
+  const oldEnd = new Date(taskToUpdate.endTime);
+
   const newStart = new Date(droppedDate);
   newStart.setHours(oldStart.getHours(), oldStart.getMinutes());
 
@@ -379,6 +381,16 @@ export default function SchedulerViewCenter({
         rescheduleStatus: true,
       }
   }));
+
+  setUndoStack((prev) => [
+      ...prev,
+      {
+        taskId: taskId,
+        prevStart: oldStart,
+        prevEnd: oldEnd,
+        rescheduleStatus: taskToUpdate.rescheduleStatus,
+      },
+    ]);
 };
 
 
