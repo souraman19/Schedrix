@@ -271,7 +271,11 @@ export default function SchedulerViewCenter({
     document.addEventListener("mouseup", handleMouseUp);
   };
   const handleMouseMove = (e: MouseEvent) => {
-    if (!draggingTaskRef.current) return;
+    const draggingTask = draggingTaskRef.current; 
+    //saving before nullifying it
+    //if dont save it before nullifying, it will be null when mouse up is called & can cause problem sue to some async nature of event listeners
+
+    if (!draggingTask) return;
 
     const container = document.querySelector(".timeline-container");
     if (!container) return;
@@ -282,16 +286,16 @@ export default function SchedulerViewCenter({
     const minutes = Math.floor(y / SLOT_HEIGHT); // Use floor instead of round
     const clampedMinutes = Math.max(0, Math.min(minutes, MINUTES_IN_DAY - 1));
 
-    const newStart = new Date(draggingTaskRef.current.startTime!);
+    const newStart = new Date(draggingTask.startTime!);
     newStart.setHours(0, 0, 0, 0); // reset time to midnight first
     newStart.setMinutes(clampedMinutes); // then set total minutes directly
 
-    const durationInMs = draggingTaskRef.current.duration! * 60 * 60 * 1000;
+    const durationInMs = draggingTask.duration! * 60 * 60 * 1000;
     const newEnd = new Date(newStart.getTime() + durationInMs);
 
     setTasks((prev) =>
       prev.map((t) =>
-        t._id === draggingTaskRef.current!._id
+        t._id === draggingTask._id
           ? {
               ...t,
               startTime: newStart,
@@ -304,8 +308,8 @@ export default function SchedulerViewCenter({
 
     setChangedTasks((prev) => ({
       ...prev,
-      [draggingTaskRef.current!._id]: {
-        ...draggingTaskRef.current!,
+      [draggingTask._id]: {
+        ...draggingTask,
         startTime: newStart,
         endTime: newEnd,
       },
@@ -324,7 +328,6 @@ export default function SchedulerViewCenter({
         rescheduleStatus: draggingTask!.rescheduleStatus,
       },
     ]);
-    draggingTaskRef.current = null;
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);
   };
