@@ -116,6 +116,7 @@ export default function SchedulerViewCenter({
   const [undoStack, setUndoStack] = useState<UndoStep[]>([]);
 
   const draggingTaskRef = useRef<Task | null>(null);
+  const [hoveringDayIndex, setHoveringDayIndex] = useState<number | null>(null);
   const offsetYRef = useRef<number>(0);
 
   const setUpTimeMarkings = () => {
@@ -326,6 +327,55 @@ export default function SchedulerViewCenter({
     document.removeEventListener("mouseup", handleMouseUp);
   };
 
+ const handleDrop = (e: React.DragEvent, targetDayIndex: number) => {
+  e.preventDefault();
+
+  const taskId = e.dataTransfer.getData("taskId");
+  if (!taskId) return;
+
+  const droppedDate = daysArray[targetDayIndex];
+  if (!droppedDate) return;
+
+  const taskToUpdate = tasks.find((task) => task._id === taskId);
+  if (!taskToUpdate || !taskToUpdate.startTime || !taskToUpdate.endTime) return;
+
+  const duration =
+    parseMinutesFromMidnight(taskToUpdate.endTime) -
+    parseMinutesFromMidnight(taskToUpdate.startTime);
+
+  const oldStart = new Date(taskToUpdate.startTime);
+  const newStart = new Date(droppedDate);
+  newStart.setHours(oldStart.getHours(), oldStart.getMinutes());
+
+  const newEnd = new Date(newStart);
+  newEnd.setMinutes(newEnd.getMinutes() + duration);
+
+  const updatedTasks = tasks.map((task) => {
+    if (task._id === taskId) {
+      return {
+        ...task,
+        startTime: newStart,
+        endTime: newEnd,
+        rescheduleStatus: true,
+      };
+    }
+    return task;
+  });
+
+  setTasks(updatedTasks);
+
+  setChangedTasks((prev) => ({
+    ...prev,
+      [taskId]:{
+        ...prev[taskId],
+        startTime: newStart,
+        endTime: newEnd,
+        rescheduleStatus: true,
+      }
+  }));
+};
+
+
   const handleRescheduleSubmit = async () => {
     const updatedTasks = Object.values(changedTasks);
     // console.log(updatedTasks);
@@ -350,168 +400,193 @@ export default function SchedulerViewCenter({
   };
 
   return (
-  <div className="flex overflow-x-auto scrollbar-thin scrollbar-thumb-[#00ff88] bg-gradient-to-br from-black via-zinc-950 to-neutral-900 text-white">
-    {/* Time Column */}
-    <div className="w-20 shrink-0 flex flex-col items-end pt-[32px] relative border-r border-[#00ff8877] bg-black/80 backdrop-blur-lg">
-      {timeSlots.map((slot, i) => (
-        <div
-          onClick={() => {
-            const hour = Math.floor(i / 60)
-              .toString()
-              .padStart(2, "0");
-            const minute = (i % 60).toString().padStart(2, "0");
-            toast.info(`Time: ${hour}:${minute}`);
-          }}
-          key={i}
-          style={{ height: SLOT_HEIGHT }}
-          className={`w-full pr-1 text-[10px] font-mono ${
-            checkIfSlotsEndsWidth(slot)
-              ? "text-[#00ff88] hover:text-white transition"
-              : "text-transparent"
-          } cursor-pointer`}
-        >
-          {slot}
-        </div>
-      ))}
-    </div>
-
-    {/* Day Columns */}
-    <div className="flex-1 flex timeline-container">
-      {daysArray.map((date, dayIndex) => {
-        const dayTasks = tasks.filter((task) => {
-          if (!task.startTime || !task.endTime) return false;
-          const taskStartDateStr = formatDate(task.startTime);
-          const taskEndDateStr = formatDate(task.endTime);
-          const currDateStr = formatDate(date);
-          return (
-            taskStartDateStr === currDateStr || taskEndDateStr === currDateStr
-          );
-        });
-
-        return (
+    <div className="flex overflow-x-auto scrollbar-thin scrollbar-thumb-[#00ff88] bg-gradient-to-br from-black via-zinc-950 to-neutral-900 text-white">
+      {/* Time Column */}
+      <div className="w-20 shrink-0 flex flex-col items-end pt-[32px] relative border-r border-[#00ff8877] bg-black/80 backdrop-blur-lg">
+        {timeSlots.map((slot, i) => (
           <div
-            key={dayIndex}
-            className="relative w-48 border-l border-[#00c85344] bg-black/50 backdrop-blur"
+            onClick={() => {
+              const hour = Math.floor(i / 60)
+                .toString()
+                .padStart(2, "0");
+              const minute = (i % 60).toString().padStart(2, "0");
+              toast.info(`Time: ${hour}:${minute}`);
+            }}
+            key={i}
+            style={{ height: SLOT_HEIGHT }}
+            className={`w-full pr-1 text-[10px] font-mono ${
+              checkIfSlotsEndsWidth(slot)
+                ? "text-[#00ff88] hover:text-white transition"
+                : "text-transparent"
+            } cursor-pointer`}
           >
-            {/* Sticky Day Header */}
-            <div className="day-header sticky top-0 bg-black/70 backdrop-blur-md text-[#b2ff59] font-semibold text-center text-sm py-2 shadow-[0_2px_10px_#00c85388] z-10 border-b border-green-500/30">
-              {date.toLocaleDateString("en-US", {
-                weekday: "short",
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
+            {slot}
+          </div>
+        ))}
+      </div>
+
+      {/* Day Columns */}
+      <div className="flex-1 flex timeline-container">
+        {daysArray.map((date, dayIndex) => {
+          const dayTasks = tasks.filter((task) => {
+            if (!task.startTime || !task.endTime) return false;
+            const taskStartDateStr = formatDate(task.startTime);
+            const taskEndDateStr = formatDate(task.endTime);
+            const currDateStr = formatDate(date);
+            return (
+              taskStartDateStr === currDateStr || taskEndDateStr === currDateStr
+            );
+          });
+
+          return (
+            <div
+              key={dayIndex}
+              onDragOver={(e) => {
+                e.preventDefault();
+              }}
+              onDrop={(e) => {
+                handleDrop(e, dayIndex);
+                setHoveringDayIndex(null);
+              }}
+              onDragEnter={() => setHoveringDayIndex(dayIndex)}
+              onDragLeave={(e) => {
+                if (!e.currentTarget.contains(e.relatedTarget)) {
+                  setHoveringDayIndex(null);
+                }
+              }}
+              className={`relative w-48 rounded-xl overflow-hidden border border-[#ffffff11] 
+  transition-all duration-300 ease-in-out backdrop-blur 
+  ${
+    hoveringDayIndex === dayIndex
+      ? "bg-gradient-to-br from-[#0d0d0d] via-[#003322] to-[#001a0f] border-[#00ff88aa] shadow-[0_0_20px_#00ff8888,inset_0_0_12px_#00ff8844]"
+      : "bg-black/50"
+  }`}
+            >
+              {/* Sticky Day Header */}
+              <div className="day-header sticky top-0 bg-black/70 backdrop-blur-md text-[#b2ff59] font-semibold text-center text-sm py-2 shadow-[0_2px_10px_#00c85388] z-10 border-b border-green-500/30">
+                {date.toLocaleDateString("en-US", {
+                  weekday: "short",
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </div>
+
+              {/* Minute slots */}
+              {timeSlots.map((slot, i) => {
+                const isMarked = checkIfSlotsEndsWidth(slot);
+                return (
+                  <div
+                    key={i}
+                    style={{ height: SLOT_HEIGHT }}
+                    className={`border-t ${
+                      isMarked ? "border-[#00ff88]" : "border-gray-700"
+                    } hover:bg-[#00ff8822] transition cursor-pointer`}
+                    onClick={() => {
+                      const hour = Math.floor(i / 60)
+                        .toString()
+                        .padStart(2, "0");
+                      const minute = (i % 60).toString().padStart(2, "0");
+                      toast.info(`Time: ${hour}:${minute}`);
+                    }}
+                  />
+                );
+              })}
+
+              {/* Tasks */}
+              {dayTasks.map((task) => {
+                const start = parseMinutesFromMidnight(task.startTime!);
+                const end = parseMinutesFromMidnight(task.endTime!);
+                const height = (end - start) * SLOT_HEIGHT;
+                const headerOffsetHeight =
+                  document.querySelector(".day-header")?.clientHeight || 40;
+                const top = start * SLOT_HEIGHT + headerOffsetHeight;
+
+                return (
+                  <div
+                    key={task._id}
+                    draggable
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData("taskId", task._id);
+                    }}
+                    onMouseDown={(e) => handleMouseDown(task, e)}
+                    title={`Start: ${task.startTime}\nEnd: ${task.endTime}`}
+                    className={`absolute left-2 right-2 cursor-grab ${
+                      priorityColors[task.priority]
+                    } px-3 py-1 rounded-xl border border-[#00ff8877] shadow-[0_0_16px_#00ff8866] backdrop-blur-md bg-gradient-to-br from-[#00c853]/70 to-[#b2ff59]/40 hover:shadow-[0_0_32px_#00ff88aa] hover:border-[#00ff88] transition-all duration-300`}
+                    style={{
+                      top,
+                      height,
+                      transition: "top 0.2s",
+                      zIndex: 20,
+                    }}
+                  >
+                    <div className="flex justify-center m-1 gap-2 text-xs text-black font-semibold border border-black/20 bg-white/80 px-2 py-1 rounded-full">
+                      {task.isLocked && <span>🔒</span>}
+                      <span>{task.title}</span>
+                      {task.rescheduleStatus && (
+                        <span
+                          style={{
+                            backgroundColor: "white",
+                            color: "black",
+                            height: "20px",
+                            width: "20px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            border: "1px solid black",
+                            borderRadius: "100px",
+                          }}
+                        >
+                          R
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
               })}
             </div>
+          );
+        })}
 
-            {/* Minute slots */}
-            {timeSlots.map((slot, i) => {
-              const isMarked = checkIfSlotsEndsWidth(slot);
-              return (
-                <div
-                  key={i}
-                  style={{ height: SLOT_HEIGHT }}
-                  className={`border-t ${
-                    isMarked ? "border-[#00ff88]" : "border-gray-700"
-                  } hover:bg-[#00ff8822] transition cursor-pointer`}
-                  onClick={() => {
-                    const hour = Math.floor(i / 60)
-                      .toString()
-                      .padStart(2, "0");
-                    const minute = (i % 60).toString().padStart(2, "0");
-                    toast.info(`Time: ${hour}:${minute}`);
-                  }}
-                />
-              );
-            })}
-
-            {/* Tasks */}
-            {dayTasks.map((task) => {
-              const start = parseMinutesFromMidnight(task.startTime!);
-              const end = parseMinutesFromMidnight(task.endTime!);
-              const height = (end - start) * SLOT_HEIGHT;
-              const headerOffsetHeight =
-                document.querySelector(".day-header")?.clientHeight || 40;
-              const top = start * SLOT_HEIGHT + headerOffsetHeight;
-
-              return (
-                <div
-                  key={task._id}
-                  onMouseDown={(e) => handleMouseDown(task, e)}
-                  title={`Start: ${task.startTime}\nEnd: ${task.endTime}`}
-                  className={`absolute left-2 right-2 cursor-grab ${priorityColors[task.priority]} px-3 py-1 rounded-xl border border-[#00ff8877] shadow-[0_0_16px_#00ff8866] backdrop-blur-md bg-gradient-to-br from-[#00c853]/70 to-[#b2ff59]/40 hover:shadow-[0_0_32px_#00ff88aa] hover:border-[#00ff88] transition-all duration-300`}
-                  style={{
-                    top,
-                    height,
-                    transition: "top 0.2s",
-                    zIndex: 20,
-                  }}
-                >
-                  <div className="flex justify-center m-1 gap-2 text-xs text-black font-semibold border border-black/20 bg-white/80 px-2 py-1 rounded-full">
-                    {task.isLocked && <span>🔒</span>}
-                    <span>{task.title}</span>
-                    {task.rescheduleStatus && (
-                      <span
-                        style={{
-                          backgroundColor: "white",
-                          color: "black",
-                          height: "20px",
-                          width: "20px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          border: "1px solid black",
-                          borderRadius: "100px",
-                        }}
-                      >
-                        R
-                      </span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        );
-      })}
-      {Object.keys(changedTasks).length > 0 && (
-        <div className="fixed bottom-28 right-4 z-50 flex flex-col gap-3">
-          <button
-            onClick={handleRescheduleSubmit}
-            className=" cursor-pointer bg-gradient-to-r from-[#00c853] to-[#b2ff59] hover:from-[#b2ff59] hover:to-[#00c853] text-black font-bold px-6 py-3 rounded-full shadow-[0_0_24px_#00ff8866] transition-transform transform hover:scale-105"
-          >
-            Reschedule ({Object.keys(changedTasks).length})
-          </button>
-
-          {undoStack.length > 0 && (
+        {Object.keys(changedTasks).length > 0 && (
+          <div className="fixed bottom-28 right-4 z-50 flex flex-col gap-3">
             <button
-              onClick={handleUndoStep}
-              className=" cursor-pointer bg-gradient-to-r from-yellow-300 to-yellow-500 hover:from-yellow-400 hover:to-yellow-600 text-black font-bold px-5 py-2 rounded-full shadow-md hover:shadow-yellow-500 transition"
+              onClick={handleRescheduleSubmit}
+              className=" cursor-pointer bg-gradient-to-r from-[#00c853] to-[#b2ff59] hover:from-[#b2ff59] hover:to-[#00c853] text-black font-bold px-6 py-3 rounded-full shadow-[0_0_24px_#00ff8866] transition-transform transform hover:scale-105"
             >
-              Undo ({undoStack.length})
+              Reschedule ({Object.keys(changedTasks).length})
             </button>
-          )}
-        </div>
-      )}
-    </div>
 
-    {/* Slider to control slot height */}
-    <div className="fixed bottom-4 right-4 bg-zinc-900/80 backdrop-blur-xl border border-[#00ff88] rounded-xl p-4 shadow-[0_0_18px_#00ff8855] z-50">
-      <label className="text-[#00ff88] text-xs font-bold uppercase block mb-2 tracking-wider">
-        Zoom Timeline
-      </label>
-      <input
-        type="range"
-        min={1}
-        max={21}
-        step={5}
-        value={SLOT_HEIGHT}
-        onChange={(e) => {
-          SET_SLOT_HEIGHT(Number(e.target.value));
-        }}
-        className="w-36 h-2 rounded-full bg-[#00ff8822] appearance-none cursor-pointer accent-[#00ff88] shadow-inner"
-      />
-    </div>
-  </div>
-);
+            {undoStack.length > 0 && (
+              <button
+                onClick={handleUndoStep}
+                className=" cursor-pointer bg-gradient-to-r from-yellow-300 to-yellow-500 hover:from-yellow-400 hover:to-yellow-600 text-black font-bold px-5 py-2 rounded-full shadow-md hover:shadow-yellow-500 transition"
+              >
+                Undo ({undoStack.length})
+              </button>
+            )}
+          </div>
+        )}
+      </div>
 
+      {/* Slider to control slot height */}
+      <div className="fixed bottom-4 right-4 bg-zinc-900/80 backdrop-blur-xl border border-[#00ff88] rounded-xl p-4 shadow-[0_0_18px_#00ff8855] z-50">
+        <label className="text-[#00ff88] text-xs font-bold uppercase block mb-2 tracking-wider">
+          Zoom Timeline
+        </label>
+        <input
+          type="range"
+          min={1}
+          max={21}
+          step={5}
+          value={SLOT_HEIGHT}
+          onChange={(e) => {
+            SET_SLOT_HEIGHT(Number(e.target.value));
+          }}
+          className="w-36 h-2 rounded-full bg-[#00ff8822] appearance-none cursor-pointer accent-[#00ff88] shadow-inner"
+        />
+      </div>
+    </div>
+  );
 }
