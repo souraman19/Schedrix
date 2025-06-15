@@ -438,9 +438,7 @@ export default function SchedulerViewCenter({
                   key={task._id}
                   onMouseDown={(e) => handleMouseDown(task, e)}
                   title={`Start: ${task.startTime}\nEnd: ${task.endTime}`}
-                  className={`absolute left-2 right-2 cursor-grab ${
-                    priorityColors[task.priority]
-                  } px-3 py-1 rounded-xl border border-[#00ff8877] shadow-[0_0_16px_#00ff8866] backdrop-blur-md bg-gradient-to-br from-[#00c853]/70 to-[#b2ff59]/40 hover:scale-[1.03] transition-all`}
+                  className={`absolute left-2 right-2 cursor-grab ${priorityColors[task.priority]} px-3 py-1 rounded-xl border border-[#00ff8877] shadow-[0_0_16px_#00ff8866] backdrop-blur-md bg-gradient-to-br from-[#00c853]/70 to-[#b2ff59]/40 hover:shadow-[0_0_32px_#00ff88aa] hover:border-[#00ff88] transition-all duration-300`}
                   style={{
                     top,
                     height,
