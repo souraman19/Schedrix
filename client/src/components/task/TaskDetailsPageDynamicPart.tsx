@@ -3,6 +3,7 @@ import React from "react";
 import { cookies } from "next/headers";
 import { GET_TASK_DYNAMIC_DETAILS_ROUTE } from "@/lib/apiRoutes";
 import { FaCheckCircle, FaTimesCircle, FaClock, FaUserAlt, FaCoins, FaExclamationTriangle } from "react-icons/fa";
+import EditReminderTimeBefore from "./EditReminderTImeBefore";
 
 export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string }) {
   type TaskType = {
@@ -18,9 +19,9 @@ export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string 
     };
     deadline?: Date;
     masterTaskId?: string | null;
-    remainder?: {
+    reminder?: {
       enabled: boolean;
-      remainderTimeBefore?: number; // in minutes
+      reminderTimeBefore?: number; // in minutes
     };
   };
 
@@ -157,7 +158,7 @@ export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string 
                 marginRight: "0.5rem",
               }}
             /> */}
-            Remainder 
+            Reminder 
           </h3>
           <div
             style={{
@@ -169,46 +170,13 @@ export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string 
               color: isDeadlinePassed ? "#f44336" : "#76ff03",
             }}
           >
-            {taskData?.remainder?.enabled ? "On" : "Off"}
+            {taskData?.reminder?.enabled ? "On" : "Off"}
           </div>
         </div>
 
-      {taskData?.remainder?.enabled! && (
-        <div style={{ marginBottom: "1.5rem" }}>
-          <h3
-            style={{
-              fontSize: "1.2rem",
-              fontWeight: 700,
-              background: "linear-gradient(to right, #00e676, #b2ff59)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              marginBottom: "0.25rem",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            {/* <FaExclamationTriangle
-              style={{
-                color: isDeadlinePassed ? "#f44336" : "#76ff03",
-                marginRight: "0.5rem",
-              }}
-            /> */}
-            Before 
-          </h3>
-          <div
-            style={{
-              background: "#121212",
-              padding: "1rem 1.25rem",
-              borderRadius: "0.75rem",
-              boxShadow: "0 0 12px rgba(0, 255, 128, 0.1)",
-              fontWeight: 500,
-              color: isDeadlinePassed ? "#f44336" : "#76ff03",
-            }}
-          >
-            {taskData?.remainder?.remainderTimeBefore ?? 0} minutes
-          </div>
-        </div>
-      )}
+      <EditReminderTimeBefore 
+        taskData={taskData}
+      />
 
       {typeof taskData?.totalPointsContributed === "number" && (
         <div style={{ marginBottom: "2rem" }}>

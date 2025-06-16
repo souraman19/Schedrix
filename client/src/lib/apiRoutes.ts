@@ -21,6 +21,7 @@ export const RESCHEDULE_TASK_ROUTE = `${TASK_ROUTES}/reschedule`;
 export const GET_TASK_TIMINGS_ROUTE = `${TASK_ROUTES}/get/timings`;
 export const GET_TASK_7days = `${TASK_ROUTES}/get/7days`;
 export const RESCHEDULE_TASKLISTS_ROUTE = `${TASK_ROUTES}/tasklists/reschedule`;
+export const EDIT_REMINDER_TIME_ROUTE = `${TASK_ROUTES}/edit/reminder_time`;
 
 
 

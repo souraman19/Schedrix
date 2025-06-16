@@ -11,8 +11,10 @@ import { toast } from "sonner";
 import CustomRepeat from "./CustomRepeat";
 import { flattenZodErrors } from "@/lib/flattenedZodErrors";
 import { start } from "repl";
-import { Mic } from "lucide-react"; 
+import { Mic } from "lucide-react";
 import QuickTask from "./voiceAssitant/QuickTask";
+import { useRouter } from "next/navigation"; 
+import { set } from "date-fns";
 
 export default function TaskAddForm() {
   const { user } = useUserStore();
@@ -22,8 +24,9 @@ export default function TaskAddForm() {
   const [customModalOpen, setCustomModalOpen] = useState(false);
   const [title, setTitle] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
-  const [whenRemainder, setWhenRemainder] = useState<string>("10"); // in minutes
+  const [whenReminder, setWhenReminder] = useState<string>("10"); // in minutes
 
+  const router = useRouter();
 
   const [customRepeat, setCustomRepeat] = useState({
     repeatInterval: "1",
@@ -65,6 +68,8 @@ export default function TaskAddForm() {
     // console.log("errors", errors);
   }, [errors]);
 
+
+
   const handleSubmitForm = async (prevState: any, formData: FormData) => {
     try {
       // check if input is empty string and set it to undefined
@@ -79,7 +84,7 @@ export default function TaskAddForm() {
       let formValues: any = {
         title: title as string,
         duration: sanitizeString(duration) ?? undefined,
-        whenRemainder: sanitizeString(whenRemainder) ?? undefined,
+        whenReminder: sanitizeString(whenReminder) ?? undefined,
         startTime: sanitizeString(formData.get("startTime")) ?? undefined,
         endTime: sanitizeString(formData.get("endTime")) ?? undefined,
         deadline: sanitizeString(formData.get("deadline")) ?? undefined,
@@ -87,7 +92,7 @@ export default function TaskAddForm() {
           | string
           | undefined,
         isLocked: formData.get("locked") === "true",
-        isRemainder: formData.get("isRemainder") === "true",
+        isReminder: formData.get("isReminder") === "true",
         isFixed: formData.get("fixed") === "true",
         category: sanitizeString(formData.get("category")) as
           | string
@@ -139,10 +144,25 @@ export default function TaskAddForm() {
         withCredentials: true,
       });
       // console.log("task created => ", response.data);
-      if (response.status === 201) toast.success("Task created successfully!");
+      if (response.status === 201) {
+        toast(
+        <div className="flex items-center justify-between gap-4">
+          <span>Task created successfully!</span>
+          <button
+            onClick={() => router.push(`/in/task/${response.data.task._id}`)}
+            className=" cursor-pointer text-sm font-semibold px-3 py-1 bg-green-600 text-white rounded-full hover:bg-green-700"
+          >
+            View
+          </button>
+        </div>,
+        {
+          duration: 2000,
+        }
+      );
+      }
       setTitle("");
       setDuration("");
-      setWhenRemainder("10");
+      setWhenReminder("10");
       setRepeat("no repeat");
     } catch (error: any) {
       if (error instanceof z.ZodError) {
@@ -183,7 +203,7 @@ export default function TaskAddForm() {
         color: "var(--foreground)",
       }}
     >
-      <div 
+      <div
         style={{
           display: "flex",
           justifyContent: "center",
@@ -191,7 +211,6 @@ export default function TaskAddForm() {
           // gap: "5rem",
           // border: "1px solid red",
           marginBottom: "2.2rem",
-
         }}
       >
         <div
@@ -207,11 +226,7 @@ export default function TaskAddForm() {
           ✏️ Add a New Task
         </div>
 
-        <QuickTask 
-          setTitle={setTitle}
-          setDuration={setDuration}
-        />
-
+        <QuickTask setTitle={setTitle} setDuration={setDuration} />
       </div>
       {/* Title */}
       <div style={sectionStyle}>
@@ -450,25 +465,27 @@ export default function TaskAddForm() {
         </div>
       </div>
 
-      {/* Remainder */}
+      {/* Reminder */}
       <div style={sectionStyle}>
         {sectionHeading("⏰", "Remainder")}
 
         <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
           <div style={{ flex: 1, minWidth: "220px" }}>
-            <label style={labelStyle}>Remainder</label>
+            <label style={labelStyle}>Reminder</label>
             <select
               style={{
                 ...inputBase,
                 backgroundColor: "#1a1a1a",
                 color: "#fff",
               }}
-              name="isRemainder"
+              name="isReminder"
             >
               <option value="false">Off</option>
               <option value="true">On</option>
             </select>
-            {errors.isRemainder && <div style={errorTextStyle}>{errors.isRemainder}</div>}
+            {errors.isReminder && (
+              <div style={errorTextStyle}>{errors.isReminder}</div>
+            )}
           </div>
 
           <div style={{ flex: 1, minWidth: "220px" }}>
@@ -477,12 +494,12 @@ export default function TaskAddForm() {
               type="number"
               placeholder="E.g. 2"
               style={inputBase}
-              name="whenRemainder"
-              value={whenRemainder}
-              onChange={(e) => setWhenRemainder(e.target.value)}
+              name="whenReminder"
+              value={whenReminder}
+              onChange={(e) => setWhenReminder(e.target.value)}
             />
-            {errors.whenRemainder && (
-              <div style={errorTextStyle}>{errors.whenRemainder}</div>
+            {errors.whenReminder && (
+              <div style={errorTextStyle}>{errors.whenReminder}</div>
             )}
           </div>
         </div>

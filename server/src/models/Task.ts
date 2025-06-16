@@ -54,9 +54,9 @@
         isMaster: boolean;
         masterTaskId: Types.ObjectId | null; 
         masterStatus: string; // 'pending' | 'completed'
-        remainder: {
+        reminder: {
             enabled: boolean;
-            remainderTimeBefore: number; // in minutes
+            reminderTimeBefore: number; // in minutes
         };
     }
 
@@ -115,9 +115,9 @@
         isMaster: {type: Boolean, default: true},
         masterTaskId: {type: Schema.Types.ObjectId, ref: 'Task', default: null},
         masterStatus: {type: String, enum: ['pending', 'completed', 'N/A'], default: 'pending'},
-        remainder:{
+        reminder:{
             enabled:  {type: Boolean, default: true},
-            remainderTimeBefore: {type: Number, default: 10} // in minutes
+            reminderTimeBefore: {type: Number, default: 10} // in minutes
         }
     }, {
         timestamps: true

@@ -21,8 +21,8 @@ export const createTask = async(req: any, res: any) => {
             audio,
             repeat,
             customRepeat,
-            isRemainder,
-            whenRemainder,
+            isReminder,
+            whenReminder,
         } = req.body;
 
         // console.log("Request body: ", req.body);
@@ -87,9 +87,9 @@ export const createTask = async(req: any, res: any) => {
             createdBy: userId,
             tags:[],   
             repeat, 
-            remainder: {
-                enabled: isRemainder,
-                remainderTimeBefore: whenRemainder,
+            reminder: {
+                enabled: isReminder,
+                remainderTimeBefore: whenReminder,
             },
             ...(customRepeat ? {customRepeat} : {}), // Spread customRepeat only if it exists
         })
@@ -260,7 +260,7 @@ export const getTaskDynamicDetails = async(req: any, res: any) => {
         const _id = req.params._id;
         const userId = req.user._id; 
         const task = await Task.findOne({_id: new Types.ObjectId(_id)})
-        .select(' _id userOutput status remainder totalPointsContributed pointsContributed outputAnalysis deadline masterTaskId')
+        .select(' _id userOutput status reminder totalPointsContributed pointsContributed outputAnalysis deadline masterTaskId')
         .exec();
         if(!task){
             return res.status(404).json({error: "Task not found"});
@@ -562,5 +562,33 @@ export const rescheduleTaskLists = async(req: any, res: any) => {
     }catch(err){
         console.error("Error in rescheduling tasks:", err);
         res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+
+export const editReminderTime = async(req: any, res: any) => {
+    try{
+        const {taskId, remainderTimeBefore} = req.body;
+        if(!taskId || !remainderTimeBefore){
+            return res.status(400).json({error: "Invalid request data"});
+        }
+
+        const task = await Task.findById(taskId).exec();
+        if(!task){
+            return res.status(404).json({error: "Task not found"});
+        }
+
+        if(!task.reminder || !task.reminder.enabled){
+            return res.status(400).json({error: "Remainder is not enabled for this task"});
+        }
+
+        task.reminder.reminderTimeBefore = remainderTimeBefore;
+
+        await task.save();
+
+        return res.status(200).json({message: "Remainder time updated successfully", task});
+    }catch(err){
+        console.error("Error editing remainder time: ", err);
+        res.status(500).json({error: "Internal server error"});
     }
 }

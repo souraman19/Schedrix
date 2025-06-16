@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { createTask, getFilteredTasks, getTaskStaticDetails, getTaskDynamicDetails, resolveTask, getTaskRepeatInfo, getTaskTimings, rescheduleTask, fetch7DaysTasks, rescheduleTaskLists } from '../controllers/TaskControllers';
+import { createTask, getFilteredTasks, getTaskStaticDetails, getTaskDynamicDetails, resolveTask, getTaskRepeatInfo, getTaskTimings, rescheduleTask, fetch7DaysTasks, rescheduleTaskLists, editReminderTime } from '../controllers/TaskControllers';
 import multer from 'multer';
 
 const upload = multer();
@@ -15,7 +15,7 @@ router.get('/get/timings/:_id', getTaskTimings);
 router.post('/reschedule/:_id', upload.none(), rescheduleTask);
 router.get('/get/7days/:day', fetch7DaysTasks);
 router.post('/tasklists/reschedule', rescheduleTaskLists);
-
+router.put('/edit/reminder_time', editReminderTime);
 
 
 export default router;
