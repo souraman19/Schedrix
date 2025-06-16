@@ -5,12 +5,13 @@ import { useEffect } from 'react';
 import {generateToken} from "@/notifications/firebase";
 import { messaging } from '@/notifications/firebase';
 import { onMessage } from 'firebase/messaging'; 
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function TokenGenerator() {
     useEffect(() => {
         generateToken();
         onMessage(messaging, (payload)=> {
-            console.log('Message received. ', payload);
+            toast(payload.notification!.title!);
         })
     }, [])
 
