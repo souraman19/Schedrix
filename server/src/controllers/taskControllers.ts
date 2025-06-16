@@ -260,7 +260,7 @@ export const getTaskDynamicDetails = async(req: any, res: any) => {
         const _id = req.params._id;
         const userId = req.user._id; 
         const task = await Task.findOne({_id: new Types.ObjectId(_id)})
-        .select(' _id userOutput status totalPointsContributed pointsContributed outputAnalysis deadline masterTaskId')
+        .select(' _id userOutput status remainder totalPointsContributed pointsContributed outputAnalysis deadline masterTaskId')
         .exec();
         if(!task){
             return res.status(404).json({error: "Task not found"});

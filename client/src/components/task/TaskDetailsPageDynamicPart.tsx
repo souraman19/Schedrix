@@ -18,6 +18,10 @@ export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string 
     };
     deadline?: Date;
     masterTaskId?: string | null;
+    remainder?: {
+      enabled: boolean;
+      remainderTimeBefore?: number; // in minutes
+    };
   };
 
   let taskData: TaskType | null = null;
@@ -129,6 +133,79 @@ export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string 
             }}
           >
             {new Date(taskData.deadline).toLocaleString()}
+          </div>
+        </div>
+      )}
+
+
+      <div style={{ marginBottom: "1.5rem" }}>
+          <h3
+            style={{
+              fontSize: "1.2rem",
+              fontWeight: 700,
+              background: "linear-gradient(to right, #00e676, #b2ff59)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              marginBottom: "0.25rem",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            {/* <FaExclamationTriangle
+              style={{
+                color: isDeadlinePassed ? "#f44336" : "#76ff03",
+                marginRight: "0.5rem",
+              }}
+            /> */}
+            Remainder 
+          </h3>
+          <div
+            style={{
+              background: "#121212",
+              padding: "1rem 1.25rem",
+              borderRadius: "0.75rem",
+              boxShadow: "0 0 12px rgba(0, 255, 128, 0.1)",
+              fontWeight: 500,
+              color: isDeadlinePassed ? "#f44336" : "#76ff03",
+            }}
+          >
+            {taskData?.remainder?.enabled ? "On" : "Off"}
+          </div>
+        </div>
+
+      {taskData?.remainder?.enabled! && (
+        <div style={{ marginBottom: "1.5rem" }}>
+          <h3
+            style={{
+              fontSize: "1.2rem",
+              fontWeight: 700,
+              background: "linear-gradient(to right, #00e676, #b2ff59)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              marginBottom: "0.25rem",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            {/* <FaExclamationTriangle
+              style={{
+                color: isDeadlinePassed ? "#f44336" : "#76ff03",
+                marginRight: "0.5rem",
+              }}
+            /> */}
+            Before 
+          </h3>
+          <div
+            style={{
+              background: "#121212",
+              padding: "1rem 1.25rem",
+              borderRadius: "0.75rem",
+              boxShadow: "0 0 12px rgba(0, 255, 128, 0.1)",
+              fontWeight: 500,
+              color: isDeadlinePassed ? "#f44336" : "#76ff03",
+            }}
+          >
+            {taskData?.remainder?.remainderTimeBefore ?? 0} minutes
           </div>
         </div>
       )}
