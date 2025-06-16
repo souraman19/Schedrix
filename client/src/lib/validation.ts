@@ -3,6 +3,7 @@ import { z } from "zod";
 export const taskSchema = z.object({
   title: z.string().min(1, "Title is required").max(100, "Title must be less than 100 characters"),
   duration: z.coerce.number().min(0.01, "Duration must be greater than 0").optional(),
+  whenRemainder: z.coerce.number().min(0, "Remainder time must be 0 or greater"),
   startTime: z.coerce.date().optional(),
   endTime: z.coerce.date().optional(),
   deadline: z.coerce.date().optional(),
@@ -14,6 +15,7 @@ export const taskSchema = z.object({
   tags: z.array(z.string()).optional(),
   isLocked: z.coerce.boolean(),
   isFixed: z.coerce.boolean(),
+  isRemainder: z.coerce.boolean(),
   repeat: z.enum(['no repeat', 'repeat']),
   customRepeat: z.object({
     repeatInterval: z.coerce.number().min(1, "Interval must be greater than 0"),
@@ -48,4 +50,6 @@ export const taskSchema = z.object({
         });
       }
     }
-  });
+  }
+  
+);

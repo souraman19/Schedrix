@@ -22,6 +22,7 @@ export default function TaskAddForm() {
   const [customModalOpen, setCustomModalOpen] = useState(false);
   const [title, setTitle] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
+  const [whenRemainder, setWhenRemainder] = useState<string>("10"); // in minutes
 
 
   const [customRepeat, setCustomRepeat] = useState({
@@ -78,6 +79,7 @@ export default function TaskAddForm() {
       let formValues: any = {
         title: title as string,
         duration: sanitizeString(duration) ?? undefined,
+        whenRemainder: sanitizeString(whenRemainder) ?? undefined,
         startTime: sanitizeString(formData.get("startTime")) ?? undefined,
         endTime: sanitizeString(formData.get("endTime")) ?? undefined,
         deadline: sanitizeString(formData.get("deadline")) ?? undefined,
@@ -85,6 +87,7 @@ export default function TaskAddForm() {
           | string
           | undefined,
         isLocked: formData.get("locked") === "true",
+        isRemainder: formData.get("isRemainder") === "true",
         isFixed: formData.get("fixed") === "true",
         category: sanitizeString(formData.get("category")) as
           | string
@@ -139,6 +142,7 @@ export default function TaskAddForm() {
       if (response.status === 201) toast.success("Task created successfully!");
       setTitle("");
       setDuration("");
+      setWhenRemainder("10");
       setRepeat("no repeat");
     } catch (error: any) {
       if (error instanceof z.ZodError) {
@@ -398,7 +402,7 @@ export default function TaskAddForm() {
       </div>
 
       {/* Category & Priority */}
-      <div>
+      <div style={sectionStyle}>
         {sectionHeading("📊", "Category & Priority")}
 
         <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
@@ -441,6 +445,44 @@ export default function TaskAddForm() {
             </select>
             {errors.priority && (
               <div style={errorTextStyle}>{errors.priority}</div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Remainder */}
+      <div style={sectionStyle}>
+        {sectionHeading("⏰", "Remainder")}
+
+        <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
+          <div style={{ flex: 1, minWidth: "220px" }}>
+            <label style={labelStyle}>Remainder</label>
+            <select
+              style={{
+                ...inputBase,
+                backgroundColor: "#1a1a1a",
+                color: "#fff",
+              }}
+              name="isRemainder"
+            >
+              <option value="false">Off</option>
+              <option value="true">On</option>
+            </select>
+            {errors.isRemainder && <div style={errorTextStyle}>{errors.isRemainder}</div>}
+          </div>
+
+          <div style={{ flex: 1, minWidth: "220px" }}>
+            <label style={labelStyle}>Before (minutes)</label>
+            <input
+              type="number"
+              placeholder="E.g. 2"
+              style={inputBase}
+              name="whenRemainder"
+              value={whenRemainder}
+              onChange={(e) => setWhenRemainder(e.target.value)}
+            />
+            {errors.whenRemainder && (
+              <div style={errorTextStyle}>{errors.whenRemainder}</div>
             )}
           </div>
         </div>

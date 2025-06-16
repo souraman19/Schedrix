@@ -22,6 +22,10 @@ export interface IUser extends Document {
       longestStreak: number;
     };
     taskCategory: string[];
+    notifications: {
+      enabled: boolean;
+      defaultRemainderTimeBefore: number; // in minutes
+    }
   };
 
 const userSchema = new Schema<IUser>({
@@ -60,6 +64,9 @@ const userSchema = new Schema<IUser>({
         type: [String],
         default: ['General', 'Work', 'Health', 'Personal']
     },
+    notifications:{
+      enabled: {type: Boolean, default: true},
+    }
 },{ timestamps: true })
 
 export const User = model<IUser>('User', userSchema);

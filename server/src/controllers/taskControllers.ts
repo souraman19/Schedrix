@@ -21,6 +21,8 @@ export const createTask = async(req: any, res: any) => {
             audio,
             repeat,
             customRepeat,
+            isRemainder,
+            whenRemainder,
         } = req.body;
 
         // console.log("Request body: ", req.body);
@@ -85,6 +87,10 @@ export const createTask = async(req: any, res: any) => {
             createdBy: userId,
             tags:[],   
             repeat, 
+            remainder: {
+                enabled: isRemainder,
+                remainderTimeBefore: whenRemainder,
+            },
             ...(customRepeat ? {customRepeat} : {}), // Spread customRepeat only if it exists
         })
         await user.save();
