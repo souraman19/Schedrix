@@ -9,6 +9,7 @@ export default function RootLayout({children}: {children: ReactNode}) {
           <div className="flex">
           <Toaster 
             position="top-right"
+            reverseOrder={false}
           /> {/* for react hot toast library */}
 
           <TokenGenerator />
