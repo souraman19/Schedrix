@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, X, Home, ListTodo, LogOut } from 'lucide-react';
+import { Menu, X, Home, ListTodo, LogOut, BarChart3  } from 'lucide-react';
 import Link from 'next/link';
 import { useUserStore } from '@/store/useUserStore';
 import { LOG_OUT_ROUTE } from '@/lib/apiRoutes';
@@ -57,9 +57,7 @@ export default function Navbar() {
           <nav className="hidden md:flex gap-8">
             <NavbarLink href="/in/home" icon={<Home size={20} />}>Home</NavbarLink>
             <NavbarLink href="/in/task/home" icon={<ListTodo size={20} />}>Tasks</NavbarLink>
-            <div onClick={handleLogout}>
-                <NavbarLink href={"/"}icon={<LogOut size={20} />} red>Logout</NavbarLink>
-            </div>
+            <NavbarLink href={"/in/user/analytics"}icon={<BarChart3 size={20} />}>Analytics</NavbarLink>
           </nav>
 
           {/* Mobile Hamburger Menu */}
@@ -84,9 +82,9 @@ export default function Navbar() {
           </div>
 
           <nav className="flex flex-col gap-4">
-            <NavbarLink href="/home" icon={<Home size={20} />}>Home</NavbarLink>
-            <NavbarLink href="/tasks" icon={<ListTodo size={20} />}>Tasks</NavbarLink>
-            <NavbarLink href="/logout" icon={<LogOut size={20} />} red>Logout</NavbarLink>
+            <NavbarLink href="/in/home" icon={<Home size={20} />}>Home</NavbarLink>
+            <NavbarLink href="/in/tasks" icon={<ListTodo size={20} />}>Tasks</NavbarLink>
+            <NavbarLink href="/in/user/analytics" icon={<LogOut size={20} />} red>Analytics</NavbarLink>
           </nav>
         </div>
       )}
