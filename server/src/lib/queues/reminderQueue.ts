@@ -1,9 +1,6 @@
 import { Queue } from "bullmq";
 import IORedis from "ioredis";
-
-import dotenv from 'dotenv';
-dotenv.config(); // Load environment variables from .env file
-
+import "./../../env";
 
 
 const connection = new IORedis({
