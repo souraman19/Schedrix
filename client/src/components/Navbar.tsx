@@ -8,6 +8,7 @@ import { LOG_OUT_ROUTE } from '@/lib/apiRoutes';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Button } from '@mui/material';
+import toast from 'react-hot-toast';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -55,6 +56,7 @@ export default function Navbar() {
 
           {/* Desktop Navigation Links */}
           <nav className="hidden md:flex gap-8">
+          
             <NavbarLink href="/in/home" icon={<Home size={20} />}>Home</NavbarLink>
             <NavbarLink href="/in/task/home" icon={<ListTodo size={20} />}>Tasks</NavbarLink>
             <NavbarLink href={"/in/user/analytics"}icon={<BarChart3 size={20} />}>Analytics</NavbarLink>

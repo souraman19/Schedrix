@@ -32,7 +32,7 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: payload.notification.icon,
+    icon: "https://cdn-icons-png.flaticon.com/512/1827/1827370.png",
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
