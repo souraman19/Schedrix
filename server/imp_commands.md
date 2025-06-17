@@ -1,4 +1,5 @@
-# `Option 1`(Best)   (with ecosystem.config.js) => start all services/apps (no need to activate already "explicitly using the virtual environment's Python interpreter")
+# `Option 1` (<Best for PROD>)   
+(with ecosystem.config.js) => start all services/apps (no need to activate already "explicitly using the virtual environment's Python interpreter")
 npm run start
 
 # to Stop
@@ -30,8 +31,6 @@ inside scripts=>
     // "begin": "pm2 start src/ml_models_service/app.py --name ml-service --interpreter \"./tf-env/Scripts/python\" && pm2 start src/index.ts --name server --interpreter node --interpreter-args \"-r ts-node/register\" && pm2 start src/lib/queues/reminderWorker.ts --name reminder-worker --interpreter node --interpreter-args \"-r ts-node/register\""
 
 
-
-![alt text](image.png)
 
 
 # Install PM2 globally (once)
@@ -91,3 +90,7 @@ pm2 startup
 pm2 delete server
 pm2 delete reminder-worker
 pm2 delete all
+
+
+# to activate virtual env 
+source tf-env/Scripts/activate

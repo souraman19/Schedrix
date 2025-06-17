@@ -3,7 +3,7 @@ module.exports = {
     {
       name: "ml-service",
       script: "src/ml_models_service/app.py",
-      interpreter: "./tf-env/Scripts/python",
+      interpreter: "D:/web dev projects/Schedrix/server/tf-env/Scripts/python.exe",
       watch: ["src/ml_models_service"],
       out_file: "./logs/ml-service-out.log",
       error_file: "./logs/ml-service-error.log",
