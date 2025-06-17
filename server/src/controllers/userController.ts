@@ -70,6 +70,30 @@ export const getMindStatus = async(req: any, res: any) => {
     }
 }
 
+export const editMindStatus = async(req: any, res: any) => {
+    try{
+        console.log("Editing mind status for user:", req.user._id);
+        console.log("Request body:", req.body);
+        const userId = req.user._id; 
+        const { mindStatus } = req.body;
+
+        if(!mindStatus){
+            return res.status(400).json({message: "Mind status is required"})
+        }
+
+        const user = await User.findByIdAndUpdate(userId, {mindStatus}, {new: true}).exec();
+        if(!user){
+            return res.status(404).json({message: "User not found"})
+        }
+
+        console.log("Mind status updated for user:", userId, mindStatus);
+        return res.status(200).json({message: "Mind status updated successfully", user})
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message: "Internal server error"})
+    }
+}
+
 
 export const saveFCMToken = async(req: any, res: any) => {
     try{

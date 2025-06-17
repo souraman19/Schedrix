@@ -28,6 +28,7 @@ export const EDIT_REMINDER_TIME_ROUTE = `${TASK_ROUTES}/edit/reminder_time`;
 export const GET_USER_POINTS_ANALYTICS_ROUTE = `${USER_ROUTES}/get/points/analytics`;
 export const GET_USER_PROFILE_ROUTE = `${USER_ROUTES}/get/profile`;
 export const GET_USER_MIND_STATUS_ROUTE = `${USER_ROUTES}/get/mind_status`;
+export const EDIT_MIND_STATUS_ROUTE = `${USER_ROUTES}/edit/mind_status`;
 
 
 export const SAVE_FCM_TOKEN_ROUTE = `${USER_ROUTES}/save/fcm_token`;

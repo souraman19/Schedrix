@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  EDIT_MIND_STATUS_ROUTE,
   GET_USER_MIND_STATUS_ROUTE,
   GET_USER_PROFILE_ROUTE,
 } from "@/lib/apiRoutes";
@@ -10,8 +11,20 @@ import TaskProgress from "../task/TaskProgress";
 import PointProgress from "../task/PointProgress";
 import { getMindStatusIcon } from "../../utils/icons";
 
+
+const mindStatusOptions = [
+  "Focused",
+  "Distracted",
+  "Tired",
+  "Stressed",
+  "Motivated",
+  "Default",
+];
+
+
 export default function ProfileAnalytics() {
   const [userAnalysisData, setUserAnalysisData] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState("Default");
 
   const getProfileAnalytics = async () => {
     try {
@@ -45,6 +58,7 @@ export default function ProfileAnalytics() {
           ...prevData,
           mindStatus: data.mindStatus,
         }));
+        setSelectedStatus(data.mindStatus);
         toast.success("Fetched mind status successfully!");
       }
     } catch (err: any) {
@@ -52,6 +66,36 @@ export default function ProfileAnalytics() {
       toast.error("Error fetching mind status: ", err);
     }
   };
+
+  const handleMindStatusSubmit = async () => {
+    try{
+      const response = await fetch(EDIT_MIND_STATUS_ROUTE, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mindStatus: selectedStatus,
+        }),
+        credentials: "include",
+      })
+      console.log("Response: ", response);
+      if(response.ok){
+        console.log("Mind status updated successfully");
+        toast.success("Mind status updated successfully!");
+        setUserAnalysisData((prevData: any) => ({
+          ...prevData,
+          mindStatus: selectedStatus,
+        }));
+      } else {
+        console.error("Failed to update mind status: ", response.statusText);
+        toast.error("Failed to update mind status.");
+      }
+    }catch(err: any) {
+      console.error("Error submitting mind status: ", err);
+      toast.error("Error submitting mind status.");
+    }
+  }
 
   useEffect(() => {
     getProfileAnalytics();
@@ -102,15 +146,36 @@ export default function ProfileAnalytics() {
 
     <div className="relative z-10 flex flex-col items-center gap-5">
       <div className="text-6xl text-green-400 drop-shadow-[0_0_20px_#00e676] animate-[pulse_3.5s_ease-in-out_infinite]">
-        {getMindStatusIcon(userAnalysisData.mindStatus)}
+        {getMindStatusIcon(selectedStatus)}
       </div>
 
       <span className="px-6 py-2 text-lg font-semibold uppercase tracking-wider rounded-full bg-green-900 text-green-200 shadow-inner shadow-green-700/60 ring-1 ring-green-600 hover:bg-green-800 transition-all duration-300">
-        {userAnalysisData.mindStatus}
+        {/* Dropdown selection */}
+      <select
+        value={selectedStatus}
+        onChange={(e) => setSelectedStatus(e.target.value)}
+        className=" border-0 text-green-300 p-2 rounded-xl text-lg"
+      >
+        {mindStatusOptions.map((status) => (
+          <option key={status} value={status} className="bg-green-900 text-green-200 hover:bg-green-800">
+            {status}
+          </option>
+        ))}
+      </select>
       </span>
 
+      {/* Submit button (show only if changed) */}
+      {selectedStatus !== userAnalysisData.mindStatus && (
+        <button
+          onClick={handleMindStatusSubmit}
+          className="cursor-pointer bg-green-600 hover:bg-green-500 text-black px-4 py-2 rounded-full font-semibold shadow-lg"
+        >
+          Submit
+        </button>
+      )}
+
       <p className="text-sm text-green-100/80 italic tracking-wide text-center max-w-xs">
-        Your current mind state
+        Your mind state for today
       </p>
     </div>
   </div>
