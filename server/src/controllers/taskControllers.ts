@@ -114,6 +114,7 @@ export const createTask = async (req: any, res: any) => {
           userId: userId.toString(),
           remindAt,
           taskTitle: title,
+          whenReminder,
         });
         console.log("Reminder job added in queue for task: ", newTask._id);
         

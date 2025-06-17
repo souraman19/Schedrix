@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
 import numpy as np
 import tensorflow as tf
+import os
 
-model = tf.keras.models.load_model('lstm_model.h5')
+model_path = os.path.join(os.path.dirname(__file__), 'lstm_model.h5')
+model = tf.keras.models.load_model(model_path)
 
 # Initialize Flask app
 app = Flask(__name__) 

@@ -69,3 +69,26 @@ export const getMindStatus = async(req: any, res: any) => {
         res.status(500).json({message: "Internal server error"})
     }
 }
+
+
+export const saveFCMToken = async(req: any, res: any) => {
+    try{
+        const userId = req.user._id; 
+        const  fcmToken = req.body.token;
+
+        if(!fcmToken){
+            return res.status(400).json({message: "FCM token is required"})
+        }
+
+        const user = await User.findByIdAndUpdate(userId, {fcmToken}, {new: true}).exec();
+        if(!user){
+            return res.status(404).json({message: "User not found"})
+        }
+
+        console.log("FCM token saved for user:", userId, fcmToken);
+        return res.status(200).json({message: "FCM token saved successfully", user})
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message: "Internal server error"})
+    }
+}

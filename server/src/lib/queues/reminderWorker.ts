@@ -11,18 +11,17 @@ const connection = new IORedis({
   maxRetriesPerRequest: null,
 });
 
-// 👇 Create the worker that listens to "task-reminders" queue
+// Create the worker that listens to "task-reminders" queue
 const reminderWorker = new Worker(
   "task-reminders",
   async (job) => {
-    const { taskId, userId, taskTitle } = job.data;
+    const { taskId, userId, taskTitle, taskDelayFromRemindTime } = job.data;
 
-    console.log("🔔 Sending reminder for task:", taskTitle);
+    console.log("Sending reminder for task:", taskTitle);
 
-    // Your custom notification logic (push, email, toast trigger, etc.)
     await sendNotificationToUser(userId, {
-      title: "⏰ Task Reminder",
-      body: `Reminder for: ${taskTitle}`,
+      title: "Task Reminder",
+      body: `You have ${taskTitle} task in ${taskDelayFromRemindTime} minutes`,
       data: { taskId },
     });
   },
@@ -30,9 +29,9 @@ const reminderWorker = new Worker(
 );
 
 reminderWorker.on("completed", (job) => {
-  console.log(`✅ Reminder job ${job.id} completed`);
+  console.log(` Reminder job ${job.id} completed`);
 });
 
 reminderWorker.on("failed", (job, err) => {
-  console.error(`❌ Reminder job ${job?.id} failed:`, err);
+  console.error(`Reminder job ${job?.id} failed:`, err);
 });
