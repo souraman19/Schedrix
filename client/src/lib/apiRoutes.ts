@@ -29,3 +29,5 @@ export const GET_USER_POINTS_ANALYTICS_ROUTE = `${USER_ROUTES}/get/points/analyt
 export const GET_USER_PROFILE_ROUTE = `${USER_ROUTES}/get/profile`;
 export const GET_USER_MIND_STATUS_ROUTE = `${USER_ROUTES}/get/mind_status`;
 
+
+export const SAVE_FCM_TOKEN_ROUTE = `${USER_ROUTES}/save/fcm_token`;

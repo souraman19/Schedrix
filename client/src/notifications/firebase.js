@@ -1,5 +1,6 @@
 import { getMessaging, getToken } from "firebase/messaging";
 import { initializeApp } from "firebase/app";
+import { SAVE_FCM_TOKEN_ROUTE } from "./../lib/apiRoutes";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCstAMLEuhB-psAcGGShvqPUmDcXZkMDL0",
@@ -21,23 +22,31 @@ export const generateToken = async () => {
   const permission = await Notification.requestPermission();
   console.log("Notification permission:", permission);
   if (permission === "granted") {
-    await getToken(messaging, { vapidKey: "BL1xevKEBnn9eGYasaCXaLMc1-LOOv6Zq-y26drzIl-Uu4HJ7i3W4aewfOcdhFSxUGtMoJkCh3jZdIIgtNdppAU" })
-      .then((currentToken) => {
-        if (currentToken) {
-            console.log("Current token for client: ", currentToken);
-          // Send the token to your server and update the UI if necessary
-          // ...
-        } else {
-          // Show permission request UI
-          console.log(
-            "No registration token available. Request permission to generate one."
-          );
-          // ...
-        }
-      })
-      .catch((err) => {
-        console.log("An error occurred while retrieving token. ", err);
-        // ...
-      });
+    const currentToken = await getToken(messaging, {
+      vapidKey:
+        "BL1xevKEBnn9eGYasaCXaLMc1-LOOv6Zq-y26drzIl-Uu4HJ7i3W4aewfOcdhFSxUGtMoJkCh3jZdIIgtNdppAU",
+    });
+
+    console.log("Current token:", currentToken);
+    if (!currentToken) return;
+    const savedToken = localStorage.getItem("fcmToken");
+    if (savedToken && savedToken === currentToken) {
+      console.log("Same token already saved in localStorage and database");
+      return; // Token already saved, no need to save again
+    }
+
+    await fetch(SAVE_FCM_TOKEN_ROUTE, {
+      // Save the token to the database
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: currentToken }),
+      credentials: "include",
+    });
+    localStorage.setItem("fcmToken", currentToken); // Save the token to localStorage
+    console.log("Token saved successfully.");
+  } else {
+    console.log(
+      "No registration token available. Request permission to generate one."
+    );
   }
 };
