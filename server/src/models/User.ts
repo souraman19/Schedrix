@@ -1,6 +1,7 @@
 import mongoose , {Document, Schema, model, Types} from 'mongoose';
 
 export interface IUser extends Document {
+    fcmToken: string;
     googleId: string;
     name: string;
     email: string;
@@ -29,6 +30,7 @@ export interface IUser extends Document {
   };
 
 const userSchema = new Schema<IUser>({
+    fcmToken: {type: String, required: true},
     googleId: {type: String, required: true, unique: true},
     name: {type: String, required: true},
     email: {type: String, required: true, unique: true},

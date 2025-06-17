@@ -5,11 +5,13 @@ export const addReminderJob = async ({
   userId,
   remindAt,
   taskTitle,
+  whenReminder,
 }: {
   taskId: string;
   userId: string;
   remindAt: Date;
   taskTitle: string;
+  whenReminder: string;
 }) => {
   await reminderQueue.add(
     "send-task-reminder",
@@ -17,6 +19,7 @@ export const addReminderJob = async ({
       taskId,
       userId,
       taskTitle,
+      taskDelayFromRemindTime: whenReminder,
     },
     {
       delay: remindAt.getTime() - Date.now(), // wait till remindAt
@@ -33,5 +36,5 @@ export const addReminderJob = async ({
     "failed"
   );
 
-  console.log("Now Total Jobs in Queue:", count);
+//   console.log("Now Total Jobs in Queue:", count);
 };
