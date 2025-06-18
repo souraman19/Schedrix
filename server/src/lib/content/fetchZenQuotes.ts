@@ -4,8 +4,17 @@ import { MotivationContent } from "./../../models/MotivationContent";
 import { connectDB, disconnectDB } from "./../../config/db";
 import {tagToKeywordMap} from "../../utils/tagToKeywordMap";
 import nlp from "compromise";
+import { getTags } from "./../../utils/getTags";
 
 //Tag generate
+const getTagsUpperLevelFunction = async(text: any)=>{
+    try{
+        await getTags(text, 3);
+    }catch(err){
+        console.error(err);
+    }
+}
+
 
 
 //content Hash Generator
@@ -34,7 +43,7 @@ export const fetchAndStoreZenQuotes = async () => {
                 content,
                 author,
                 link: null,
-                tags: tagByContent(content),
+                tags: await getTagsUpperLevelFunction(content),
                 source: "ZenQuotes",
                 fetchedAt: new Date(),
                 contentHash
