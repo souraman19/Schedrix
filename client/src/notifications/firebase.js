@@ -27,11 +27,11 @@ export const generateToken = async () => {
         "BL1xevKEBnn9eGYasaCXaLMc1-LOOv6Zq-y26drzIl-Uu4HJ7i3W4aewfOcdhFSxUGtMoJkCh3jZdIIgtNdppAU",
     });
 
-    console.log("Current token:", currentToken);
+    // console.log("Current token:", currentToken);
     if (!currentToken) return;
     const savedToken = localStorage.getItem("fcmToken");
     if (savedToken && savedToken === currentToken) {
-      console.log("Same token already saved in localStorage and database");
+    //   console.log("Same token already saved in localStorage and database");
       return; // Token already saved, no need to save again
     }
 

@@ -23,7 +23,7 @@ export default function UserAnalyticsPage() {
 
       if (response.status === 200) {
         const data = await response.json();
-        console.log("Point Analytics: ", data.points);
+        // console.log("Point Analytics: ", data.points);
         setPointsData(data.points);
         toast.success("Fetched point analytics successfully!");
       }

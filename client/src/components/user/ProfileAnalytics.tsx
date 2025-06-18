@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import TaskProgress from "../task/TaskProgress";
 import PointProgress from "../task/PointProgress";
 import { getMindStatusIcon } from "../../utils/icons";
+import { date } from "zod";
 
 
 const mindStatusOptions = [
@@ -34,7 +35,7 @@ export default function ProfileAnalytics() {
       });
       if (response.status === 200) {
         const data = await response.json();
-        console.log("Profile Analytics: ", data.user);
+        // console.log("Profile Analytics: ", data.user);
         setUserAnalysisData(data.user);
         toast.success("Fetched profile analytics successfully!");
       }
@@ -53,7 +54,7 @@ export default function ProfileAnalytics() {
 
       if (response.status === 200) {
         const data = await response.json();
-        console.log("Mind Status: ", data.mindStatus);
+        // console.log("Mind Status: ", data.mindStatus);
         setUserAnalysisData((prevData: any) => ({
           ...prevData,
           mindStatus: data.mindStatus,
@@ -76,6 +77,7 @@ export default function ProfileAnalytics() {
         },
         body: JSON.stringify({
           mindStatus: selectedStatus,
+          date: new Date().toISOString(),
         }),
         credentials: "include",
       })

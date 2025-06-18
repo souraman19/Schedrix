@@ -22,6 +22,10 @@ type User = {
         currentStreak: number;
         longestStreak: number;
     };
+    notifications: boolean;
+    lastDateAskedMindStatus: Date | null;
+    lastActiveDay: Date | null;
+    activeDaysCount: number;
 } | null;
 
 type UserStore = {
