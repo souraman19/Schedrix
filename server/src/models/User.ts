@@ -26,7 +26,10 @@ export interface IUser extends Document {
     notifications: {
       enabled: boolean;
       defaultRemainderTimeBefore: number; // in minutes
-    }
+    };
+    lastDateAskedMindStatus: Date;
+    lastActiveDay: Date;
+    activeDaysCount: number;
   };
 
 const userSchema = new Schema<IUser>({
@@ -68,7 +71,10 @@ const userSchema = new Schema<IUser>({
     },
     notifications:{
       enabled: {type: Boolean, default: true},
-    }
+    },
+    lastDateAskedMindStatus:{type: Date},
+    lastActiveDay:{type: Date},
+    activeDaysCount:{type: Number, default: 0}
 },{ timestamps: true })
 
 export const User = model<IUser>('User', userSchema);
