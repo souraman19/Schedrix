@@ -1,5 +1,8 @@
 export const keywordToTagMap: Record<string, string[]> = {
-  // 🌟 Focused
+  // 🌟 for Focused
+  //eg "deep work" is keaword and ["deep work", "laser focus", "intense work", "deep concentration"] are tags
+  //"deep work" is map to tags list
+
   "deep work": ["deep work", "laser focus", "intense work", "deep concentration"],
   "productivity": ["productivity", "get things done", "time management", "efficiency", "output"],
   "focus": ["focus tips", "no distractions", "mental focus", "attention span"],
@@ -51,3 +54,8 @@ export const keywordToTagMap: Record<string, string[]> = {
   "uplift": ["uplifting", "encouragement", "support", "light up", "boost"],
   "balance": ["balance", "life balance", "equilibrium", "centered", "stable mind"]
 };
+
+
+for (const x in keywordToTagMap){
+  console.log(x, "=> ", keywordToTagMap[x]);
+}

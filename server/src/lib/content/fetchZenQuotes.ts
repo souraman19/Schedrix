@@ -2,16 +2,18 @@ import axios from "axios";
 import { createHash } from "crypto";
 import { MotivationContent } from "./../../models/MotivationContent";
 import { connectDB, disconnectDB } from "./../../config/db";
-
+import {keywordToTagMap} from "./../../utils/keywordToTagMap"
 
 //Tag Generator
 const tagByContent = (text: string) : string[] => {
     const tags: string[] = [];
-    const lower = text.toLowerCase();
-    if (lower.includes("tired") || lower.includes("rest")) tags.push("tired");
-    if (lower.includes("stress") || lower.includes("anxiety")) tags.push("stressed");
-    if (lower.includes("focus") || lower.includes("grow")) tags.push("neutral");
-    return tags;
+    const lowerText = text.toLowerCase();
+
+    for(const tag in keywordToTagMap){
+        if(lowerText.includes(keyword)){
+
+        }
+    }
 }
 
 //content Hash Generator
