@@ -2,18 +2,34 @@ import axios from "axios";
 import { createHash } from "crypto";
 import { MotivationContent } from "./../../models/MotivationContent";
 import { connectDB, disconnectDB } from "./../../config/db";
-import {keywordToTagMap} from "./../../utils/keywordToTagMap"
+import {tagToKeywordMap} from "../../utils/tagToKeywordMap";
+import nlp from "compromise";
 
 //Tag Generator
 const tagByContent = (text: string) : string[] => {
-    const tags: string[] = [];
-    const lowerText = text.toLowerCase();
+    const doc = nlp(text);
+    const words = [
+        ...doc.nouns().out('array'),
+        ...doc.verbs().out('array'),
+        ...doc.adjectives().out('array'),
+        ...doc.adverbs().out('array')
+    ].map(word => word.toLowerCase());
 
-    for(const tag in keywordToTagMap){
-        if(lowerText.includes(keyword)){
-
+    const tagScore: Record<string, number> = {};
+    for(const[tag, keywords] of Object.entries(tagToKeywordMap)){
+        for(const keyword of keywords){
+            const parts = keyword.toLowerCase().split(" ");
+            for(const word of words){
+                if(parts.includes(word)){
+                    tagScore[tag] = (tagScore[tag] || 0) + 1;
+                }
+            }
         }
     }
+    return Object.entries(tagScore) // Convert to array of [tag, score]
+        .sort((a, b) => b[1] - a[1]) // Sort by score in descending order
+        .slice(0, 3) // Get top 3 tags
+        .map(([tag]) => tag); // Extract only the tag names
 }
 
 //content Hash Generator

@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec ts-node src/index.ts",
-    "start":"pm2 start ecosystem.config.js && pm2 save && pm2-startup install",
+    "start": "pm2 start ecosystem.config.js && pm2 save && pm2-startup install",
     "begin": "pm2 start src/ml_models_service/app.py --name ml-service --interpreter \"D:/web dev projects/Schedrix/server/tf-env/Scripts/python.exe\" && pm2 start src/index.ts --name server --watch --interpreter node --interpreter-args \"-r ts-node/register\" && pm2 start src/lib/queues/reminderWorker.ts --name reminder-worker --interpreter node --interpreter-args \"-r ts-node/register\""
   },
   "author": "",
@@ -15,6 +15,7 @@
     "@faker-js/faker": "^9.7.0",
     "axios": "^1.9.0",
     "bullmq": "^5.54.0",
+    "compromise": "^14.14.4",
     "connect-mongo": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
