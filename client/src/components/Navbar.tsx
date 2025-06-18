@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, X, Home, ListTodo, LogOut, BarChart3, Zap  } from 'lucide-react';
+import { Menu, X, Home, ListTodo, LogOut, BarChart3, Zap} from 'lucide-react';
 import Link from 'next/link';
 import { useUserStore } from '@/store/useUserStore';
 import { LOG_OUT_ROUTE } from '@/lib/apiRoutes';
