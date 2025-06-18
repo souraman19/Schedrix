@@ -1,5 +1,4 @@
-export function getSuggestedTagsForMindset(mindset: string): string[] {
-  const tagMap: Record<string, string[]> = {
+const tagMap: Record<string, string[]> = {
     Focused: [
       "deep work",
       "productivity",
@@ -54,7 +53,17 @@ export function getSuggestedTagsForMindset(mindset: string): string[] {
       "thoughtful",
       "inspiration"
     ]
-  };
+};
 
+
+export function getSuggestedTagsForMindset(mindset: string): string[] {
   return tagMap[mindset] || tagMap["Default"];
 }
+
+
+const candidateSet = new Set(Object.values(tagMap).flat());
+export const candidateTags = Array.from(candidateSet);
+
+
+
+
