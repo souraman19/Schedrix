@@ -1,8 +1,6 @@
-    import mongoose from 'mongoose';
-    import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 import { UserPoints } from '../models/UserPoints';
-
-    dotenv.config();
+import "./../env";
 
     export const connectDB = async() => {
         try{

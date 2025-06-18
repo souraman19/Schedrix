@@ -1,0 +1,59 @@
+import axios from "axios";
+import { createHash } from "crypto";
+import { MotivationContent } from "./../../models/MotivationContent";
+import { connectDB, disconnectDB } from "./../../config/db";
+
+
+//Tag Generator
+const tagByContent = (text: string) : string[] => {
+    const tags: string[] = [];
+    const lower = text.toLowerCase();
+    if (lower.includes("tired") || lower.includes("rest")) tags.push("tired");
+    if (lower.includes("stress") || lower.includes("anxiety")) tags.push("stressed");
+    if (lower.includes("focus") || lower.includes("grow")) tags.push("neutral");
+    return tags;
+}
+
+//content Hash Generator
+const  generateHash = (text: string): string => {
+    return createHash("sha256").update(text).digest("hex"); 
+}
+
+
+//Fetch, normalize & save to db
+export const fetchAndStoreZenQuotes = async () => {
+    try{
+        await connectDB();
+        const res = await axios.get("https://zenquotes.io/api/quotes");
+        const quotes = res.data;
+
+        for(const item of quotes){
+            const content = item.q;
+            const author = item.a;
+            const contentHash = generateHash(`${content}-${author}`);
+
+            const ifExists = await MotivationContent.findOne({contentHash});
+            if(ifExists) continue;
+
+            const newDoc = new MotivationContent({
+                type: "quote",
+                content,
+                author,
+                link: null,
+                tags: tagByContent(content),
+                source: "ZenQuotes",
+                fetchedAt: new Date(),
+                contentHash
+            });
+            await newDoc.save();
+        }
+        console.log("ZenQuotes fetched and saved in db");
+    }catch(err){
+        console.error("Error in fetching Zenquotes", err);
+    }
+    await disconnectDB();
+} 
+
+fetchAndStoreZenQuotes();
+
+

@@ -36,3 +36,6 @@ export const UPDATE_USER_LAST_MIND_STATUS_ASK_DAY_ROUTE = `${USER_ROUTES}/update
 
 
 export const SAVE_FCM_TOKEN_ROUTE = `${USER_ROUTES}/save/fcm_token`;
+
+
+

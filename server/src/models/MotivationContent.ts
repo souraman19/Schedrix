@@ -4,6 +4,7 @@ import { Document, Schema, model, Types } from "mongoose";
 export interface IMotivationContent extends Document {
   type: string;  //Content type: quote/video/etc
   content: string;  //Actual quote or message
+  author: string;
   link?: string;  //YouTube or external content link
   tags: [string];
   source: string;
@@ -20,6 +21,9 @@ const motivationContentSchema = new Schema<IMotivationContent>({
   content: {
     type: String,
     required: true,
+  },
+  author:{
+    type: String,
   },
   link: {
     type: String,
