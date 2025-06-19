@@ -1,60 +1,69 @@
-export function getSuggestedTagsForMindset(mindset: string): string[] {
-  const tagMap: Record<string, string[]> = {
+const tagMap: Record<string, string[]> = {
     Focused: [
       "deep work",
       "productivity",
-      "no distractions",
-      "flow state",
-      "minimalism",
+      "focus",
+      "flow",
+      "clarity",
       "consistency",
-      "mental clarity",
+      "minimalism"
     ],
     Distracted: [
-      "focus tips",
-      "avoid distractions",
+      "focus",
       "mindfulness",
       "attention",
       "dopamine detox",
-      "reset mind",
-      "get back",
+      "reset",
+      "clarity",
+      "balance"
     ],
     Tired: [
       "rest",
+      "recharge",
       "sleep",
       "calm",
-      "recharge",
-      "mental fatigue",
       "soothing",
-      "relax",
+      "mental fatigue",
+      "relax"
     ],
     Stressed: [
       "stress relief",
-      "breathing",
-      "unwind",
-      "meditation",
-      "perspective",
-      "slow down",
       "peace",
+      "breathe",
+      "meditation",
+      "unwind",
+      "perspective",
+      "slow down"
     ],
     Motivated: [
       "inspiration",
       "success",
+      "goal",
+      "energy",
       "hustle",
       "grind",
-      "energy",
-      "goal setting",
-      "stay strong",
+      "strong"
     ],
     Default: [
-      "general",
-      "uplifting",
-      "positive",
+      "quote",
       "life",
+      "positive",
+      "uplift",
       "balance",
       "thoughtful",
-      "quotes",
-    ],
-  };
+      "inspiration"
+    ]
+};
 
+
+export function getSuggestedTagsForMindset(mindset: string): string[] {
   return tagMap[mindset] || tagMap["Default"];
 }
+
+
+const candidateSet = new Set(Object.values(tagMap).flat());
+export const candidateTags = Array.from(candidateSet);
+
+
+
+

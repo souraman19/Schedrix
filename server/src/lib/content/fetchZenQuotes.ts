@@ -9,7 +9,8 @@ import { getTags } from "./../../utils/getTags";
 //Tag generate
 const getTagsUpperLevelFunction = async(text: any)=>{
     try{
-        await getTags(text, 3);
+        const list = await getTags(text, 3);
+        return list;
     }catch(err){
         console.error(err);
     }
@@ -38,12 +39,15 @@ export const fetchAndStoreZenQuotes = async () => {
             const ifExists = await MotivationContent.findOne({contentHash});
             if(ifExists) continue;
 
+            const taglist = await getTagsUpperLevelFunction(content);
+            // console.log(taglist);
+
             const newDoc = new MotivationContent({
                 type: "quote",
                 content,
                 author,
                 link: null,
-                tags: await getTagsUpperLevelFunction(content),
+                tags: taglist,
                 source: "ZenQuotes",
                 fetchedAt: new Date(),
                 contentHash

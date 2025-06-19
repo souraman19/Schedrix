@@ -53,6 +53,6 @@ export const getTags =  async (content : any, requiredTagCount: number) => {
     topTags = tagFromContentByKeyword(content); //Fallback to traditional approach
     if(topTags.length === 0)  //if still gets empty
         topTags = ['unknown']
-    console.log(topTags);
-    return result;
+
+    return topTags;
 }
