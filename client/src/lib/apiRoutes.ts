@@ -3,6 +3,7 @@ export const HOST = "http://localhost:5000";
 const AUTH_ROUTES = `${HOST}/api/auth`;
 const TASK_ROUTES = `${HOST}/api/task`;
 const USER_ROUTES = `${HOST}/api/user`;
+const CONTENT_ROUTES = `${HOST}/api/content`;
 
 
 export const LOG_OUT_ROUTE = `${AUTH_ROUTES}/logout`;
@@ -33,6 +34,8 @@ export const EDIT_MIND_STATUS_ROUTE = `${USER_ROUTES}/edit/mind_status`;
 export const UPDATE_USER_LAST_ACTIVE_DAY_ROUTE = `${USER_ROUTES}/update/user_last_active_day`;
 export const UPDATE_USER_LAST_MIND_STATUS_ASK_DAY_ROUTE = `${USER_ROUTES}/update/user_last_mind_status_ask_data`;
 
+
+export const GET_QUOTES_ROUTE = `${CONTENT_ROUTES}/get/quotes`;
 
 
 export const SAVE_FCM_TOKEN_ROUTE = `${USER_ROUTES}/save/fcm_token`;
