@@ -1,4 +1,5 @@
 import { quoteQueue } from "./quoteQueue"; 
+import "./quoteFetchWorker";
 
 export const scheduleQuoteJob = async () => {
     await quoteQueue.add(
@@ -14,3 +15,5 @@ export const scheduleQuoteJob = async () => {
     );  
     console.log("Scheduled quote fetch job to run every 3 days.");
 }
+
+scheduleQuoteJob();
