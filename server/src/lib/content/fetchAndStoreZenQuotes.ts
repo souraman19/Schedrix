@@ -1,10 +1,10 @@
 import axios from "axios";
 import { createHash } from "crypto";
-import { MotivationContent } from "./../../models/MotivationContent";
-import { connectDB, disconnectDB } from "./../../config/db";
+import { MotivationContent } from "../../models/MotivationContent";
+import { connectDB, disconnectDB } from "../../config/db";
 import {tagToKeywordMap} from "../../utils/tagToKeywordMap";
 import nlp from "compromise";
-import { getTags } from "./../../utils/getTags";
+import { getTags } from "../../utils/getTags";
 
 //Tag generate
 const getTagsUpperLevelFunction = async(text: any)=>{
