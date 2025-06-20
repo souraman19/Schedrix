@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createHash } from "crypto";
-import { MotivationContent } from "../../models/MotivationContent";
+import { MotivationalVideo } from "../../models/MotivationalVideo";
 import { connectDB, disconnectDB } from "../../config/db";
 
 
@@ -8,11 +8,11 @@ import { connectDB, disconnectDB } from "../../config/db";
 export const fetchAndStoreMotivationalVideos = async (searchTerm: string) => {
     try{
         await connectDB();
-        const res = await axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchTerm)}&videoDuration=short&type=video&maxResults=10&key=${process.env.YOUTUBE_API_KEY}`);
+        const res = await axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchTerm)}&videoDuration=short&type=video&maxResults=3&key=${process.env.YOUTUBE_API_KEY}`);
         const videos = res.data.items;
         for(const item of videos){
             const contentHash = createHash("sha256").update(item.id.videoId).digest("hex");
-            const ifExists = await MotivationContent.findOne({ contentHash });
+            const ifExists = await MotivationalVideo.findOne({ contentHash });
             if(ifExists){
                 if(!(ifExists.searchTerms?.includes(searchTerm))) {
                     ifExists.searchTerms = [...(ifExists.searchTerms || []), searchTerm];
@@ -22,7 +22,7 @@ export const fetchAndStoreMotivationalVideos = async (searchTerm: string) => {
                 continue;
             }
 
-            const doc = new MotivationContent({
+            const doc = new MotivationalVideo({
                 type: "video",
                 title: item.snippet.title,
                 description: item.snippet.description,
@@ -36,7 +36,8 @@ export const fetchAndStoreMotivationalVideos = async (searchTerm: string) => {
             });
 
             await doc.save();
-            console.log(`Saved video: ${item.snippet.title}`);
+
+            console.log(`Saved video: ${doc}`);
         }
     }catch(err){
         console.error("Error in fetching motivational videos", err);

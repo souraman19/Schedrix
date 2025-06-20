@@ -1,6 +1,6 @@
 import { motivationalVideoQueue } from "./motivationalVideoQueue";
-import './motivationalVideoFetchWorker';
 import { mindStatusToYouTubeKeywords } from "../../utils/mindStatusToYouTubeKeywordsMap";
+import connection from "../redis/redisClient";
 
 export const scheduleMotivationalVideoJob = async (mindStatus: string) => {
     const countSearchTerms = mindStatusToYouTubeKeywords[mindStatus].length;
@@ -13,7 +13,7 @@ export const scheduleMotivationalVideoJob = async (mindStatus: string) => {
         },
         {
             repeat: {
-                every: 3 * 24 * 60 * 60 * 1000, // every 3 days
+                every: 5 * 60 * 1000, // every 3 days
             },
             attempts: 3,
             jobId: `repeat: fetch-motivational-videos:${mindStatus}`,
@@ -25,3 +25,21 @@ export const scheduleMotivationalVideoJob = async (mindStatus: string) => {
 for (const mindStatus of Object.keys(mindStatusToYouTubeKeywords)){
     scheduleMotivationalVideoJob(mindStatus);
 }
+
+const run = async() => {
+    for (const mindStatus of Object.keys(mindStatusToYouTubeKeywords)){
+        await scheduleMotivationalVideoJob(mindStatus);
+    }
+
+    await connection.quit();
+    process.exit(0);
+}
+
+run().catch((err) => {
+    console.error("Error scheduling motivational video job:", err);
+    process.exit(1);
+});
+
+
+// You are not scheduling a cron-like loop in your script.
+//Instead, you're registering a repeating job inside Redis via BullMQ. Redis stores the job metadata, and BullMQ's Worker (which you must keep running) is responsible for executing the job at the configured intervals.

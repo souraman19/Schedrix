@@ -3,14 +3,12 @@ import { Document, Schema, model, Types } from "mongoose";
 
 export interface IMotivationContent extends Document {
   type: string;  //Content type: quote/video/etc
-  title: string;  //Actual quote or message
-  channelTitle: string;
-  description?: string;  //Additional context or explanation
+  content: string;  //Actual quote or message
+  author: string;
   link?: string;  //YouTube or external content link
-  searchTerms?: string[]; //Search terms used to find this content
+  tags: [string];
   source: string;
   fetchedAt: Date;
-  publishedAt?: Date;  //When the content was published
   contentHash: string; //Prevents duplicate entries
 }
 
@@ -20,23 +18,20 @@ const motivationContentSchema = new Schema<IMotivationContent>({
     required: true,
     enum: ["quote", "video", "affirmation"],
   },
-  title: {
+  content: {
     type: String,
     required: true,
   },
-  description: {
-    type: String,
-  },
-  channelTitle:{
+  author:{
     type: String,
   },
   link: {
     type: String,
     default: null,
   },
-  searchTerms: {
+  tags: {
     type: [String],
-    default: [],
+    default: []
   },
   source: {
     type: String,
@@ -45,9 +40,6 @@ const motivationContentSchema = new Schema<IMotivationContent>({
   fetchedAt:{
     type: Date,
     default: Date.now
-  },
-  publishedAt: {
-    type: Date,
   },
   contentHash:{
     type: String,

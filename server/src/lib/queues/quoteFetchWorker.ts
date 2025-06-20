@@ -11,7 +11,7 @@ const connection = new IORedis({
 });
 
 export const quoteFetchWorker = new Worker(
-    'quote-fetch',
+    'fetch-zen-quotes',
     async (job) => {
         await fetchAndStoreZenQuotes();
     } ,

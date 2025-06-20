@@ -1,63 +1,62 @@
-import { de } from "@faker-js/faker/.";
-import {Schema, model, Document} from "mongoose";
+import mongoose from "mongoose";
+import { Document, Schema, model, Types } from "mongoose";
 
 export interface IMotivationalVideo extends Document {
-    videoId: string;
-    title: string;
-    description?: string;
-    publishedAt: Date;
-    thumbnail: string;
-    channelTitle: string;
-    tags: string[];
-    source: string; // "YouTube"
-    fetchedAt: Date;
-    contentHash: string; // Unique hash for the content
-    searchTerms: string[]; // search terms we get this as result of the search query
+  type: string;  //Content type: quote/video/etc
+  title: string;  //Actual quote or message
+  channelTitle: string;
+  description?: string;  //Additional context or explanation
+  link?: string;  //YouTube or external content link
+  searchTerms?: string[]; //Search terms used to find this content
+  source: string;
+  fetchedAt: Date;
+  publishedAt?: Date;  //When the content was published
+  contentHash: string; //Prevents duplicate entries
 }
 
 const motivationalVideoSchema = new Schema<IMotivationalVideo>({
-    videoId: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    title: {
-        type: String,
-    },
-    description: {
-        type: String,
-    },
-    publishedAt: {
-        type: Date,
-    },
-    thumbnail: {
-        type: String,
-    },
-    channelTitle: {
-        type: String,
-    },
-    tags: {
-        type: [String],
-        default: []
-    },
-    source: {
-        type: String,,
-        default: "YouTube"
-    },
-    fetchedAt: {
-        type: Date,
-        default: Date.now
-    },
-    contentHash: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    searchTerms:{
-        type: [String],
-        default: []
-    }
-})
+  type: {
+    type: String,
+    required: true,
+    enum: ["quote", "video", "affirmation"],
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+  },
+  channelTitle:{
+    type: String,
+  },
+  link: {
+    type: String,
+    default: null,
+  },
+  searchTerms: {
+    type: [String],
+    default: [],
+  },
+  source: {
+    type: String,
+    required: true
+  },
+  fetchedAt:{
+    type: Date,
+    default: Date.now
+  },
+  publishedAt: {
+    type: Date,
+  },
+  contentHash:{
+    type: String,
+    required: true,
+    unique: true
+  },
+});
 
-
-export const MotivationalVideo = model<IMotivationalVideo>("MotivationalVideo", motivationalVideoSchema);
+export const MotivationalVideo = model<IMotivationalVideo>(
+  "MotivationalVideo",
+  motivationalVideoSchema
+);

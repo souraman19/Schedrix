@@ -2,19 +2,12 @@ import {Worker} from "bullmq";
 import IORedis from "ioredis";
 import "./../../env";
 import {fetchAndStoreMotivationalVideos} from "../content/fetchAndStoreMotivationalVideos";
-
-
-const connection = new IORedis({
-  host: process.env.REDIS_HOST,
-  port: Number(process.env.REDIS_PORT),
-  password: process.env.REDIS_PASSWORD,
-  maxRetriesPerRequest: null,
-});
+import connection from "../redis/redisClient";
 
 export const motivationalVideoFetchWorker = new Worker(
-    'motivational-video-fetch',
+    'fetch-motivational-videos',
     async(job) => {
-        await fetchAndStoreMotivationalVideos(job.data.searchTerm)
+        await fetchAndStoreMotivationalVideos(job.data.searchTerm);
     },
     { connection }
 )
