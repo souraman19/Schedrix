@@ -1,4 +1,4 @@
-import { getQuotes } from './../controllers/contentControllers';
+import { getMotivationalVideos, getQuotes } from './../controllers/contentControllers';
 import {Router} from 'express';
 
 const router = Router();

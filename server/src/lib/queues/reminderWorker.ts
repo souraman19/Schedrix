@@ -1,15 +1,10 @@
 // lib/queues/reminderWorker.ts
 import { Worker } from "bullmq";
 import IORedis from "ioredis";
+import connection from "../redis/redisClient"; // Import your Redis connection
 import "./../../env";
 import { sendNotificationToUser } from "./../notifications/sendNotification"; // You’ll create this
 
-const connection = new IORedis({
-  host: process.env.REDIS_HOST,
-  port: Number(process.env.REDIS_PORT),
-  password: process.env.REDIS_PASSWORD,
-  maxRetriesPerRequest: null,
-});
 
 // Create the worker that listens to "task-reminders" queue
 const reminderWorker = new Worker(

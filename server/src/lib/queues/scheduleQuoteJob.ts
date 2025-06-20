@@ -1,5 +1,5 @@
 import { quoteQueue } from "./quoteQueue"; 
-import "./quoteFetchWorker";
+import connection from "../redis/redisClient";
 
 export const scheduleQuoteJob = async () => {
     await quoteQueue.add(
@@ -16,4 +16,14 @@ export const scheduleQuoteJob = async () => {
     console.log("Scheduled quote fetch job to run every 3 days.");
 }
 
-scheduleQuoteJob();
+const run = async() => {
+    await scheduleQuoteJob();
+
+    await connection.quit();
+    process.exit(0);
+}
+
+run().catch((err) => {
+    console.error("Error scheduling zen quotes job:", err);
+    process.exit(1);
+});
