@@ -60,3 +60,8 @@ export const mindStatusToYouTubeKeywords: Record<string, string[]> = {
     "simple joy video short",
   ],
 };
+
+
+export const getSuggestedYoutubeKeywords = (mindStatus: string):string[] => {
+  return mindStatusToYouTubeKeywords[mindStatus] || mindStatusToYouTubeKeywords["Default"];
+}
