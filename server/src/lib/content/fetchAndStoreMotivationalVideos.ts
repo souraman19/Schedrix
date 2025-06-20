@@ -29,6 +29,7 @@ export const fetchAndStoreMotivationalVideos = async (searchTerm: string) => {
                 channelTitle: item.snippet.channelTitle,
                 publishedAt: new Date(item.snippet.publishedAt),
                 link: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+                videoId: item.id.videoId,
                 searchTerms: [searchTerm],
                 source: "YouTube",
                 fetchedAt: new Date(),

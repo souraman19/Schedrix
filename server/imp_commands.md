@@ -1,3 +1,14 @@
+# get all process listening on port 5000
+netstat -ano | grep :5000
+
+# kill a process with pId on gitbash
+cmd.exe /c "taskkill /PID 26516 /F"
+
+
+<-------------------------------------------------------------->
+
+
+
 # `Option 1` (<Best for PROD>)   
 (with ecosystem.config.js) => start all services/apps (no need to activate already "explicitly using the virtual environment's Python interpreter")
 npm run start

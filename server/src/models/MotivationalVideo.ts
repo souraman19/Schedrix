@@ -7,6 +7,7 @@ export interface IMotivationalVideo extends Document {
   channelTitle: string;
   description?: string;  //Additional context or explanation
   link?: string;  //YouTube or external content link
+  videoId: string; //YouTube video ID
   searchTerms?: string[]; //Search terms used to find this content
   source: string;
   fetchedAt: Date;
@@ -33,6 +34,11 @@ const motivationalVideoSchema = new Schema<IMotivationalVideo>({
   link: {
     type: String,
     default: null,
+  },
+  videoId:{
+    type: String,
+    required: true,
+    unique: true // Ensures that each video is unique by its ID
   },
   searchTerms: {
     type: [String],

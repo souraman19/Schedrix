@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { GET_MOTIVATIONAL_VIDEOS_ROUTE, USER_INFO_ROUTE } from "@/lib/apiRoutes";
 import { useUserStore } from "@/store/useUserStore";
@@ -6,83 +6,117 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 export default function VideosPage() {
-    const [videoItems, setVideoItems] = useState([]);
-      const [mindStatus, setMindStatus] = useState("Default");
-      const { user, setUser } = useUserStore();
-    const router = useRouter();
+  const [videoItems, setVideoItems] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [mindStatus, setMindStatus] = useState("Default");
+  const { user, setUser } = useUserStore();
+  const router = useRouter();
 
-      const fetchMindStatus = async () => {
-    if (user && user.mindStatus) {
+  const NAVBAR_HEIGHT = 64; // Adjust if your navbar is taller or shorter
+
+  const fetchMindStatus = async () => {
+    if (user?.mindStatus) {
       setMindStatus(user.mindStatus);
-      toast.success("Mind status already set");
       return;
     }
     try {
-      const response = await axios.get(`${USER_INFO_ROUTE}`, {
-        withCredentials: true,
-      });
-      console.log("User data:", response.data);
-      setUser(response.data); // Set the user info in the Zustand store
+      const response = await axios.get(USER_INFO_ROUTE, { withCredentials: true });
+      setUser(response.data);
       setMindStatus(response.data.mindStatus || "Default");
-      toast.success("Mind status fetched successfully");
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        console.log("User not authenticated");
-        router.push("/"); // Redirect to the login page
-      } else {
-        console.error("Error fetching user data:", error);
-      }
+      if (error.response?.status === 401) router.push("/");
     }
   };
 
-
-    const loadMore = async () => {
-      try {
-  
-        const response = await fetch(
-          `${GET_MOTIVATIONAL_VIDEOS_ROUTE}?mindStatus=${mindStatus}}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          }
-        );
-        if (response.ok) {
-          const data = await response.json();
-          const newVideoItems = data.videos;
-          setVideoItems((prevVideoItems) => [...prevVideoItems, ...newVideoItems]);
-          toast.success("videos fetched successfully");
-        } else {
-          console.error("Failed to fetch videos:", response.statusText);
-          toast.error("Failed to fetch video");
-        }
-      } catch (err) {
-        console.error("Error fetching videos:", err);
+  const loadVideos = async () => {
+    try {
+      const response = await fetch(`${GET_MOTIVATIONAL_VIDEOS_ROUTE}?mindStatus=${mindStatus}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setVideoItems(data.videos || []);
+      } else {
         toast.error("Failed to fetch videos");
       }
+    } catch (err) {
+      toast.error("Failed to fetch videos");
+    }
+  };
+
+  useEffect(() => {
+    const init = async () => {
+      await fetchMindStatus();
+      await loadVideos();
     };
-  
-    useEffect(() => {
-      const init = async () => {
-          await fetchMindStatus();
-          await loadMore();
-      }
-      init();
-    }, []);
-    
+    init();
+  }, []);
+
+  const goNext = () => {
+    setCurrentIndex((prev) => Math.min(prev + 1, videoItems.length - 1));
+  };
+
+  const goPrev = () => {
+    setCurrentIndex((prev) => Math.max(prev - 1, 0));
+  };
+
+  const currentVideo = videoItems[currentIndex];
 
   return (
-    <div className="flex flex-col items-center justify-center h-full">
-      <h1 className="text-3xl font-bold mb-4">Motivational Videos</h1>
-      { videoItems.length > 0 && (videoItems.map((videoItem, index) => (
-        <div>
-            {videoItem.link}
-        </div>
-      )))}
+    <div
+      className="relative w-full"
+      style={{ height: `calc(100vh - ${NAVBAR_HEIGHT}px)` }}
+    >
+      {/* Background and Center Container */}
+      <div className="flex items-center justify-center h-full w-full bg-gradient-to-br from-black via-zinc-900 to-neutral-900 relative overflow-hidden">
+
+        {/* Glowing Aura */}
+        <div className="absolute w-[500px] h-[500px] rounded-full bg-gradient-to-br from-green-400/20 via-transparent to-transparent animate-ping blur-3xl opacity-20 pointer-events-none" />
+
+        {/* Animated Ring */}
+        <div className="absolute w-[200px] h-[200px] rounded-full border-4 border-green-500/20 animate-spin-slow blur-sm opacity-30" />
+
+        {/* Video Display */}
+        {currentVideo ? (
+          <div className="relative w-auto h-full aspect-[9/16] rounded-3xl overflow-hidden shadow-[0_0_100px_#00c85355] border border-white/10 transition-transform duration-500 hover:scale-[1.01]">
+            <iframe
+              src={`https://www.youtube.com/embed/${currentVideo.videoId}?autoplay=1&mute=1&playsinline=1`}
+              title={`Motivational Video ${currentIndex + 1}`}
+              className="w-full h-full"
+              frameBorder="0"
+              allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        ) : (
+          <p className="text-white text-lg font-semibold">Loading your motivation...</p>
+        )}
+
+        {/* Up Button */}
+        {currentIndex > 0 && (
+          <button
+            onClick={goPrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 p-3 rounded-full backdrop-blur-lg shadow-lg border border-white/20 group transition"
+          >
+            <ChevronUp size={36} className="text-white group-hover:scale-110 transition" />
+          </button>
+        )}
+
+        {/* Down Button */}
+        {currentIndex < videoItems.length - 1 && (
+          <button
+            onClick={goNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 p-3 rounded-full backdrop-blur-lg shadow-lg border border-white/20 group transition"
+          >
+            <ChevronDown size={36} className="text-white group-hover:scale-110 transition" />
+          </button>
+        )}
+      </div>
     </div>
   );
 }

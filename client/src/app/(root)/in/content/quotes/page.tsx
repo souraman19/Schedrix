@@ -62,6 +62,7 @@ export default function BoostHomePage() {
           credentials: "include",
         }
       );
+      console.log("Response from server:", response);
       if (response.ok) {
         const data = await response.json();
         const newQuotes = data.quotes;
