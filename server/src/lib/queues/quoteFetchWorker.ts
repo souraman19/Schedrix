@@ -1,7 +1,7 @@
 import { Worker } from "bullmq";
 import IORedis from "ioredis";
 import "./../../env";
-import { fetchAndStoreZenQuotes } from "../content/fetchZenQuotes";
+import { fetchAndStoreZenQuotes } from "../content/fetchAndStoreZenQuotes";
 
 const connection = new IORedis({
   host: process.env.REDIS_HOST,
