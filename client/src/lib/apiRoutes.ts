@@ -36,6 +36,7 @@ export const UPDATE_USER_LAST_MIND_STATUS_ASK_DAY_ROUTE = `${USER_ROUTES}/update
 
 
 export const GET_QUOTES_ROUTE = `${CONTENT_ROUTES}/get/quotes`;
+export const GET_QUOTE_OF_THE_DAY_ROUTE = `${CONTENT_ROUTES}/get/quote_of_the_day`;
 export const GET_MOTIVATIONAL_VIDEOS_ROUTE = `${CONTENT_ROUTES}/get/motivational_videos`;
 
 

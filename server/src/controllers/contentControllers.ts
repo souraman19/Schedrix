@@ -33,6 +33,51 @@ export const getQuotes = async (req : any, res: any) => {
 }
 
 
+const simpleHashForQOTD = (dayString: string):number => {
+    let hash = 0;
+    for (let i = 0; i < dayString.length; i++){
+        hash = (hash << 5) - hash + dayString.charCodeAt(i); // Shift hash left by 5 bits and subtract hash and add char code
+        hash |= 0; // Convert to 32-bit integer
+    }
+    return Math.abs(hash);
+}
+
+export const getQuoteOfTheDay = async (req: any, res: any) => {
+    try{
+        const mindStatus = req.query.mindStatus;
+        const tagList = getSuggestedTagsForMindset(mindStatus);
+
+        const query: any = {
+            type: "quote",
+            tags: { $in: tagList }
+        }
+
+        const countQuotes = await MotivationContent.countDocuments(query);
+
+         if (countQuotes === 0) {
+            return res.status(404).json({ message: "No quotes found for the given mind status" });
+        }
+        
+        const today = new Date();
+        const dayString = today.toISOString().split('T')[0]; // Get the date in YYYY-MM-DD format
+        const hash = simpleHashForQOTD(dayString);
+        const index = hash % countQuotes;
+
+        const quote = await MotivationContent.findOne(query).skip(index);
+
+        if(!quote) {
+            res.status(404).json({ message: "No quote found for the given mind status" });
+        }
+
+        res.status(200).json({ message: "Quote of the day fetched successfully", quote: quote });
+
+    }catch(error) {
+        console.error("Error fetching quote of the day:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
+
 export const getMotivationalVideos = async(req: any, res: any) => {
     try{
         const mindStatus = req.query.mindStatus;

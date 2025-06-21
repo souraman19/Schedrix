@@ -79,7 +79,7 @@ export default function VideosPage() {
         {currentVideo ? (
           <div className="relative w-auto h-full aspect-[9/16] rounded-3xl overflow-hidden border border-white/10 transition-transform duration-500 hover:scale-[1.01]">
             <iframe
-              src={`https://www.youtube.com/embed/${currentVideo.videoId}?autoplay=1&mute=1&playsinline=1`}
+              src={`https://www.youtube.com/embed/${currentVideo.videoId}?autoplay=1&playsinline=1`}
               title={`Motivational Video ${currentIndex + 1}`}
               className="w-full h-full"
               frameBorder="0"
