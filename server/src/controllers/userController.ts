@@ -42,6 +42,27 @@ export const getMindStatus = async(req: any, res: any) => {
 
     try{
         const userId = req.user._id; 
+        const month = new Date().getMonth() + 1; // Months are 0-indexed in JavaScript]
+        const year = new Date().getFullYear();
+        const day = new Date().getDate();
+
+        const userPointsBucket = await UserPoints.findOne({
+            userId: userId,
+            year: year,
+        });
+
+        if(userPointsBucket){
+            const existingDayMonthIndex = userPointsBucket.points.findIndex(
+                (el) => el.day === day && el.month === month
+            );
+
+            if(existingDayMonthIndex !== -1 && userPointsBucket.points[existingDayMonthIndex].isSetMindStatus){
+                const mindStatus = userPointsBucket.points[existingDayMonthIndex].mindStatus;
+                return res.status(200).json({message: "Mind status fetched successfully", mindStatus})
+            }
+        }
+
+
         const getRecentData = await getlast7daysPointsData(userId);
         if(!getRecentData){
             return res.status(200).json({message: "No data found", mindStatus: null})
@@ -72,14 +93,16 @@ export const getMindStatus = async(req: any, res: any) => {
 
 export const editMindStatus = async(req: any, res: any) => {
     try{
-        console.log("Editing mind status for user:", req.user._id);
-        console.log("Request body:", req.body);
+        // console.log("Editing mind status for user:", req.user._id);
+        // console.log("Request body:", req.body);
         const userId = req.user._id; 
         const { mindStatus, date } = req.body;
         const getDate = new Date(date);
-        const year = getDate.getFullYear();
+        const year = getDate.getFullYear();  
         const month = getDate.getMonth() + 1; 
         const day = getDate.getDate();
+
+        console.log("Year:", year, "Month:", month, "Day:", day);
 
         if(!mindStatus){
             return res.status(400).json({message: "Mind status is required"})
@@ -103,30 +126,33 @@ export const editMindStatus = async(req: any, res: any) => {
       });
     }
 
-    let existingDayMonthIndex = userPointsBucket.points.findIndex(
+    let existingDayMonthIndex = userPointsBucket?.points.findIndex(
       (el) => el.day === day && el.month === month
     );
-    console.log("Existing day month index: ", existingDayMonthIndex);
+    // console.log("Existing day month index: ", existingDayMonthIndex);
 
     if (existingDayMonthIndex === -1) {
-      userPointsBucket.points.push({
+      userPointsBucket?.points.push({
         day: day,
         month: month,
         pointsGain: 0,
         pointsDeduct: 0,
         taskCompleted: 0,
         taskMissed: 0,
-        mindStatus: mindStatus
+        mindStatus: mindStatus,
+        isSetMindStatus: true, // Set this to true when mind status is set
       });
     } else {
         userPointsBucket.points[existingDayMonthIndex].mindStatus = mindStatus;
     }
 
     userPointsBucket.markModified("points");
-    console.log("User points bucket: ", userPointsBucket);
+    userPointsBucket.points[existingDayMonthIndex].isSetMindStatus = true; 
+    await userPointsBucket.save();
+    // console.log("User points bucket: ", (userPointsBucket as any).points[existingDayMonthIndex]);
 
 
-        console.log("Mind status updated for user:", userId, mindStatus);
+        // console.log("Mind status updated for user:", userId, mindStatus);
         return res.status(200).json({message: "Mind status updated successfully", user})
     }catch(err){
         console.log(err)
@@ -241,12 +267,14 @@ export const updateLastMindStatusAskData = async(req: any, res: any) => {
                 pointsDeduct: 0,
                 taskCompleted: 0,
                 taskMissed: 0,
-                mindStatus: mindStatus
+                mindStatus: mindStatus,
+                isSetMindStatus: true, 
             });
         } else {
             userPointsBucket.points[existingDayMonthIndex].mindStatus = mindStatus;
         }
 
+        userPointsBucket.points[existingDayMonthIndex].isSetMindStatus = true; // Set this to true when mind status is set
         userPointsBucket.markModified("points");
 
         

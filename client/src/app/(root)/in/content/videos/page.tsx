@@ -69,21 +69,15 @@ export default function VideosPage() {
 
   return (
     <div
-      className="relative w-full"
-      style={{ height: `calc(100vh - ${NAVBAR_HEIGHT}px)` }}
+      className="fixed w-full top-22"
+      style={{ height: `calc(95vh - ${NAVBAR_HEIGHT}px)`, padding:"3px", overflow:"hidden", marginTop:"0px" }}
     >
       {/* Background and Center Container */}
       <div className="flex items-center justify-center h-full w-full bg-gradient-to-br from-black via-zinc-900 to-neutral-900 relative overflow-hidden">
 
-        {/* Glowing Aura */}
-        <div className="absolute w-[500px] h-[500px] rounded-full bg-gradient-to-br from-green-400/20 via-transparent to-transparent animate-ping blur-3xl opacity-20 pointer-events-none" />
-
-        {/* Animated Ring */}
-        <div className="absolute w-[200px] h-[200px] rounded-full border-4 border-green-500/20 animate-spin-slow blur-sm opacity-30" />
-
         {/* Video Display */}
         {currentVideo ? (
-          <div className="relative w-auto h-full aspect-[9/16] rounded-3xl overflow-hidden shadow-[0_0_100px_#00c85355] border border-white/10 transition-transform duration-500 hover:scale-[1.01]">
+          <div className="relative w-auto h-full aspect-[9/16] rounded-3xl overflow-hidden border border-white/10 transition-transform duration-500 hover:scale-[1.01]">
             <iframe
               src={`https://www.youtube.com/embed/${currentVideo.videoId}?autoplay=1&mute=1&playsinline=1`}
               title={`Motivational Video ${currentIndex + 1}`}
@@ -101,7 +95,7 @@ export default function VideosPage() {
         {currentIndex > 0 && (
           <button
             onClick={goPrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 p-3 rounded-full backdrop-blur-lg shadow-lg border border-white/20 group transition"
+            className="cursor-pointer absolute left-80 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 p-3 rounded-full backdrop-blur-lg shadow-lg border border-white/20 group transition"
           >
             <ChevronUp size={36} className="text-white group-hover:scale-110 transition" />
           </button>
@@ -111,7 +105,7 @@ export default function VideosPage() {
         {currentIndex < videoItems.length - 1 && (
           <button
             onClick={goNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 p-3 rounded-full backdrop-blur-lg shadow-lg border border-white/20 group transition"
+            className="cursor-pointer absolute right-80 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 p-3 rounded-full backdrop-blur-lg shadow-lg border border-white/20 group transition"
           >
             <ChevronDown size={36} className="text-white group-hover:scale-110 transition" />
           </button>

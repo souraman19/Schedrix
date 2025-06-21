@@ -52,14 +52,16 @@ export default function Navbar() {
       >
         <div className="flex justify-between items-center">
           {/* Logo and Site Name */}
-          <h2 className="text-2xl font-bold text-green-400">Schedrix</h2>
+          <h2 className="text-2xl font-bold text-green-400">
+            <Link href="/in/home">Schedrix</Link>
+          </h2>
 
           {/* Desktop Navigation Links */}
           <nav className="hidden md:flex gap-8">
           
             <NavbarLink href="/in/home" icon={<Home size={20} />}>Home</NavbarLink>
             <NavbarLink href="/in/task/home" icon={<ListTodo size={20} />}>Tasks</NavbarLink>
-            <NavbarLink href="/in/boost/home" icon={<Zap size={20} />}>Boost</NavbarLink>
+            <NavbarLink href="/in/content/quotes" icon={<Zap size={20} />}>Boost</NavbarLink>
             <NavbarLink href={"/in/user/analytics"}icon={<BarChart3 size={20} />}>Analytics</NavbarLink>
           </nav>
 

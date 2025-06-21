@@ -13,6 +13,7 @@ export interface IUserPoints extends Document {
             taskCompleted: number,
             taskMissed: number,
             mindStatus: string,
+            isSetMindStatus: boolean // to check if mind status is set for that day
         }
     ]
 }
@@ -30,6 +31,7 @@ const userPointSchema = new Schema<IUserPoints>({
             taskCompleted: {type: Number, default: 0},
             taskMissed: {type: Number, default: 0}, //tasks which had deadline upto that day but missed
             mindStatus: {type: String, default: "Default"},
+            isSetMindStatus: {type: Boolean, default: false} // to check if mind status is set for that day
         }
     ]
 })

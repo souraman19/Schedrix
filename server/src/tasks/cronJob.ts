@@ -95,6 +95,7 @@ export const customFunctionTaskStatus = async () => {
           taskCompleted: 0,
           taskMissed: 1,
           mindStatus: "Default",
+          isSetMindStatus: false, // Set to false as mind status is not set for overdue tasks
         });
       } else {
         const totalPoints =

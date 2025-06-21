@@ -414,6 +414,7 @@ export const resolveTask = async (req: any, res: any) => {
         taskCompleted: 1,
         taskMissed: 0,
         mindStatus: "Default",
+        isSetMindStatus: false, // Set to false as mind status is not set for this task
       });
     } else {
       const totalPoints =
@@ -554,6 +555,7 @@ export const rescheduleTask = async (req: any, res: any) => {
         taskCompleted: 0,
         taskMissed: 0,
         mindStatus: "Default",
+        isSetMindStatus: false, // Set to false as mind status is not set for this task
       });
     } else {
       const totalPoints =

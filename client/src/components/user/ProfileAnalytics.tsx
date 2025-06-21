@@ -52,8 +52,10 @@ export default function ProfileAnalytics() {
         credentials: "include",
       });
 
+      
       if (response.status === 200) {
         const data = await response.json();
+        console.log("UserMIND SSS", data)
         // console.log("Mind Status: ", data.mindStatus);
         setUserAnalysisData((prevData: any) => ({
           ...prevData,
