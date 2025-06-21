@@ -19,6 +19,7 @@ export default function TaskActions({ _id }: { _id: string }) {
   const [rescheduleDeadline, setRescheduleDeadline] = useState("");
 
   function formatDatetimeLocal(isoString: string): string {
+    if(isoString === "") return "";
     const date = new Date(isoString);
     const offset = date.getTimezoneOffset();
     const localDate = new Date(date.getTime() - offset * 60000);
@@ -26,6 +27,7 @@ export default function TaskActions({ _id }: { _id: string }) {
   }
 
   function formatDateOnly(isoString: string): string {
+    if(isoString === "") return "";
     return new Date(isoString).toISOString().slice(0, 10); // YYYY-MM-DD
   }
 
@@ -77,7 +79,6 @@ export default function TaskActions({ _id }: { _id: string }) {
       );
       if (response.status === 200) {
         const data = await response.json();
-        console.log("Task timings: ", data.task);
         setRescheduleStartTime(formatDatetimeLocal(data.task.startTime || ""));
         setRescheduleEndTime(formatDatetimeLocal(data.task.endTime || ""));
         setRescheduleDeadline(formatDateOnly(data.task.deadline || ""));
