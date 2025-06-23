@@ -91,7 +91,7 @@ export default function AllQuotesSection() {
   }, []);
 
   return (
-    <div className="grid gap-6 max-w-3xl mx-auto">
+    <div className="pt-5 grid gap-6 max-w-3xl mx-auto">
       {mindStatus && quotes.length > 0 ? (
         <div>
           <h1 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-green-400 to-lime-300 bg-clip-text text-transparent">

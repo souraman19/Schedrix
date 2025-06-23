@@ -33,7 +33,7 @@ export default async function ContentHomePage() {
   await fetchMindStatus();
 
   return (
-    <div className="min-h-screen px-4 py-8 bg-black text-white">
+    <div className="min-h-screen px-4 pt-0 bg-black text-white">
       <div>{mindStatus && 
           <div>
             <QuoteOfTheDay mindStatus={mindStatus} />
