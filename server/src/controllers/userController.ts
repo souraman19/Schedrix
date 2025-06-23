@@ -41,6 +41,7 @@ export const getUserProfile = async(req: any, res: any) => {
 export const getMindStatus = async(req: any, res: any) => {
 
     try{
+        // console.log("Fetching mind status for user:", req.user._id);
         const userId = req.user._id; 
         const month = new Date().getMonth() + 1; // Months are 0-indexed in JavaScript]
         const year = new Date().getFullYear();
@@ -155,7 +156,7 @@ export const editMindStatus = async(req: any, res: any) => {
         // console.log("Mind status updated for user:", userId, mindStatus);
         return res.status(200).json({message: "Mind status updated successfully", user})
     }catch(err){
-        console.log(err)
+        console.log("Error in editMindStatus:", err);
         res.status(500).json({message: "Internal server error"})
     }
 }
@@ -272,15 +273,16 @@ export const updateLastMindStatusAskData = async(req: any, res: any) => {
             });
         } else {
             userPointsBucket.points[existingDayMonthIndex].mindStatus = mindStatus;
+            userPointsBucket.points[existingDayMonthIndex].isSetMindStatus = true; // Set this to true when mind status is set
         }
 
-        userPointsBucket.points[existingDayMonthIndex].isSetMindStatus = true; // Set this to true when mind status is set
+        
         userPointsBucket.markModified("points");
 
         
         await userPointsBucket.save();
         await user.save();
-        console.log("Last mind status ask day updated for user:", userId, lastDateAskedMindStatusFormatted);
+        // console.log("Last mind status ask day updated for user:", userId, lastDateAskedMindStatusFormatted);
         return res.status(200).json({message: "Last mind status ask day updated successfully", user})
     }catch(err){
         console.log("Error in updateLastMindStatusAskDay:", err);

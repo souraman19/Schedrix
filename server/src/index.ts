@@ -13,6 +13,7 @@ import { isAuthenticated } from "./middlewares/AuthMiddleWires";
 import MongoStore from 'connect-mongo';
 import "./tasks/cronJob";
 import "./tasks/CheckMissedCron";
+import path from "path";
 
 
 dotenv.config();
@@ -23,9 +24,12 @@ const port = process.env.PORT || 5000;
 // For parsing json data
 app.use(express.json());
 
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
 // For parsing urlencoded data
 app.use(express.urlencoded({ extended: true }));
 
+// CORS configuration
 app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true,

@@ -2,6 +2,7 @@ import { getSuggestedTagsForMindset } from "./../utils/mindStatusToTagMap";
 import { MotivationContent } from "./../models/MotivationContent";
 import { getSuggestedYoutubeKeywords } from "./../utils/mindStatusToYouTubeKeywordsMap";
 import { MotivationalVideo } from "./../models/MotivationalVideo";
+import { generateImageFromQuote } from "./../utils/huggingface/huggingface";
 
 export const getQuotes = async (req : any, res: any) => {
     try{
@@ -42,8 +43,12 @@ const simpleHashForQOTD = (dayString: string):number => {
     return Math.abs(hash);
 }
 
+
+
+
 export const getQuoteOfTheDay = async (req: any, res: any) => {
     try{
+        // console.log("Fetching quote of the day...", req.query);
         const mindStatus = req.query.mindStatus;
         const tagList = getSuggestedTagsForMindset(mindStatus);
 
@@ -68,8 +73,13 @@ export const getQuoteOfTheDay = async (req: any, res: any) => {
         if(!quote) {
             res.status(404).json({ message: "No quote found for the given mind status" });
         }
+        // console.log("min", mindStatus);
+        console.log("Quote of the day fetched:", quote);
+        const imageURL  = await generateImageFromQuote((quote as any).content, mindStatus);
+        console.log("Image generated for quote:", imageURL);
+        
 
-        res.status(200).json({ message: "Quote of the day fetched successfully", quote: quote });
+        res.status(200).json({ message: "Quote of the day fetched successfully", quote: quote, quoteImageURL: imageURL });
 
     }catch(error) {
         console.error("Error fetching quote of the day:", error);
