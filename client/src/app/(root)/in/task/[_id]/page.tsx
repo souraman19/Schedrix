@@ -1,3 +1,6 @@
+export const experimantal_ppr = "true";
+
+
 import LinkForMasterTask from "@/components/task/LinkForMasterTask";
 import RepeatInfo from "@/components/task/RepeatInfo";
 import TaskDetailsPageDynamicPart from "@/components/task/TaskDetailsPageDynamicPart";
@@ -5,8 +8,6 @@ import TaskDetailsPageStaticPart from "@/components/task/TaskDetailsPageStaticPa
 import TaskActions from "@/components/task/TaskActions";
 import { Button } from "@mui/material";
 import React, { Suspense } from "react";
-
-export const experimantal_ppr = "true";
 
 export default async function Task({params}: {params: Promise<{_id: string}>}) {
   const _id = (await params)._id;
