@@ -28,7 +28,7 @@ export default function AllQuotesSection() {
       const response = await axios.get(`${USER_INFO_ROUTE}`, {
         withCredentials: true,
       });
-      console.log("User data:", response.data);
+      // console.log("User data:", response.data);
       setUser(response.data); // Set the user info in the Zustand store
       setMindStatus(response.data.mindStatus || "Default");
       toast.success("Mind status fetched successfully");

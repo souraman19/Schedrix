@@ -9,9 +9,11 @@ import { cookies } from "next/headers";
 export default async function ContentHomePage() {
   let mindStatus: string | null = null;
 
+  const fetchMindStatus = async () => {
   try {
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get("connect.sid");
+
     const response = await fetch(`${GET_USER_MIND_STATUS_ROUTE}`, {
       method: "GET",
       headers: {
@@ -19,19 +21,24 @@ export default async function ContentHomePage() {
       },
       cache: "no-store",
     });
+    
     if (response.status === 200) {
       const result = await response.json();
       mindStatus = result.mindStatus || "Default";
     }
   } catch (err) {
-    console.error("Error fetching task details:", err);
+    console.error("Error fetching mind status:", err);
   }
+};
+  await fetchMindStatus();
 
   return (
     <div className="min-h-screen px-4 py-8 bg-black text-white">
-      <div>
-        <QuoteOfTheDay mindStatus={mindStatus} />
-      </div>
+      <div>{mindStatus && 
+          <div>
+            <QuoteOfTheDay mindStatus={mindStatus} />
+          </div>
+        }</div>
       <div>
         <AllQuotesSection />
       </div>

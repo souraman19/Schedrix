@@ -7,6 +7,7 @@ export default async function QuoteOfTheDay({
   mindStatus: string | null;
 }) {
   let QOTD: string | null = null;
+  let QOTD_image_url: string | null = null;
 
   try {
     const cookieStore = await cookies();
@@ -25,7 +26,8 @@ export default async function QuoteOfTheDay({
     if (response.status === 200) {
       const result = await response.json();
       QOTD = result.quote;
-    //   console.log("Quote of the Day fetched successfully: ", quote);
+      QOTD_image_url = result.quoteImageURL;
+      console.log("Quote of the Day fetched successfully: ", result);
     }
   } catch (err) {
     console.error("Error fetching task details:", err);
@@ -35,6 +37,12 @@ export default async function QuoteOfTheDay({
     <div className="flex items-center justify-center h-screen">
       {QOTD && (
         <div>
+          <img
+            src={`http://localhost:5000/${QOTD_image_url}`}
+            alt="Motivational Quote"
+            className="w-full max-w-md rounded shadow-lg"
+          />
+
           <div>{QOTD.content}</div>
           <div>{QOTD.author}</div>
         </div>
