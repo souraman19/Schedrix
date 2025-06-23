@@ -1,6 +1,7 @@
 import path from "path";
 import "../../env";
 import fs from "fs";
+import { elaborateQuoteWithGemini } from "../gemini/elaborateQuote";
 
 export const generateImageFromQuote = async (quote: string, mindStatus: string) => {
 
@@ -15,6 +16,9 @@ export const generateImageFromQuote = async (quote: string, mindStatus: string) 
         console.log("Image already exists, skipping generation:", filePath);
         return `/QOTD_images/${fileName}`; // Return the PUBLIC URL
     }
+
+    const elaboratedText = await elaborateQuoteWithGemini( (quote as any).content);
+    console.log("Elaborated text for quote:", elaboratedText);
 
     const response = await fetch(
     "https://router.huggingface.co/nebius/v1/images/generations",

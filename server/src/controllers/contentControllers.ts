@@ -3,6 +3,7 @@ import { MotivationContent } from "./../models/MotivationContent";
 import { getSuggestedYoutubeKeywords } from "./../utils/mindStatusToYouTubeKeywordsMap";
 import { MotivationalVideo } from "./../models/MotivationalVideo";
 import { generateImageFromQuote } from "./../utils/huggingface/huggingface";
+import { elaborateQuoteWithGemini } from "./../utils/gemini/elaborateQuote";
 
 export const getQuotes = async (req : any, res: any) => {
     try{
@@ -74,7 +75,8 @@ export const getQuoteOfTheDay = async (req: any, res: any) => {
             res.status(404).json({ message: "No quote found for the given mind status" });
         }
         // console.log("min", mindStatus);
-        console.log("Quote of the day fetched:", quote);
+        console.log("Quote of the day fetched:", (quote as any).content);
+
         const imageURL  = await generateImageFromQuote((quote as any).content, mindStatus);
         console.log("Image generated for quote:", imageURL);
         
