@@ -75,10 +75,10 @@ export const getQuoteOfTheDay = async (req: any, res: any) => {
             res.status(404).json({ message: "No quote found for the given mind status" });
         }
         // console.log("min", mindStatus);
-        console.log("Quote of the day fetched:", (quote as any).content);
+        // console.log("Quote of the day fetched:", (quote as any).content);
 
         const imageURL  = await generateImageFromQuote((quote as any).content, mindStatus);
-        console.log("Image generated for quote:", imageURL);
+        // console.log("Image generated for quote:", imageURL);
         
 
         res.status(200).json({ message: "Quote of the day fetched successfully", quote: quote, quoteImageURL: imageURL });

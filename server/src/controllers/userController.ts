@@ -104,6 +104,7 @@ export const editMindStatus = async(req: any, res: any) => {
         const day = getDate.getDate();
 
         console.log("Year:", year, "Month:", month, "Day:", day);
+        console.log("Mind Status:", mindStatus);
 
         if(!mindStatus){
             return res.status(400).json({message: "Mind status is required"})
@@ -130,7 +131,7 @@ export const editMindStatus = async(req: any, res: any) => {
     let existingDayMonthIndex = userPointsBucket?.points.findIndex(
       (el) => el.day === day && el.month === month
     );
-    // console.log("Existing day month index: ", existingDayMonthIndex);
+    console.log("Existing day month index: ", existingDayMonthIndex);
 
     if (existingDayMonthIndex === -1) {
       userPointsBucket?.points.push({
@@ -145,10 +146,12 @@ export const editMindStatus = async(req: any, res: any) => {
       });
     } else {
         userPointsBucket.points[existingDayMonthIndex].mindStatus = mindStatus;
+        userPointsBucket.points[existingDayMonthIndex].isSetMindStatus = true; 
     }
 
+
+
     userPointsBucket.markModified("points");
-    userPointsBucket.points[existingDayMonthIndex].isSetMindStatus = true; 
     await userPointsBucket.save();
     // console.log("User points bucket: ", (userPointsBucket as any).points[existingDayMonthIndex]);
 

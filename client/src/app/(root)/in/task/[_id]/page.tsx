@@ -27,7 +27,13 @@ export default async function Task({params}: {params: Promise<{_id: string}>}) {
       </div>
 
       {/* Dynamic part */}
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense 
+         fallback={
+          <div className="max-w-xl mx-auto p-8 bg-[#111] text-green-300 rounded-xl shadow-lg animate-pulse text-center">
+            Loading task details...
+          </div>
+        }
+      >
         <div className="rounded-lg shadow-lg p-3">
           <TaskDetailsPageDynamicPart _id={_id} />
         </div>

@@ -6,20 +6,20 @@ import { elaborateQuoteWithGemini } from "../gemini/elaborateQuote";
 export const generateImageFromQuote = async (quote: string, mindStatus: string) => {
 
     const today = new Date().toISOString().split("T")[0];
-    console.log(mindStatus);
+    // console.log(mindStatus);
     const fileName = `quote-${today}-${mindStatus}.png`;
     const filePath = path.join(__dirname, "../../../public/QOTD_images", fileName);
-    console.log("Dir name:", __dirname); 
-    console.log("Saving image to:", filePath);
+    // console.log("Dir name:", __dirname); 
+    // console.log("Saving image to:", filePath);
   
     if(fs.existsSync(filePath)) {
-        console.log("Image already exists, skipping generation:", filePath);
+        // console.log("Image already exists, skipping generation:", filePath);
         return `/QOTD_images/${fileName}`; // Return the PUBLIC URL
     }
 
-    const elaboratedText = await elaborateQuoteWithGemini( (quote as any).content);
-    console.log("Elaborated text for quote:", elaboratedText);
-
+    let elaboratedText = await elaborateQuoteWithGemini( (quote as any).content);
+    // console.log("Elaborated text for quote:", elaboratedText);
+    
     const response = await fetch(
     "https://router.huggingface.co/nebius/v1/images/generations",
     {
@@ -30,7 +30,7 @@ export const generateImageFromQuote = async (quote: string, mindStatus: string) 
       },
       body: JSON.stringify({
         response_format: "b64_json",
-        prompt: quote,
+        prompt: elaboratedText,
         model: "stability-ai/sdxl",
       }),
     }

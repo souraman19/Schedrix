@@ -8,7 +8,15 @@ import { connectDB, disconnectDB } from "../../config/db";
 export const fetchAndStoreMotivationalVideos = async (searchTerm: string) => {
     try{
         await connectDB();
-        const res = await axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchTerm)}&videoDuration=short&type=video&maxResults=3&key=${process.env.YOUTUBE_API_KEY}`);
+        const res = await axios.get(`https://www.googleapis.com/youtube/v3/search`, {
+        params: {
+            part: "snippet",
+            q: searchTerm,
+            type: "video", // Keep this to get only videos
+            maxResults: 10,
+            key: process.env.YOUTUBE_API_KEY
+        }
+        });
         const videos = res.data.items;
         for(const item of videos){
             const contentHash = createHash("sha256").update(item.id.videoId).digest("hex");
