@@ -16,6 +16,7 @@ import QuickTask from "../voiceAssitant/QuickTask";
 import { useRouter } from "next/navigation"; 
 import { set } from "date-fns";
 import UploadTaskImages from "./UploadTaskImages";
+import RecordVoiceNote from "./RecordVoiceNote";
 
 export default function TaskAddForm() {
   const { user } = useUserStore();
@@ -27,6 +28,8 @@ export default function TaskAddForm() {
   const [duration, setDuration] = useState<string>("");
   const [whenReminder, setWhenReminder] = useState<string>("10"); // in minutes
   const [selectedImages, setSelectedImages] = useState<{file: File, url: string}[]>([]);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [isRecording, setIsRecording] = useState<boolean>(false);
 
 
   const router = useRouter();
@@ -75,6 +78,10 @@ export default function TaskAddForm() {
 
   const handleSubmitForm = async (prevState: any, formData: FormData) => {
     try {
+      if(isRecording){
+        toast.error("Please stop recording before submitting the form.");
+        return;
+      }
       // check if input is empty string and set it to undefined
       const sanitizeString = (val: FormDataEntryValue | null) =>
         typeof val === "string" && val.trim() === "" ? undefined : val;
@@ -105,8 +112,6 @@ export default function TaskAddForm() {
           | "medium"
           | "high"
           | "critical",
-        image: sanitizeFile(formData.get("image")),
-        audio: sanitizeFile(formData.get("audio")),
         repeat: formData.get("repeat") as string | undefined,
       };
 
@@ -151,11 +156,16 @@ export default function TaskAddForm() {
         if(formValues[key] !== undefined && formValues[key] !== null){
           uploadData.append(key, formValues[key]);
         }
-      }
+      } 
 
       selectedImages.forEach((image) => {
         uploadData.append("images", image.file);
       })
+
+      if(audioBlob){
+        const audioFileName = `${Date.now()}-voice.webm`;
+        uploadData.append('audio', audioBlob as Blob, audioFileName);
+      }
 
       if(formValues.customRepeat){
         uploadData.append("customRepeat", JSON.stringify(formValues.customRepeat));
@@ -383,19 +393,6 @@ export default function TaskAddForm() {
 
 
         {/* Upload image section */}
-        {/* <div style={{ marginTop: "1.8rem" }}>
-          <label style={labelStyle}>Upload Images</label>
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            style={inputBase}
-            name="image"
-          />
-          {errors.image && <div style={errorTextStyle}>{errors.image}</div>}
-        </div> */}
-
-
         <div style={{ marginTop: "1.8rem" }}>
           <UploadTaskImages 
             selectedImages = {selectedImages}
@@ -409,12 +406,29 @@ export default function TaskAddForm() {
 
 
 
-        {/* Upload audio section */}
+        {/* Upload audio section
         <div style={{ marginTop: "1.8rem" }}>
           <label style={labelStyle}>Upload Audio</label>
           <input type="file" accept="audio/*" style={inputBase} name="audio" />
           {errors.audio && <div style={errorTextStyle}>{errors.audio}</div>}
+        </div> */}
+
+
+        {/* Upload audio section */}
+        <div style={{ marginTop: "1.8rem" }}>
+          <RecordVoiceNote
+            labelStyle={labelStyle}
+            audioBlob={audioBlob}
+            setAudioBlob={setAudioBlob}
+            inputBase={inputBase}
+            isRecording={isRecording}
+            setIsRecording={setIsRecording}
+          />
         </div>
+
+
+
+
       </div>
 
       {/* Lock & Fixed */}

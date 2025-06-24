@@ -8,8 +8,6 @@ export const taskSchema = z.object({
   endTime: z.coerce.date().optional(),
   deadline: z.coerce.date().optional(),
   description: z.string().optional(),
-  image: z.instanceof(File).optional(),
-  audio: z.instanceof(File).optional(), 
   category: z.string(),
   priority: z.enum(["low", "medium", "high", "critical"]),
   tags: z.array(z.string()).optional(),

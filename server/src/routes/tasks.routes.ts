@@ -6,6 +6,7 @@ const router = Router();
 
 router.post('/create', upload.fields([
     {name: 'images', maxCount: 100},
+    {name: 'audio', maxCount: 1},
 ]), createTask);
 router.post('/get/filtered', getFilteredTasks);
 router.get('/get/static/details/:_id', getTaskStaticDetails);

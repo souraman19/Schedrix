@@ -19,15 +19,16 @@ export const createTask = async (req: any, res: any) => {
       isFixed,
       category,
       priority,
-      image,
-      audio,
       repeat,
       customRepeat,
       isReminder,
       whenReminder,
     } = req.body;
 
+    // console.log("Creating task with data: ", req.files);
+
     const images = req.files?.images ?? [];
+    const audio = req.files?.audio ? req.files.audio[0].filename : null;
 
     const userId = req.user._id; // Assuming you have user ID in req.user
 
