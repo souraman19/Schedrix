@@ -8,6 +8,7 @@ import TaskDetailsPageStaticPart from "@/components/task/TaskDetailsPageStaticPa
 import TaskActions from "@/components/task/TaskActions";
 import { Button } from "@mui/material";
 import React, { Suspense } from "react";
+import AddTaskButton from "@/components/ui/AddTaskButton";
 
 export default async function Task({params}: {params: Promise<{_id: string}>}) {
   const _id = (await params)._id;
@@ -41,6 +42,9 @@ export default async function Task({params}: {params: Promise<{_id: string}>}) {
       
       <div>
         <TaskActions _id={_id} />
+      </div>
+      <div className="fixed bottom-9 right-8">
+        <AddTaskButton />
       </div>
     </div>
   );

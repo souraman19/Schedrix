@@ -6,6 +6,7 @@ import { useState } from "react";
 import DayListOfMonth from "./DayListOfMonth";
 import SchedularViewCenter from "./SchedularViewCenter";
 import { HelpCircle } from "lucide-react";
+import AddTaskButton from "../ui/AddTaskButton";
 
 export default function UISchedular({
   currYear,
@@ -29,6 +30,11 @@ export default function UISchedular({
   return (
     <>
       <div className="fixed top-43 right-3 z-50">
+        <div className="fixed top-55 right-5 flex items-center gap-2 mb-4">
+            <AddTaskButton />
+        </div>
+
+
         <button
           onClick={handleOpen}
           title="Help"

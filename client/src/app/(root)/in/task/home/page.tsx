@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { GET_FILTERED_TASKS_ROUTE } from '@/lib/apiRoutes';
 import { toast } from 'sonner';
+import AddTaskButton from '@/components/ui/AddTaskButton';
 
 export default function TaskHomePage() {
 
@@ -116,6 +117,10 @@ export default function TaskHomePage() {
           <h2 className="text-lg font-semibold mb-2 text-green-400">Tasks</h2>
           <TaskResult  tasks = {tasks}/>
         </div>
+      </div>
+
+      <div className="fixed bottom-9 right-8">
+        <AddTaskButton />
       </div>
     </div>
   );
