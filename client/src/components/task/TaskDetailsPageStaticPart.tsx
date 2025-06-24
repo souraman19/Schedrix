@@ -247,6 +247,28 @@ export default async function TaskDetailsPageStaticPart({
           </div>
         )}
 
+
+        {taskData?.userInput?.audio?.length > 0 && (
+          <div style={{ ...cardStyle, ...hoverCardStyle }}>
+            <p style={{...labelStyle,  backgroundColor: "#1a1a1a", textAlign: "center", padding:"10px", borderRadius:"10px" }}>Input audio: </p>
+            <div className="flex flex-wrap gap-4 p-4 rounded-2xl justify-center">
+              {taskData.userInput.audio.map((audio, index) => (
+                <audio
+                  key={index}
+                  controls
+                  className="w-full max-w-xs rounded-lg p-2"
+                >
+                  <source
+                    src={`http://localhost:5000/uploads/tasks/${audio}`}
+                    type="audio/mpeg"
+                  />
+                  Your browser does not support the audio element.
+                </audio>
+              ))}
+            </div>
+          </div>
+        )}
+
         {taskData?.createdAt && (
           <div style={{ ...cardStyle, ...hoverCardStyle }}>
             <div className="flex justify-between">
