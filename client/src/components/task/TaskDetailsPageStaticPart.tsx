@@ -50,7 +50,7 @@ export default async function TaskDetailsPageStaticPart({
     );
     const result = await response.json();
     taskData = result.task;
-    console.log("Task data fetched successfully: ", taskData);
+    // console.log("Task data fetched successfully: ", taskData);
   } catch (err) {
     console.error("Error fetching task details:", err);
   }

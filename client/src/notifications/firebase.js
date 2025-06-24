@@ -16,7 +16,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase Cloud Messaging and get a reference to the service
-export const messaging = getMessaging(app);
+let messaging = null;
+if (typeof window !== "undefined" && typeof navigator !== "undefined") {
+  messaging = getMessaging(app);
+}
+export { messaging };
+
 
 export const generateToken = async () => {
   const permission = await Notification.requestPermission();
