@@ -24,7 +24,7 @@ const TaskCard = ({ task }: { task: any }) => {
   const deadline = task.deadLine ? new Date(task.deadLine) : null;
   const createdAt = task.createdAt ? new Date(task.createdAt).toLocaleString() : 'N/A';
   const endTime = task.endTime ? new Date(task.endTime).toLocaleString() : 'N/A';
-  const duration = task.duration ? `${task.duration} min` : 'N/A';
+  const duration = task.duration ? `${task.duration} hour` : 'N/A';
 
   // Check if the task is overdue
   const isOverdue = deadline && new Date() > deadline;

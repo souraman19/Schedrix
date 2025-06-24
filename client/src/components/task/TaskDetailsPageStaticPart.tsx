@@ -5,12 +5,21 @@ import { formatDate } from "@/lib/utils";
 import { Button } from "@mui/material";
 import { ArrowBigRight } from "lucide-react";
 
-export default async function TaskDetailsPageStaticPart({ _id }: { _id: string }) {
+export default async function TaskDetailsPageStaticPart({
+  _id,
+}: {
+  _id: string;
+}) {
   type TaskType = {
     _id: string;
     title: string;
     category: string;
-    userInput: { text: string };
+    userOutput: {
+      text: string;
+      image: string[];
+      video: string[];
+      audio: string[];
+    };
     duration: number;
     startTime: Date;
     endTime: Date;
@@ -22,25 +31,26 @@ export default async function TaskDetailsPageStaticPart({ _id }: { _id: string }
     masterTaskId: string | null;
   };
 
-
   const experimantal_ppr = "true";
 
   let taskData: TaskType | null = null;
 
-
   try {
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get("connect.sid");
-    const response: Response = await fetch(`${GET_TASK_STATIC_DETAILS_ROUTE}/${_id}`, {
-      method: "GET",
-      headers: {
-        Cookie: `${sessionCookie?.name}=${sessionCookie?.value}`,
-      },
-      cache: "no-store",
-    });
+    const response: Response = await fetch(
+      `${GET_TASK_STATIC_DETAILS_ROUTE}/${_id}`,
+      {
+        method: "GET",
+        headers: {
+          Cookie: `${sessionCookie?.name}=${sessionCookie?.value}`,
+        },
+        cache: "no-store",
+      }
+    );
     const result = await response.json();
     taskData = result.task;
-    // console.log("Task data fetched successfully: ", taskData);
+    console.log("Task data fetched successfully: ", taskData);
   } catch (err) {
     console.error("Error fetching task details:", err);
   }
@@ -70,7 +80,8 @@ export default async function TaskDetailsPageStaticPart({ _id }: { _id: string }
     background: "linear-gradient(45deg, #00c853, #b2ff59)",
     WebkitBackgroundClip: "text",
     color: "transparent",
-    textShadow: "0 0 12px rgba(0, 200, 83, 0.8), 0 0 20px rgba(0, 200, 83, 0.6)",
+    textShadow:
+      "0 0 12px rgba(0, 200, 83, 0.8), 0 0 20px rgba(0, 200, 83, 0.6)",
   };
 
   // Card Style with Hover Effect, Smooth Shadow and Gradient
@@ -214,6 +225,28 @@ export default async function TaskDetailsPageStaticPart({ _id }: { _id: string }
           </div>
         )}
 
+        {taskData?.userInput?.image?.length > 0 && (
+          <div 
+            style={{ ...cardStyle, ...hoverCardStyle}}
+          >
+            <p style={{...labelStyle,  backgroundColor: "#1a1a1a", textAlign: "center", padding:"10px", borderRadius:"10px" }}>Input images: </p>
+            <div className="flex flex-wrap gap-4 p-4 rounded-2xl  shadow-2xl">
+              {taskData.userInput.image.map((img, index) => (
+                <div
+                  key={index}
+                  className="rounded-xl shadow-lg overflow-hidden border border-gray-700 bg-black/40"
+                >
+                  <img
+                    src={`http://localhost:5000/uploads/tasks/${img}`}
+                    alt={`Task image ${index + 1}`}
+                    className="block rounded-xl max-w-full h-auto"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {taskData?.createdAt && (
           <div style={{ ...cardStyle, ...hoverCardStyle }}>
             <div className="flex justify-between">
@@ -231,9 +264,6 @@ export default async function TaskDetailsPageStaticPart({ _id }: { _id: string }
             </div>
           </div>
         )}
-
-
-
       </div>
     </div>
   );

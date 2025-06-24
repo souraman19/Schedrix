@@ -25,6 +25,7 @@ const port = process.env.PORT || 5000;
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use("/uploads/tasks", express.static(path.join(__dirname, '..', 'uploads/tasks')));
 
 // For parsing urlencoded data
 app.use(express.urlencoded({ extended: true }));
