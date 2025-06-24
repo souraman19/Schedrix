@@ -27,7 +27,7 @@ export const createTask = async (req: any, res: any) => {
       whenReminder,
     } = req.body;
 
-    // console.log("Request body: ", req.body);
+    const images = req.files?.images ?? [];
 
     const userId = req.user._id; // Assuming you have user ID in req.user
 
@@ -65,8 +65,8 @@ export const createTask = async (req: any, res: any) => {
       isFixed,
       userInput: {
         text:
-          description && description.trim() !== "" ? description.trim() : "",
-        image: image ? [image] : [],
+        description && description.trim() !== "" ? description.trim() : "",
+        image: images.map((img : any) => img.filename) ?? [],
         audio: audio ? [audio] : [],
         video: [],
       },

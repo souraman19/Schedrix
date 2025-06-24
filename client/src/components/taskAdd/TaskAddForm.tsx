@@ -8,13 +8,14 @@ import { taskSchema } from "@/lib/validation";
 import { CREATE_TASKS_ROUTE } from "@/lib/apiRoutes";
 import axios from "axios";
 import { toast } from "sonner";
-import CustomRepeat from "./CustomRepeat";
+import CustomRepeat from "../CustomRepeat";
 import { flattenZodErrors } from "@/lib/flattenedZodErrors";
 import { start } from "repl";
 import { Mic } from "lucide-react";
-import QuickTask from "./voiceAssitant/QuickTask";
+import QuickTask from "../voiceAssitant/QuickTask";
 import { useRouter } from "next/navigation"; 
 import { set } from "date-fns";
+import UploadTaskImages from "./UploadTaskImages";
 
 export default function TaskAddForm() {
   const { user } = useUserStore();
@@ -25,6 +26,8 @@ export default function TaskAddForm() {
   const [title, setTitle] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
   const [whenReminder, setWhenReminder] = useState<string>("10"); // in minutes
+  const [selectedImages, setSelectedImages] = useState<{file: File, url: string}[]>([]);
+
 
   const router = useRouter();
 
@@ -140,8 +143,27 @@ export default function TaskAddForm() {
 
       // console.log("form values", formValues);
       await taskSchema.parseAsync(formValues);
-      const response = await axios.post(CREATE_TASKS_ROUTE, formValues, {
+
+
+      const uploadData = new FormData();
+
+      for(const key in formValues){
+        if(formValues[key] !== undefined && formValues[key] !== null){
+          uploadData.append(key, formValues[key]);
+        }
+      }
+
+      selectedImages.forEach((image) => {
+        uploadData.append("images", image.file);
+      })
+
+      if(formValues.customRepeat){
+        uploadData.append("customRepeat", JSON.stringify(formValues.customRepeat));
+      }
+
+      const response = await axios.post(CREATE_TASKS_ROUTE, uploadData, {
         withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
       });
       // console.log("task created => ", response.data);
       if (response.status === 201) {
@@ -164,6 +186,7 @@ export default function TaskAddForm() {
       setDuration("");
       setWhenReminder("10");
       setRepeat("no repeat");
+      setSelectedImages([]);
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         const flattenedErrors = flattenZodErrors(error);
@@ -358,7 +381,9 @@ export default function TaskAddForm() {
           )}
         </div>
 
-        <div style={{ marginTop: "1.8rem" }}>
+
+        {/* Upload image section */}
+        {/* <div style={{ marginTop: "1.8rem" }}>
           <label style={labelStyle}>Upload Images</label>
           <input
             type="file"
@@ -368,8 +393,23 @@ export default function TaskAddForm() {
             name="image"
           />
           {errors.image && <div style={errorTextStyle}>{errors.image}</div>}
+        </div> */}
+
+
+        <div style={{ marginTop: "1.8rem" }}>
+          <UploadTaskImages 
+            selectedImages = {selectedImages}
+            setSelectedImages = {setSelectedImages}
+            errors={errors}
+            setErrors={setErrors}
+            inputStyle={inputBase}
+            labelStyle={labelStyle}
+          />
         </div>
 
+
+
+        {/* Upload audio section */}
         <div style={{ marginTop: "1.8rem" }}>
           <label style={labelStyle}>Upload Audio</label>
           <input type="file" accept="audio/*" style={inputBase} name="audio" />
@@ -556,7 +596,7 @@ const textareaStyle = {
 const labelStyle = {
   marginBottom: "0.6rem",
   display: "block",
-  fontWeight: 600,
+  fontWeight: "600",
   color: "#b2ff59",
   fontSize: "0.85rem", // Smaller font size
 };

@@ -1,11 +1,12 @@
 import {Router} from 'express';
 import { createTask, getFilteredTasks, getTaskStaticDetails, getTaskDynamicDetails, resolveTask, getTaskRepeatInfo, getTaskTimings, rescheduleTask, fetch7DaysTasks, rescheduleTaskLists, editReminderTime } from '../controllers/TaskControllers';
-import multer from 'multer';
+import upload from "./../middlewares/multerConfig";
 
-const upload = multer();
 const router = Router();
 
-router.post('/create', createTask);
+router.post('/create', upload.fields([
+    {name: 'images', maxCount: 100},
+]), createTask);
 router.post('/get/filtered', getFilteredTasks);
 router.get('/get/static/details/:_id', getTaskStaticDetails);
 router.get('/get/dynamic/details/:_id', getTaskDynamicDetails);
