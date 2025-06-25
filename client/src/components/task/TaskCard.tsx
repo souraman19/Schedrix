@@ -26,24 +26,23 @@ const TaskCard = ({ task }: { task: any }) => {
   const endTime = task.endTime ? new Date(task.endTime).toLocaleString() : 'N/A';
   const duration = task.duration ? `${task.duration} hour` : 'N/A';
 
-  // Check if the task is overdue
   const isOverdue = deadline && new Date() > deadline;
 
   return (
     <div
       className={clsx(
-        'bg-[#121212] rounded-2xl p-6 border border-[#2e2e2e] transition-all duration-300 ease-in-out shadow-lg shadow-[#00c85322] hover:shadow-[#b2ff5933]',
+        'bg-[#121212] rounded-2xl p-4 sm:p-5 md:p-6 border border-[#2e2e2e] transition-all duration-300 ease-in-out shadow-lg shadow-[#00c85322] hover:shadow-[#b2ff5933]',
         expanded && 'shadow-[#00c85355] scale-[1.015]'
       )}
     >
       {/* Top Row */}
       <div
-        className="flex items-center justify-between gap-6 cursor-pointer"
+        className="flex flex-wrap items-start justify-between gap-4 sm:gap-6 cursor-pointer"
         onClick={() => setExpanded(!expanded)}
       >
         {/* Title + Priority */}
-        <div>
-          <h3 className="text-2xl font-semibold text-[#b2ff59] tracking-wide mb-1">
+        <div className="flex-1 min-w-[200px]">
+          <h3 className="text-xl sm:text-2xl font-semibold text-[#b2ff59] tracking-wide mb-1">
             {task.title}
           </h3>
           <span
@@ -56,22 +55,22 @@ const TaskCard = ({ task }: { task: any }) => {
         </div>
 
         {/* Lock Status */}
-        <div className="text-sm text-gray-400 flex flex-col items-center">
+        <div className="flex flex-col items-start sm:items-center text-sm text-gray-400 min-w-[80px]">
           {task.isLocked ? (
             <>
-              <Lock size={22} className="text-red-500 mb-1" />
+              <Lock size={20} className="text-red-500 mb-1" />
               <span className="text-xs font-medium">Locked</span>
             </>
           ) : (
             <>
-              <LockOpen size={22} className="text-green-400 mb-1" />
+              <LockOpen size={20} className="text-green-400 mb-1" />
               <span className="text-xs font-medium">Unlocked</span>
             </>
           )}
         </div>
 
         {/* Status + Deadline */}
-        <div className="flex flex-col items-end text-sm text-gray-300">
+        <div className="flex flex-col items-end text-sm text-gray-300 min-w-[100px]">
           <span className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusStyle(task.status)}`}>
             {task.status.toUpperCase()}
           </span>
@@ -106,21 +105,16 @@ const TaskCard = ({ task }: { task: any }) => {
             </div>
           )}
 
-          {/* Show coins if completed, overdue, or passed the fixed time */}
           {(task.status === 'completed' || 'overdue') && (
-            <div className="flex items-center gap-2 text-yellow-400 font-semibold">
+            <div className="col-span-2 flex items-center gap-2 text-yellow-400 font-semibold mt-2">
               <Coins size={20} />
               {task.totalPointsContributed} pts
             </div>
           )}
 
-          {/* Redirect Button */}
           <div className="col-span-2 text-right">
             <button
-              style={{
-                cursor:"pointer",
-              }}
-              className=" mt-4 px-6 py-2 bg-gradient-to-r from-[#00c853] to-[#b2ff59] hover:from-[#00e676] hover:to-[#ccff90] text-black font-bold rounded-full flex items-center gap-2 ml-auto shadow-md shadow-[#00c85355] hover:shadow-[#b2ff5944]"
+              className="mt-4 px-5 sm:px-6 py-2 bg-gradient-to-r from-[#00c853] to-[#b2ff59] hover:from-[#00e676] hover:to-[#ccff90] text-black font-bold rounded-full flex items-center gap-2 ml-auto shadow-md shadow-[#00c85355] hover:shadow-[#b2ff5944]"
               onClick={() => router.push(`/in/task/${task._id}`)}
             >
               View Full Task
@@ -154,10 +148,10 @@ const DetailRow = ({
   label: string;
   value: any;
 }) => (
-  <div className="flex items-center gap-2">
+  <div className="flex flex-wrap items-center gap-2">
     {icon}
     <span className="font-semibold text-white">{label}:</span>
-    <span className="text-gray-400">{value}</span>
+    <span className="text-gray-400 break-words">{value}</span>
   </div>
 );
 
