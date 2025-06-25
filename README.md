@@ -387,23 +387,23 @@ Caching effectively reduces redundant work, improves user experience, and lowers
 ---
 
 
-### Future Enhancements:
+# Future Enhancements:
 - **Model Improvement**: Fine-tuning the model with more data and advanced techniques to increase prediction accuracy.
 - **Feature Expansion**: Including more features (e.g., task priority, deadlines, etc.) to improve model predictions.
 - **Real-time Predictions**: Allowing for predictions based on **real-time** data instead of just historical data.
 
 
-### 🔍 Additional Implementation Details (Expanded)
+# 🔍 Additional Implementation Details (Expanded)
 
-#### 🔔 FCM Notifications (Deep Dive)
+# 🔔 FCM Notifications (Deep Dive)
 
-* **Token Setup**:
+## **Token Setup**:
 
   * Imported `getMessaging()` and `getToken()` from Firebase.
   * Used `getToken(messaging, { vapidKey })` to generate FCM token.
   * Stored token per user in MongoDB.
 
-* **Service Worker**:
+## **Service Worker**:
 
   * Placed `firebase-messaging-sw.js` in public root.
   * Included code to listen for background notifications:
@@ -416,7 +416,7 @@ Caching effectively reduces redundant work, improves user experience, and lowers
     });
     ```
 
-* **Foreground Toasts**:
+## **Foreground Toasts**:
 
   * Imported `onMessage()` in client to trigger ShadCN toast:
 
@@ -426,12 +426,12 @@ Caching effectively reduces redundant work, improves user experience, and lowers
     });
     ```
 
-* **Reminder Triggering**:
+## **Reminder Triggering**:
 
   * BullMQ worker schedules reminders using `delay` option.
   * Notification payload contains task title, time, and action link.
 
-#### 🧠 MindStatus Modal Prompt
+# 🧠 MindStatus Modal Prompt
 
 * Modal rendered in layout route or main shell on mount.
 * Logic checks if:
@@ -444,24 +444,24 @@ Caching effectively reduces redundant work, improves user experience, and lowers
   * After submission, save `mindStatus` and update `lastPromptedDate`.
   * Optionally send to backend for logging trends.
 
-#### 📜 Content System Logic
+# 📜 Content System Logic
 
-* **ZenQuotes API**:
+## **ZenQuotes API**:
 
   * Fetched 10–30 quotes via `https://zenquotes.io/api/quotes`.
   * Parsed and pre-processed with `tagQuotes()` function.
 
-* **Gemini Prompt**:
+## **Gemini Prompt**:
 
   * Prompt formatted with `${quote}` and `${mindStatus}` inserted.
   * Gemini returns a 2–3 sentence elaboration.
 
-* **SDXL Image Generation**:
+## **SDXL Image Generation**:
 
   * SDXL prompted with Gemini response using `/txt2img` API.
   * Image base64 or URL saved in DB.
 
-* **Video Selection**:
+## **Video Selection**:
 
   * YouTube API key used in call:
 
@@ -470,7 +470,7 @@ Caching effectively reduces redundant work, improves user experience, and lowers
     ```
   * Filtered results shown in content section with title + thumbnail.
 
-#### 🐂 BullMQ Workers
+## 🐂 BullMQ Workers
 
 * Defined queues for `taskReminder`, `quoteFetcher`, `videoFetcher`.
 * Worker script includes job handlers:
@@ -488,7 +488,7 @@ Caching effectively reduces redundant work, improves user experience, and lowers
   queue.add('taskReminder', taskPayload, { delay: 1000 * 60 * 60 })
   ```
 
-#### 🏷️ Semantic Tagging Fallback Chain
+## 🏷️ Semantic Tagging Fallback Chain
 
 * **Step 1: Zero-Shot**:
 
@@ -500,7 +500,7 @@ Caching effectively reduces redundant work, improves user experience, and lowers
   * Keywords extracted and mapped to predefined tag list.
   * Output: tag list with match weight (e.g. count of keyword hits).
 
-#### 📆 Timeline Scheduler Internal Logic
+## 📆 Timeline Scheduler Internal Logic
 
 * Timeline spans 7 days starting from yesterday.
 * Time represented as 1440 rows (1 per minute).
@@ -513,7 +513,7 @@ Caching effectively reduces redundant work, improves user experience, and lowers
   ```
 * Undo stack implemented using a simple array of history states.
 
-#### 🖼️ Image Upload Mechanics
+# 🖼️ Image Upload Mechanics
 
 * Frontend:
 
@@ -524,7 +524,7 @@ Caching effectively reduces redundant work, improves user experience, and lowers
   * Used Multer with destination `uploads/tasks/`
   * Task schema stores image filenames as an array.
 
-#### 🎙️ Audio Record Upload
+# 🎙️ Audio Record Upload
 
 * Setup:
 

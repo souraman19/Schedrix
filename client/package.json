@@ -20,7 +20,7 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "firebase": "^11.9.1",
-    "framer-motion": "^12.18.1",
+    "framer-motion": "^12.19.1",
     "lucide-react": "^0.501.0",
     "multer": "^1.4.5-lts.2",
     "next": "15.3.1-canary.14",
