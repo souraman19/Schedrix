@@ -53,17 +53,17 @@ export default function TaskHomePage() {
 
             if(response.ok){
                 const result = await response.json();
-                console.log("Tasks fetched successfully: ", result);
+                // console.log("Tasks fetched successfully: ", result);
                 setTasks(result.tasks);
             } else {
                 const error = await response.json();
-                console.error("Error fetching tasks: ", error);
-                toast.error("Failed to fetch tasks!");
+                // console.error("Error fetching tasks: ", error);
+                // toast.error("Failed to fetch tasks!");
             }
             
         }catch(err){
-            console.error("Error fetching tasks: ", err);
-            console.log("Data: ", data);
+            // console.error("Error fetching tasks: ", err);
+            // console.log("Data: ", data);
         }
     }
 

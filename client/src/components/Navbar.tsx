@@ -87,9 +87,10 @@ export default function Navbar() {
           </div>
 
           <nav className="flex flex-col gap-4">
-            <NavbarLink href="/in/home" icon={<Home size={20} />}>Home</NavbarLink>
-            <NavbarLink href="/in/tasks" icon={<ListTodo size={20} />}>Tasks</NavbarLink>
-            <NavbarLink href="/in/user/analytics" icon={<LogOut size={20} />} red>Analytics</NavbarLink>
+             <NavbarLink href="/in/home" icon={<Home size={20} />}>Home</NavbarLink>
+            <NavbarLink href="/in/task/home" icon={<ListTodo size={20} />}>Tasks</NavbarLink>
+            <NavbarLink href="/in/content/quotes" icon={<Zap size={20} />}>Boost</NavbarLink>
+            <NavbarLink href={"/in/user/analytics"}icon={<BarChart3 size={20} />}>Analytics</NavbarLink>
           </nav>
         </div>
       )}
