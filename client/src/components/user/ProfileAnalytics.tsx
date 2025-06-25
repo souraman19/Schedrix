@@ -37,11 +37,11 @@ export default function ProfileAnalytics() {
         const data = await response.json();
         // console.log("Profile Analytics: ", data.user);
         setUserAnalysisData(data.user);
-        toast.success("Fetched profile analytics successfully!");
+        // toast.success("Fetched profile analytics successfully!");
       }
     } catch (err: any) {
-      console.log("Error fetching profile analytics: ", err);
-      toast.error("Error fetching profile analytics: ", err);
+      // console.log("Error fetching profile analytics: ", err);
+      // toast.error("Error fetching profile analytics: ", err);
     }
   };
 
@@ -55,18 +55,18 @@ export default function ProfileAnalytics() {
       
       if (response.status === 200) {
         const data = await response.json();
-        console.log("UserMIND SSS", data)
+        // console.log("UserMIND SSS", data)
         // console.log("Mind Status: ", data.mindStatus);
         setUserAnalysisData((prevData: any) => ({
           ...prevData,
           mindStatus: data.mindStatus,
         }));
         setSelectedStatus(data.mindStatus);
-        toast.success("Fetched mind status successfully!");
+        // toast.success("Fetched mind status successfully!");
       }
     } catch (err: any) {
-      console.log("Error fetching mind status: ", err);
-      toast.error("Error fetching mind status: ", err);
+      // console.log("Error fetching mind status: ", err);
+      // toast.error("Error fetching mind status: ", err);
     }
   };
 
@@ -83,21 +83,21 @@ export default function ProfileAnalytics() {
         }),
         credentials: "include",
       })
-      console.log("Response: ", response);
+      // console.log("Response: ", response);
       if(response.ok){
-        console.log("Mind status updated successfully");
-        toast.success("Mind status updated successfully!");
+        // console.log("Mind status updated successfully");
+        // toast.success("Mind status updated successfully!");
         setUserAnalysisData((prevData: any) => ({
           ...prevData,
           mindStatus: selectedStatus,
         }));
       } else {
-        console.error("Failed to update mind status: ", response.statusText);
-        toast.error("Failed to update mind status.");
+        // console.error("Failed to update mind status: ", response.statusText);
+        // toast.error("Failed to update mind status.");
       }
     }catch(err: any) {
-      console.error("Error submitting mind status: ", err);
-      toast.error("Error submitting mind status.");
+      // console.error("Error submitting mind status: ", err);
+      // toast.error("Error submitting mind status.");
     }
   }
 

@@ -36,7 +36,7 @@ export default function RepeatInfo({ _id }: { _id: string }) {
       const result = await response.json();
       setTaskData(result.task);
     } catch (err) {
-      console.error("Error fetching task details:", err);
+      // console.error("Error fetching task details:", err);
     }
   };
 
@@ -64,8 +64,38 @@ export default function RepeatInfo({ _id }: { _id: string }) {
   };
 
   if (taskData === null) {
-    return <div>Loading task data...</div>;
-  }
+  return (
+    <Box
+      sx={{
+        background: "linear-gradient(135deg, #121212, #0f0f0f)",
+        color: "#b2ff59",
+        padding: "40px",
+        borderRadius: "20px",
+        boxShadow: "0 0 30px rgba(0, 255, 128, 0.2)",
+        maxWidth: "800px",
+        margin: "40px auto",
+        textAlign: "center",
+        animation: "fadeIn 1.2s ease-out",
+        border: "1px solid rgba(255, 255, 255, 0.08)",
+      }}
+    >
+      <div style={{ fontSize: "1.25rem", fontWeight: 600, marginBottom: "0.5rem" }}>
+        Loading Repeat Info...
+      </div>
+      <div style={{ fontSize: "0.95rem", color: "#ccffcc", marginBottom: "2rem" }}>
+        Please wait while we fetch the task’s recurrence details.
+      </div>
+
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2, alignItems: "center" }}>
+        <div className="w-3/4 h-4 bg-green-900 rounded animate-pulse" />
+        <div className="w-2/3 h-4 bg-green-900 rounded animate-pulse" />
+        <div className="w-5/6 h-4 bg-green-900 rounded animate-pulse" />
+        <div className="w-1/2 h-4 bg-green-900 rounded animate-pulse" />
+      </Box>
+    </Box>
+  );
+}
+
 
   const {
     repeat,

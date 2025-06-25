@@ -25,11 +25,11 @@ export default function UserAnalyticsPage() {
         const data = await response.json();
         // console.log("Point Analytics: ", data.points);
         setPointsData(data.points);
-        toast.success("Fetched point analytics successfully!");
+        // toast.success("Fetched point analytics successfully!");
       }
     } catch (error: any) {
-      toast.error("Error fetching point analytics: ", error);
-      console.error("Error fetching point analytics: ", error);
+      // toast.error("Error fetching point analytics: ", error);
+      // console.error("Error fetching point analytics: ", error);
     }
   };
 

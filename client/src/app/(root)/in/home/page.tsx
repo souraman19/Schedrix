@@ -19,14 +19,14 @@ export default function HomePage() {
       try {
         const response = await axios.get(`${USER_INFO_ROUTE}`, {
         withCredentials: true});
-        console.log('User data:', response.data);
+        // console.log('User data:', response.data);
         setUser(response.data); // Set the user info in the Zustand store
     } catch (error : any) {
         if (error.response && error.response.status === 401) {
-            console.log('User not authenticated');
+            // console.log('User not authenticated');
             router.push('/'); // Redirect to the login page
           } else {  
-            console.error('Error fetching user data:', error);
+            // console.error('Error fetching user data:', error);
           }
       }
     };
@@ -37,7 +37,7 @@ export default function HomePage() {
     }, [])
 
     useEffect(() => {
-      console.log('User state changed:', user);
+      // console.log('User state changed:', user);
     }, [user])
 
     const handleLogout = async() => {
@@ -47,7 +47,7 @@ export default function HomePage() {
         setUser(null);
         router.push('/'); 
       } catch(error){
-        console.error('Error logging out:', error);
+        // console.error('Error logging out:', error);
       }
     }
 

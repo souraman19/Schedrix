@@ -1,6 +1,5 @@
 export const experimantal_ppr = "true";
 
-
 import LinkForMasterTask from "@/components/task/LinkForMasterTask";
 import RepeatInfo from "@/components/task/RepeatInfo";
 import TaskDetailsPageDynamicPart from "@/components/task/TaskDetailsPageDynamicPart";
@@ -10,7 +9,11 @@ import { Button } from "@mui/material";
 import React, { Suspense } from "react";
 import AddTaskButton from "@/components/ui/AddTaskButton";
 
-export default async function Task({params}: {params: Promise<{_id: string}>}) {
+export default async function Task({
+  params,
+}: {
+  params: Promise<{ _id: string }>;
+}) {
   const _id = (await params)._id;
 
   return (
@@ -28,18 +31,37 @@ export default async function Task({params}: {params: Promise<{_id: string}>}) {
       </div>
 
       {/* Dynamic part */}
-      <Suspense 
-         fallback={
-          <div className="max-w-xl mx-auto p-8 bg-[#111] text-green-300 rounded-xl shadow-lg animate-pulse text-center">
-            Loading task details...
-          </div>
+      <Suspense
+        fallback={
+          <div
+  className="mx-auto max-w-3xl mt-10 p-8 rounded-2xl shadow-2xl bg-[#0d0d0d] border border-green-800 animate-pulse text-center text-green-200"
+  style={{
+    boxShadow: "0 0 30px rgba(0, 255, 128, 0.2)",
+    fontFamily: "Inter, system-ui, sans-serif",
+  }}
+>
+  <h2 className="text-2xl font-semibold text-lime-400 tracking-wide mb-2">
+    Loading Task Details...
+  </h2>
+  <p className="text-sm text-green-400 mb-6">
+    Hold tight while we gather your task data.
+  </p>
+
+  <div className="space-y-4">
+    <div className="h-5 w-3/4 mx-auto bg-green-950 rounded" />
+    <div className="h-5 w-2/3 mx-auto bg-green-950 rounded" />
+    <div className="h-5 w-5/6 mx-auto bg-green-950 rounded" />
+    <div className="h-5 w-1/2 mx-auto bg-green-950 rounded" />
+  </div>
+</div>
+
         }
       >
         <div className="rounded-lg shadow-lg p-3">
           <TaskDetailsPageDynamicPart _id={_id} />
         </div>
       </Suspense>
-      
+
       <div>
         <TaskActions _id={_id} />
       </div>

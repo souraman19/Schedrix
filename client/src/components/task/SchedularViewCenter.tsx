@@ -415,7 +415,7 @@ export default function SchedulerViewCenter({
         toast.error("Error rescheduling tasks");
       }
     } catch (err) {
-      console.error("Error in rescheduling task lists, err");
+      // console.error("Error in rescheduling task lists, err");
       toast.error("Error rescheduling tasks");
     }
   };

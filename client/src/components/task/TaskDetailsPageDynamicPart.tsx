@@ -41,7 +41,7 @@ export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string 
     taskData = result.task;
     // console.log("Task data fetched successfully: ", taskData);
   } catch (err) {
-    console.error("Error fetching task details:", err);
+    // console.error("Error fetching task details:", err);
   }
 
   const isDeadlinePassed = taskData?.deadline && new Date(taskData.deadline) < new Date();

@@ -27,7 +27,7 @@ export default async function QuoteOfTheDay({
       const result = await response.json();
       QOTD = result.quote;
       QOTD_image_url = result.quoteImageURL;
-      console.log("Quote of the Day fetched successfully: ", result);
+      // console.log("Quote of the Day fetched successfully: ", result);
     }
   } catch (err) {
     console.error("Error fetching task details:", err);

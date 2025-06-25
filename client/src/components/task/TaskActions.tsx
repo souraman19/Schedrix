@@ -46,16 +46,16 @@ export default function TaskActions({ _id }: { _id: string }) {
           withCredentials: true,
         }
       );
-      console.log("Response: ", response);
+      // console.log("Response: ", response);
 
       toast.success("Task resolved successfully!");
       
-      console.log("Task resolved successfully:", response);
+      // console.log("Task resolved successfully:", response);
       setFeedback("");
       setShowForm(false);
       // router.push(`/in/task/${_id}`); // Redirect to the task home page
     } catch (error: any) {
-      console.log("Error resolving task:", error);
+      // console.log("Error resolving task:", error);
       if (error.response && error.response.status === 499) {
         toast.error(error.response.data.error);
       } else if (error.response && error.response.status === 404) {
@@ -83,18 +83,18 @@ export default function TaskActions({ _id }: { _id: string }) {
         setRescheduleEndTime(formatDatetimeLocal(data.task.endTime || ""));
         setRescheduleDeadline(formatDateOnly(data.task.deadline || ""));
       } else {
-        toast.error("Error fetching task timings!");
+        // toast.error("Error fetching task timings!");
       }
     } catch (error: any) {
-      console.log("Error fetching timings:", error);
+      // console.log("Error fetching timings:", error);
       if (error.response && error.response.status === 499) {
-        toast.error(error.response.data.error);
+        // toast.error(error.response.data.error);
       } else if (error.response && error.response.status === 404) {
-        toast.error("Task not found!");
+        // toast.error("Task not found!");
       } else if (error.response && error.response.status === 500) {
-        toast.error("Internal server error!");
+        // toast.error("Internal server error!");
       } else {
-        toast.error("Error fetching timings!");
+        // toast.error("Error fetching timings!");
       }
     }
   };
@@ -133,7 +133,7 @@ export default function TaskActions({ _id }: { _id: string }) {
           toast.error("You have to chose new time!");
         }
     }catch(error: any){
-      console.log("Error rescheduling task:", error);
+      // console.log("Error rescheduling task:", error);
       if (error.response && error.response.status === 499) {
         toast.error(error.response.data.error);
       } else if (error.response && error.response.status === 404) {

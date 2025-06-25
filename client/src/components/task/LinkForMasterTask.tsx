@@ -43,7 +43,7 @@ export default function LinkForMasterTask({ _id }: { _id: string }) {
             setTaskData(result.task);
             // console.log("Task data fetched successfully: ", taskData);
           } catch (err) {
-            console.error("Error fetching task details:", err);
+            // console.error("Error fetching task details:", err);
           }
       }
 
@@ -64,8 +64,26 @@ export default function LinkForMasterTask({ _id }: { _id: string }) {
       };
 
       if (taskData === null) {
-        return <div>Loading task data...</div>;
-      }
+  return (
+    <div style={containerStyle}>
+      <div className="animate-pulse text-center space-y-4">
+        <div className="text-xl font-semibold text-lime-400 tracking-wide">
+          Checking for Master Task...
+        </div>
+        <p className="text-sm text-green-300">
+          Please wait while we fetch task details.
+        </p>
+
+        <div className="mt-4 space-y-2">
+          <div className="h-4 bg-green-900 rounded w-2/3 mx-auto" />
+          <div className="h-4 bg-green-900 rounded w-1/2 mx-auto" />
+          <div className="h-4 bg-green-900 rounded w-3/4 mx-auto" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
       if(taskData?.masterTaskId === null){
         return <></>
       }

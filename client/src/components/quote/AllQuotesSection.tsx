@@ -21,7 +21,7 @@ export default function AllQuotesSection() {
   const fetchMindStatus = async () => {
     if (user && user.mindStatus) {
       setMindStatus(user.mindStatus);
-      toast.success("Mind status already set");
+      // toast.success("Mind status already set");
       return;
     }
     try {
@@ -31,7 +31,7 @@ export default function AllQuotesSection() {
       // console.log("User data:", response.data);
       setUser(response.data); // Set the user info in the Zustand store
       setMindStatus(response.data.mindStatus || "Default");
-      toast.success("Mind status fetched successfully");
+      // toast.success("Mind status fetched successfully");
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         console.log("User not authenticated");
@@ -70,7 +70,7 @@ export default function AllQuotesSection() {
           setHashMore(false);
         }
         setQuotes((prevQuotes) => [...prevQuotes, ...newQuotes]);
-        toast.success("Quotes fetched successfully");
+        // toast.success("Quotes fetched successfully");
         setLoading(false);
       } else {
         console.error("Failed to fetch quotes:", response.statusText);

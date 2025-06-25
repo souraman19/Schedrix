@@ -52,7 +52,7 @@ export default async function TaskDetailsPageStaticPart({
     taskData = result.task;
     // console.log("Task data fetched successfully: ", taskData);
   } catch (err) {
-    console.error("Error fetching task details:", err);
+    // console.error("Error fetching task details:", err);
   }
 
   // Container Style with a dark gradient and soft shadows
