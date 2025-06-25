@@ -391,3 +391,152 @@ Caching effectively reduces redundant work, improves user experience, and lowers
 - **Model Improvement**: Fine-tuning the model with more data and advanced techniques to increase prediction accuracy.
 - **Feature Expansion**: Including more features (e.g., task priority, deadlines, etc.) to improve model predictions.
 - **Real-time Predictions**: Allowing for predictions based on **real-time** data instead of just historical data.
+
+
+### 🔍 Additional Implementation Details (Expanded)
+
+#### 🔔 FCM Notifications (Deep Dive)
+
+* **Token Setup**:
+
+  * Imported `getMessaging()` and `getToken()` from Firebase.
+  * Used `getToken(messaging, { vapidKey })` to generate FCM token.
+  * Stored token per user in MongoDB.
+
+* **Service Worker**:
+
+  * Placed `firebase-messaging-sw.js` in public root.
+  * Included code to listen for background notifications:
+
+    ```js
+    messaging.setBackgroundMessageHandler(function(payload) {
+      const notificationTitle = payload.notification.title;
+      const notificationOptions = { body: payload.notification.body };
+      return self.registration.showNotification(notificationTitle, notificationOptions);
+    });
+    ```
+
+* **Foreground Toasts**:
+
+  * Imported `onMessage()` in client to trigger ShadCN toast:
+
+    ```ts
+    onMessage(messaging, (payload) => {
+      toast({ title: payload.notification.title, description: payload.notification.body });
+    });
+    ```
+
+* **Reminder Triggering**:
+
+  * BullMQ worker schedules reminders using `delay` option.
+  * Notification payload contains task title, time, and action link.
+
+#### 🧠 MindStatus Modal Prompt
+
+* Modal rendered in layout route or main shell on mount.
+* Logic checks if:
+
+  * `!localStorage.lastPromptedDate` OR
+  * `Date.now() - lastPromptedDate > 3 days`
+* If yes:
+
+  * Prompt modal with selectable mood options (e.g. determined, calm, burned out).
+  * After submission, save `mindStatus` and update `lastPromptedDate`.
+  * Optionally send to backend for logging trends.
+
+#### 📜 Content System Logic
+
+* **ZenQuotes API**:
+
+  * Fetched 10–30 quotes via `https://zenquotes.io/api/quotes`.
+  * Parsed and pre-processed with `tagQuotes()` function.
+
+* **Gemini Prompt**:
+
+  * Prompt formatted with `${quote}` and `${mindStatus}` inserted.
+  * Gemini returns a 2–3 sentence elaboration.
+
+* **SDXL Image Generation**:
+
+  * SDXL prompted with Gemini response using `/txt2img` API.
+  * Image base64 or URL saved in DB.
+
+* **Video Selection**:
+
+  * YouTube API key used in call:
+
+    ```ts
+    https://www.googleapis.com/youtube/v3/search?part=snippet&q=motivational+${mindStatus}&videoDuration=short&type=video
+    ```
+  * Filtered results shown in content section with title + thumbnail.
+
+#### 🐂 BullMQ Workers
+
+* Defined queues for `taskReminder`, `quoteFetcher`, `videoFetcher`.
+* Worker script includes job handlers:
+
+  ```ts
+  queue.process('quoteFetcher', async () => {
+    const quotes = await fetchZenQuotes();
+    const tagged = await tagQuotes(quotes);
+    await saveToDB(tagged);
+  });
+  ```
+* Scheduled with CRON string or fixed delay using:
+
+  ```ts
+  queue.add('taskReminder', taskPayload, { delay: 1000 * 60 * 60 })
+  ```
+
+#### 🏷️ Semantic Tagging Fallback Chain
+
+* **Step 1: Zero-Shot**:
+
+  * Input: quote, labels array
+  * BART returns ranked label confidence
+* **Step 2: Keyword Match**:
+
+  * For fallback, quote is passed through compromise NLP parser.
+  * Keywords extracted and mapped to predefined tag list.
+  * Output: tag list with match weight (e.g. count of keyword hits).
+
+#### 📆 Timeline Scheduler Internal Logic
+
+* Timeline spans 7 days starting from yesterday.
+* Time represented as 1440 rows (1 per minute).
+* Each row = fixed height (zoomable from 10px to 40px).
+* Day column headers rendered with dates and day names.
+* State stored as:
+
+  ```ts
+  schedule = { dayIndex: number, startMin: number, endMin: number }
+  ```
+* Undo stack implemented using a simple array of history states.
+
+#### 🖼️ Image Upload Mechanics
+
+* Frontend:
+
+  * `<input type="file" multiple accept="image/*">`
+  * Preview shown using `URL.createObjectURL(file)`.
+* Backend:
+
+  * Used Multer with destination `uploads/tasks/`
+  * Task schema stores image filenames as an array.
+
+#### 🎙️ Audio Record Upload
+
+* Setup:
+
+  * `MediaRecorder(stream)` from `navigator.mediaDevices.getUserMedia()`
+  * Captures audio chunks to Blob
+* Controls:
+
+  * `mediaRecorder.pause()`, `.resume()`, `.stop()`
+* Backend:
+
+  * Received in route `/upload/audio` via Multer
+  * Stored in `uploads/audio/`
+  * Path linked in task schema
+
+---

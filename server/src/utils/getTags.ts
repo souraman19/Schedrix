@@ -50,7 +50,9 @@ export const getTags =  async (content : any, requiredTagCount: number) => {
     );
     const result = await response.json();
     let topTags = result.labels.slice(0, Math.min(result.labels.length, requiredTagCount));
-    topTags = tagFromContentByKeyword(content); //Fallback to traditional approach
+
+    if (topTags.length === 0)  topTags = tagFromContentByKeyword(content); //Fallback to traditional approach
+    
     if(topTags.length === 0)  //if still gets empty
         topTags = ['unknown']
 
