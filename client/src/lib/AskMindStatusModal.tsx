@@ -101,6 +101,7 @@ export default function AskMindStatusModal() {
     toast("Checking if you have been asked about your mind status today...");
     const lastMindStatusAskedDayFromZustand =
       user?.lastDateAskedMindStatus ?? null;
+      console.log( "Last mind status asked day from Zustand:", user);
 
     if (lastMindStatusAskedDayFromZustand !== null) {
       const currentDate = new Date();
@@ -114,7 +115,6 @@ export default function AskMindStatusModal() {
         toast.success("You have been asked about your mind status today!");
         return; // User has been asked today, no need to fetch data again
       }
-
 
       toast.success("Asking about your mind status...");
       if (activeDaysCount < 30) {
@@ -154,11 +154,16 @@ export default function AskMindStatusModal() {
   useEffect(() => {
     const init = async () => {
       await fetchUserInfo(); //wait until user info is fetched
-      await checkUserActivenessData();
-      await checkUserMindStatusAskedData();
     };
     init();
   }, []);
+
+  useEffect(() => {
+    if(user){
+         checkUserActivenessData();
+         checkUserMindStatusAskedData();
+    }
+  }, [user])
 
   const handleMindStatusSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

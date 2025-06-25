@@ -206,7 +206,7 @@ export const updateLastActiveDay = async(req: any, res: any) => {
         user.lastActiveDay = lastActiveDayFormatted;
         user.activeDaysCount = user.activeDaysCount ? user.activeDaysCount + 1 : 1;
         await user.save();
-        console.log("Last active day updated for user:", userId, lastActiveDayFormatted);
+        // console.log("Last active day updated for user:", userId, lastActiveDayFormatted);
         return res.status(200).json({message: "Last active day updated successfully", user})
     }catch(err){
         console.log("Error in updateLastActiveDay:", err);
@@ -220,8 +220,7 @@ export const updateLastMindStatusAskData = async(req: any, res: any) => {
         const userId = req.user._id;
         const lastDateAskedMindStatus = req.body.lastDateAskedMindStatus;
         const mindStatus = req.body.mindStatus;
-        const lastDateAskedMindStatusFormatted = new Date(new Date(lastDateAskedMindStatus).setHours(0, 0, 0, 0)); 
-
+        const lastDateAskedMindStatusFormatted = new Date(new Date(lastDateAskedMindStatus)); 
         if(!userId){
             return res.status(400).json({message: "User ID is required"})
         }
@@ -285,7 +284,8 @@ export const updateLastMindStatusAskData = async(req: any, res: any) => {
         
         await userPointsBucket.save();
         await user.save();
-        // console.log("Last mind status ask day updated for user:", userId, lastDateAskedMindStatusFormatted);
+        console.log("Last mind status ask day updated for user:", userId, lastDateAskedMindStatusFormatted);
+        console.log("ast mind status ask day updated for user:", userId, user.lastDateAskedMindStatus);
         return res.status(200).json({message: "Last mind status ask day updated successfully", user})
     }catch(err){
         console.log("Error in updateLastMindStatusAskDay:", err);

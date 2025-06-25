@@ -94,6 +94,7 @@ export const getMotivationalVideos = async(req: any, res: any) => {
     try{
         const mindStatus = req.query.mindStatus;
         const limit = 5;
+        console.log("Fetching motivational videos...", mindStatus);
 
         const searchKeyWordList = getSuggestedYoutubeKeywords(mindStatus);
         const query: any = {

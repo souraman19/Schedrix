@@ -64,10 +64,15 @@ export default function VideosPage() {
   useEffect(() => {
     const init = async () => {
       await fetchMindStatus();
-      await loadVideos();
     };
     init();
   }, []);
+
+  useEffect(() => {
+    if (mindStatus) {
+      loadVideos();
+    }
+  }, [mindStatus]);
 
   const goNext = () => {
     setCurrentIndex((prev) => Math.min(prev + 1, videoItems.length - 1));
