@@ -44,7 +44,7 @@ passport.deserializeUser(async(_id: IUser["_id"], cb: (error: any, user: any | f
         } else {
             return cb(null, user as any);
         }
-    }catch(err){
+}catch(err){
         console.error(err);
         cb(err, false);
     }

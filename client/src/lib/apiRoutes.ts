@@ -2,7 +2,7 @@ export const HOST = "https://schedrix-main-server.onrender.com";
 
 const AUTH_ROUTES = `${HOST}/api/auth`;
 const TASK_ROUTES = `${HOST}/api/task`;
-const USER_ROUTES = `${HOST}/api/user`;
+const USER_ROUTES = `${HOST}/api/user`;pas
 const CONTENT_ROUTES = `${HOST}/api/content`;
 
 

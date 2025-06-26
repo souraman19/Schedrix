@@ -1,4 +1,3 @@
-# client side cmds
 
 ## npx tsc --noEmit
 Run the TypeScript compiler to check for type errors only, without outputting .js files.

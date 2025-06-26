@@ -31,10 +31,23 @@ app.use("/uploads/tasks", express.static(path.join(__dirname, '..', 'uploads/tas
 app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-}));
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://schedrix.vercel.app",
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 app.use(
   session({
@@ -47,8 +60,8 @@ app.use(
     }),
     cookie: {
       httpOnly: true, 
-      secure: false, // true in production with HTTPS
-      sameSite: 'lax', // or 'none' if using HTTPS cross-site
+      secure: true, // true in production with HTTPS
+      sameSite: 'none', // or 'none' if using HTTPS cross-site
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     }
   }),
