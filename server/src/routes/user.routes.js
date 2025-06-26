@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const userController_1 = require("../controllers/userController");
+const router = (0, express_1.Router)();
+router.get('/get/points/analytics', userController_1.getPointAnalytics);
+router.get('/get/profile', userController_1.getUserProfile);
+router.get('/get/mind_status', userController_1.getMindStatus);
+router.post('/save/fcm_token', userController_1.saveFCMToken);
+router.put('/edit/mind_status', userController_1.editMindStatus);
+router.put('/update/user_last_active_day', userController_1.updateLastActiveDay);
+router.put('/update/user_last_mind_status_ask_data', userController_1.updateLastMindStatusAskData);
+exports.default = router;
