@@ -1,4 +1,4 @@
-export const HOST = "http://localhost:5000";
+export const HOST = "https://schedrix-main-server.onrender.com";
 
 const AUTH_ROUTES = `${HOST}/api/auth`;
 const TASK_ROUTES = `${HOST}/api/task`;

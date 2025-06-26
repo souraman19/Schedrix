@@ -62,6 +62,8 @@ export default async function QuoteOfTheDay({
             <Image
               src={`http://localhost:5000/${QOTD_image_url}`}
               alt="Motivational Quote"
+              height={240}
+              width={400}
               className="w-full h-auto rounded-lg border border-[#2a2a2a] mb-4 shadow-inner"
             />
 

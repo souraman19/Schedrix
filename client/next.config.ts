@@ -5,6 +5,18 @@ const nextConfig: NextConfig = {
   experimental:{
     ppr: 'incremental'
   },
+  images: {
+  remotePatterns: [
+    {
+      protocol: 'http',
+      hostname: '**',
+    },
+    {
+      protocol: 'https',
+      hostname: '**',
+    },
+  ],
+}
 };
 
 export default nextConfig;
