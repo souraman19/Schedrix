@@ -1,8 +1,15 @@
-flask
+# server/src/ml_models_service/requirements.txt
+
+# Upgrade tools to ensure binary wheel installation
+pip>=23.3.1
+setuptools>=68.0.0
+wheel>=0.41.0
+
+# Actual packages
 numpy==1.26.4
-pandas==2.2.2
+pandas==2.1.4         # 🔁 Downgraded from 2.2.2 to avoid compilation errors
 tensorflow-cpu==2.15.0
 scikit-learn==1.4.2
 matplotlib==3.8.4
 seaborn==0.13.2
-gunicorn
+flask
