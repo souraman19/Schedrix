@@ -19,7 +19,7 @@ import path from "path";
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5000 || 7000 || 11000;
 
 // For parsing json data
 app.use(express.json());
