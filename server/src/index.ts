@@ -11,9 +11,16 @@ import cors from 'cors';
 import { connectDB } from "./config/db";
 import { isAuthenticated } from "./middlewares/AuthMiddleWires";
 import MongoStore from 'connect-mongo';
-import "./tasks/cronJob";
-import "./tasks/CheckMissedCron";
+// import "./tasks/cronJob";
+// import "./tasks/CheckMissedCron";
 import path from "path";
+
+
+setInterval(() => {
+  const used = process.memoryUsage().heapUsed / 1024 / 1024;
+  console.log(`🧠 Memory usage: ${Math.round(used * 100) / 100} MB`);
+}, 10000);
+
 
 
 dotenv.config();
