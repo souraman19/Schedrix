@@ -13,7 +13,7 @@ export const scheduleMotivationalVideoJob = async (mindStatus: string) => {
         },
         {
             repeat: {
-                every: 5 * 60 * 1000, // every 3 days
+                every: 3 * 24 * 60 * 60 * 1000, // Repeat every 3 days
             },
             attempts: 3,
             jobId: `repeat: fetch-motivational-videos:${mindStatus}`,
