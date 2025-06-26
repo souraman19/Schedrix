@@ -31,23 +31,10 @@ app.use("/uploads/tasks", express.static(path.join(__dirname, '..', 'uploads/tas
 app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://schedrix.vercel.app",
-];
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: ['https://schedrix.vercel.app'],
+  credentials: true
+}))
 
 app.use(
   session({
