@@ -1,31 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { Menu, X, Home, ListTodo, LogOut, BarChart3, Zap} from 'lucide-react';
+import { ReactNode, useState } from 'react';
+import { Menu, X, Home, ListTodo, BarChart3, Zap} from 'lucide-react';
 import Link from 'next/link';
-import { useUserStore } from '@/store/useUserStore';
-import { LOG_OUT_ROUTE } from '@/lib/apiRoutes';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import { Button } from '@mui/material';
-import toast from 'react-hot-toast';
+
+
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, setUser } = useUserStore();
-
-  const router = useRouter();
-
-  const handleLogout = async() => {
-    try{
-      await axios.get(`${LOG_OUT_ROUTE}`, {
-        withCredentials: true});
-      setUser(null);
-      router.push('/'); 
-    } catch(error){
-      console.error('Error logging out:', error);
-    }
-  }
+ 
 
   return (
     <>
@@ -98,7 +81,14 @@ export default function Navbar() {
   );
 }
 
-function NavbarLink({ href, icon, children, red = false }) {
+type NavbarLinkProps = {
+  href: string;
+  icon: ReactNode; 
+  children: ReactNode;
+  red?: boolean;
+};
+
+function NavbarLink({ href , icon, children, red = false }: NavbarLinkProps) {
   return (
     <Link
       href={href}

@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { number } from 'zod';
 import { useRouter } from 'next/navigation';
 
 const months = [
@@ -10,7 +9,7 @@ const months = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-export default function CalendarView({chosenDate, chosenMonth, chosenYear, setChosenYear, setChosenMonth, setChosenDate, fetchTasks}: {chosenDate: number, chosenMonth: number, chosenYear: number, setChosenYear: (chosenYear: number) => void, setChosenMonth: (chosenMonth: number) => void, setChosenDate: (date: number) => void, fetchTasks: () => void}) {
+export default function CalendarView({chosenDate, chosenMonth, chosenYear, setChosenYear, setChosenMonth, setChosenDate, fetchTasks}: {chosenDate: number, chosenMonth: number, chosenYear: number,   setChosenMonth: React.Dispatch<React.SetStateAction<number>>,   setChosenDate: React.Dispatch<React.SetStateAction<number>>,   setChosenYear: React.Dispatch<React.SetStateAction<number>>, fetchTasks: () => void}) {
   const today = new Date().getDate();
   const router = useRouter();
 
@@ -18,7 +17,7 @@ export default function CalendarView({chosenDate, chosenMonth, chosenYear, setCh
   const handlePrevMonth = () => {
     if (chosenMonth === 0) {
       setChosenMonth(11);
-      setChosenYear(prev  => prev - 1);
+      setChosenYear((prev)  => prev - 1);
     } else {
       setChosenMonth(prev => prev - 1);
     }
@@ -35,7 +34,7 @@ export default function CalendarView({chosenDate, chosenMonth, chosenYear, setCh
 
   useEffect(()=> {
     fetchTasks();
-  }, [chosenDate, chosenMonth, chosenYear]);
+  }, [chosenDate, chosenMonth, chosenYear, fetchTasks]);
 
   const getDaysInMonth = (chosenMonth: number, chosenYear: number) => {
     return new Date(chosenYear, chosenMonth + 1, 0).getDate();

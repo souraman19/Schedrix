@@ -1,12 +1,11 @@
 "use client";
 
-import React from "react";  
+import React, { useCallback } from "react";  
 import axios from 'axios';
 import { useEffect } from 'react';
 import {useRouter} from 'next/navigation';
 import { useUserStore } from "@/store/useUserStore";
 import { LOG_OUT_ROUTE, USER_INFO_ROUTE } from "@/lib/apiRoutes";
-import { Box, Typography, Paper, Divider } from "@mui/material";
 import { Button } from "@mui/material";
 
 
@@ -15,7 +14,7 @@ export default function HomePage() {
     const {setUser, user} = useUserStore(); // Get the Zustand store state
     const router = useRouter();
 
-    const fetchUserInfo = async () => {
+    const fetchUserInfo = useCallback(async () => {
       try {
         const response = await axios.get(`${USER_INFO_ROUTE}`, {
         withCredentials: true});
@@ -23,18 +22,18 @@ export default function HomePage() {
         setUser(response.data); // Set the user info in the Zustand store
     } catch (error : any) {
         if (error.response && error.response.status === 401) {
-            // console.log('User not authenticated');
+            console.log('User not authenticated');
             router.push('/'); // Redirect to the login page
           } else {  
-            // console.error('Error fetching user data:', error);
+            console.error('Error fetching user data:', error);
           }
       }
-    };
+    }, [setUser, router]);
 
 
     useEffect(() => {
         fetchUserInfo();
-    }, [])
+    }, [fetchUserInfo])
 
     useEffect(() => {
       // console.log('User state changed:', user);
@@ -47,7 +46,7 @@ export default function HomePage() {
         setUser(null);
         router.push('/'); 
       } catch(error){
-        // console.error('Error logging out:', error);
+        console.error('Error logging out:', error);
       }
     }
 

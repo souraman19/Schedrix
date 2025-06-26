@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -37,7 +37,7 @@ export default function AskMindStatusModal() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const router = useRouter();
 
-  const fetchUserInfo = async () => {
+  const fetchUserInfo = useCallback(async () => {
     // toast("Fetching user info...");
     try {
       const response = await axios.get(`${USER_INFO_ROUTE}`, {
@@ -50,16 +50,16 @@ export default function AskMindStatusModal() {
         // console.log("User not authenticated");
         router.push("/"); // Redirect to the login page
       } else {
-        // console.error("Error fetching user data:", error);
+        console.error("Error fetching user data:", error);
       }
     }
-  };
+  }, [setUser, router]);
 
-  const checkUserActivenessData = async () => {
+  const checkUserActivenessData = useCallback(async () => {
     // toast("Checking your activeness...");
     const lastActiveDayFromZustand = user?.lastActiveDay ?? null;
-    const lastMindStatusAskedDayFromZustand =
-      user?.lastDateAskedMindStatus ?? null;
+    // const lastMindStatusAskedDayFromZustand =
+    //   user?.lastDateAskedMindStatus ?? null;
     if (lastActiveDayFromZustand !== null) {
       const currentDate = new Date();
       const formattedLastActiveDayFromZustand = new Date(
@@ -92,20 +92,20 @@ export default function AskMindStatusModal() {
         toast.error("Error updating last active day: " + errorData.message);
       }
     } catch (err) {
-      // console.error("Error updating last active day: ", err);
+      console.error("Error updating last active day: ", err);
       toast.error("Error updating last active day: " + err);
     }
-  };
+  }, [user, setUser]);
 
-  const checkUserMindStatusAskedData = async () => {
+  const checkUserMindStatusAskedData = useCallback(async () => {
     // toast("Checking if you have been asked about your mind status today...");
     const lastMindStatusAskedDayFromZustand =
       user?.lastDateAskedMindStatus ?? null;
-      // console.log( "Last mind status asked day from Zustand:", user);
+    // console.log( "Last mind status asked day from Zustand:", user);
 
     if (lastMindStatusAskedDayFromZustand !== null) {
       const currentDate = new Date();
-      currentDate.setDate(currentDate.getDate()-1); 
+      currentDate.setDate(currentDate.getDate() - 1);
       const formattedLastMindStatusAskedDayFromZustand = new Date(
         lastMindStatusAskedDayFromZustand
       );
@@ -144,26 +144,27 @@ export default function AskMindStatusModal() {
           setIsModalOpen(true); //ask mindastatus if last date asked mind status is more than 3 days ago
         }
       }
-    } else{
+    } else {
       //if last mind status asked day is null, it means user has never been asked before
       setIsModalOpen(true);
     }
-   
-  };
+  }, [user]);
 
   useEffect(() => {
     const init = async () => {
       await fetchUserInfo(); //wait until user info is fetched
     };
     init();
-  }, []);
+  }, [fetchUserInfo]);
 
   useEffect(() => {
-    if(user){
-         checkUserActivenessData();
-         checkUserMindStatusAskedData();
+    if (user) {
+      (async () => {
+        await checkUserActivenessData();
+        await checkUserMindStatusAskedData();
+      })();
     }
-  }, [user])
+  }, [user, checkUserActivenessData, checkUserMindStatusAskedData]);
 
   const handleMindStatusSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -199,13 +200,13 @@ export default function AskMindStatusModal() {
         toast.success("Last mind status ask day updated successfully!");
       } else {
         const errorData = await response.json();
-        // console.error("Error updating last mind status ask day: ", errorData);
+        console.error("Error updating last mind status ask day: ", errorData);
         toast.error(
           "Error updating last mind status ask day: " + errorData.message
         );
       }
     } catch (err) {
-      // console.error("Error updating last mind status ask day: ", err);
+      console.error("Error updating last mind status ask day: ", err);
       toast.error("Error updating last mind status ask day: " + err);
     }
   };

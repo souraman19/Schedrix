@@ -14,7 +14,7 @@ export default function FeatureProductivityHeatmap() {
   useEffect(() => {
     const newData: number[][] = Array.from({ length: weeks }, () =>
       Array.from({ length: 7 }, getRandomValue)
-    );
+  );
 
     let week = 0;
     const interval = setInterval(() => {

@@ -1,13 +1,10 @@
-import { hover } from "framer-motion";
+import Image from "next/image";
 import React, { useEffect } from "react";
-import { useState } from "react";
 
 export default function UploadTaskImages({
   selectedImages,
   setSelectedImages,
   errors,
-  setErrors,
-  inputStyle,
   labelStyle,
 }: {
   selectedImages: { file: File; url: string }[];
@@ -40,7 +37,7 @@ export default function UploadTaskImages({
       // Cleanup function to revoke object URLs when component unmounts only
       selectedImages.forEach((image) => URL.revokeObjectURL(image.url));
     };
-  }, []);
+  }, [selectedImages]);
 
   useEffect(() => {
     // console.log("Selected Images:", selectedImages);
@@ -92,7 +89,7 @@ export default function UploadTaskImages({
                 boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
               }}
             >
-              <img
+              <Image
                 src={image.url}
                 alt=""
                 style={{

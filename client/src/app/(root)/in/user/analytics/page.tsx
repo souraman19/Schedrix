@@ -1,18 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useUserStore } from "@/store/useUserStore";
 import { GET_USER_POINTS_ANALYTICS_ROUTE } from "@/lib/apiRoutes";
-import { toast } from "sonner";
 import PointsGrid from "@/components/user/PointsGrid";
 import ProfileAnalytics from "@/components/user/ProfileAnalytics";
 
 export default function UserAnalyticsPage() {
-  const { user, setUser } = useUserStore();
-  const _id = user?._id;
+  // const { user, setUser } = useUserStore();
 
   const [pointsData, setPointsData] = useState([]);
-  const [year, setYear] = useState(new Date().getFullYear());
+  const year = new Date().getFullYear();
 
   const fetchPointAnalytics = async () => {
     try {
@@ -29,7 +26,7 @@ export default function UserAnalyticsPage() {
       }
     } catch (error: any) {
       // toast.error("Error fetching point analytics: ", error);
-      // console.error("Error fetching point analytics: ", error);
+      console.error("Error fetching point analytics: ", error);
     }
   };
 

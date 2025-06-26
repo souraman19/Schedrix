@@ -1,11 +1,12 @@
-export const experimantal_ppr = "true";
+const exp = true;
+export { exp as experimental_ppr };
+
 
 import LinkForMasterTask from "@/components/task/LinkForMasterTask";
 import RepeatInfo from "@/components/task/RepeatInfo";
 import TaskDetailsPageDynamicPart from "@/components/task/TaskDetailsPageDynamicPart";
 import TaskDetailsPageStaticPart from "@/components/task/TaskDetailsPageStaticPart";
 import TaskActions from "@/components/task/TaskActions";
-import { Button } from "@mui/material";
 import React, { Suspense } from "react";
 import AddTaskButton from "@/components/ui/AddTaskButton";
 

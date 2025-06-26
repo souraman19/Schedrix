@@ -2,8 +2,7 @@ import React from "react";
 import { cookies } from "next/headers";
 import { GET_TASK_STATIC_DETAILS_ROUTE } from "@/lib/apiRoutes";
 import { formatDate } from "@/lib/utils";
-import { Button } from "@mui/material";
-import { ArrowBigRight } from "lucide-react";
+import Image from "next/image";
 
 export default async function TaskDetailsPageStaticPart({
   _id,
@@ -31,6 +30,7 @@ export default async function TaskDetailsPageStaticPart({
     masterTaskId: string | null;
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const experimantal_ppr = "true";
 
   let taskData: TaskType | null = null;
@@ -50,13 +50,13 @@ export default async function TaskDetailsPageStaticPart({
     );
     const result = await response.json();
     taskData = result.task;
-    // console.log("Task data fetched successfully: ", taskData);
+    console.log("Task data fetched successfully: ", taskData);
   } catch (err) {
-    // console.error("Error fetching task details:", err);
+    console.error("Error fetching task details:", err);
   }
 
   // Container Style with a dark gradient and soft shadows
-  const containerStyle = {
+  const containerStyle:React.CSSProperties = {
     background: "linear-gradient(135deg, #121212, #111)",
     color: "white",
     padding: "40px",
@@ -69,12 +69,12 @@ export default async function TaskDetailsPageStaticPart({
   };
 
   // Title Style with Bright Neon and glowing effect
-  const titleStyle = {
+  const titleStyle:React.CSSProperties = {
     fontSize: "1.8rem",
     fontWeight: "700",
     textAlign: "center",
     marginBottom: "40px",
-    color: "#00c853",
+    // color: "#00c853",
     letterSpacing: "1.5px",
     textTransform: "uppercase",
     background: "linear-gradient(45deg, #00c853, #b2ff59)",
@@ -85,7 +85,7 @@ export default async function TaskDetailsPageStaticPart({
   };
 
   // Card Style with Hover Effect, Smooth Shadow and Gradient
-  const cardStyle = {
+  const cardStyle:React.CSSProperties = {
     backgroundColor: "#222222",
     borderRadius: "12px",
     padding: "20px 25px",
@@ -104,7 +104,7 @@ export default async function TaskDetailsPageStaticPart({
   };
 
   // Label Style with Neon Glow and Smooth Transition
-  const labelStyle = {
+  const labelStyle:React.CSSProperties = {
     fontSize: "0.95rem",
     fontWeight: "600",
     color: "#b2ff59",
@@ -115,7 +115,7 @@ export default async function TaskDetailsPageStaticPart({
   };
 
   // Value Style with Subtle Light Text and Padding for Clarity
-  const valueStyle = {
+  const valueStyle:React.CSSProperties = {
     fontSize: "1rem",
     fontWeight: "500",
     color: "#e0e0e0",
@@ -124,13 +124,13 @@ export default async function TaskDetailsPageStaticPart({
   };
 
   // Locked and Fixed Status Styles with Glowing Effects
-  const lockedStyle = {
+  const lockedStyle:React.CSSProperties = {
     color: "#ff1744",
     fontWeight: "600",
     textShadow: "0 0 8px rgba(255, 23, 68, 0.6)",
   };
 
-  const fixedStyle = {
+  const fixedStyle:React.CSSProperties = {
     color: "#ff9800",
     fontWeight: "600",
     textShadow: "0 0 8px rgba(255, 152, 0, 0.6)",
@@ -216,27 +216,27 @@ export default async function TaskDetailsPageStaticPart({
           </div>
         )}
 
-        {taskData?.userInput?.text && (
+        {(taskData as any).userInput?.text && (
           <div style={{ ...cardStyle, ...hoverCardStyle }}>
             <div className="flex justify-between">
               <p style={labelStyle}>User Input (text):</p>
-              <p style={valueStyle}>{taskData?.userInput?.text}</p>
+              <p style={valueStyle}>{(taskData as any).userInput?.text}</p>
             </div>
           </div>
         )}
 
-        {taskData?.userInput?.image?.length > 0 && (
+        {(taskData as any).userInput?.image?.length > 0 && (
           <div 
             style={{ ...cardStyle, ...hoverCardStyle}}
           >
             <p style={{...labelStyle,  backgroundColor: "#1a1a1a", textAlign: "center", padding:"10px", borderRadius:"10px" }}>Input images: </p>
             <div className="flex flex-wrap gap-4 p-4 rounded-2xl  shadow-2xl">
-              {taskData.userInput.image.map((img, index) => (
+              {(taskData as any).userInput.image.map((img:any, index:any) => (
                 <div
                   key={index}
                   className="rounded-xl shadow-lg overflow-hidden border border-gray-700 bg-black/40"
                 >
-                  <img
+                  <Image
                     src={`http://localhost:5000/uploads/tasks/${img}`}
                     alt={`Task image ${index + 1}`}
                     className="block rounded-xl max-w-full h-auto"
@@ -248,11 +248,11 @@ export default async function TaskDetailsPageStaticPart({
         )}
 
 
-        {taskData?.userInput?.audio?.length > 0 && (
+        {(taskData as any).userInput?.audio?.length > 0 && (
           <div style={{ ...cardStyle, ...hoverCardStyle }}>
             <p style={{...labelStyle,  backgroundColor: "#1a1a1a", textAlign: "center", padding:"10px", borderRadius:"10px" }}>Input audio: </p>
             <div className="flex flex-wrap gap-4 p-4 rounded-2xl justify-center">
-              {taskData.userInput.audio.map((audio, index) => (
+              {(taskData as any).userInput.audio.map((audio:any, index:any) => (
                 <audio
                   key={index}
                   controls

@@ -3,27 +3,27 @@
 import CalendarView from '@/components/task/CalenderView';
 import FilterBar from '@/components/task/FilterBar';
 import TaskResult from '@/components/task/TaskList';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { GET_FILTERED_TASKS_ROUTE } from '@/lib/apiRoutes';
 import AddTaskButton from '@/components/ui/AddTaskButton';
 
 export default function TaskHomePage() {
-  const [chosenYear, setChosenYear] = useState(new Date().getFullYear());
-  const [chosenMonth, setChosenMonth] = useState(new Date().getMonth());
-  const [chosenDate, setChosenDate] = useState(new Date().getDate());
+  const [chosenYear, setChosenYear] = useState<number>(new Date().getFullYear());
+  const [chosenMonth, setChosenMonth] = useState<number>(new Date().getMonth());
+  const [chosenDate, setChosenDate] = useState<number>(new Date().getDate());
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [status, setStatus] = useState("all");
-  const [priority, setPriority] = useState("all");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [status, setStatus] = useState<string>("all");
+  const [priority, setPriority] = useState<string>("all");
   const [dateMode, setDateMode] = useState<"selected" | "last3" | "last7" | "all">("selected");
   const [dateField, setDateField] = useState<"createdOn" | "deadline" | "startsOn">("createdOn");
-  const [category, setCategory] = useState("all");
-  const [isLocked, setIsLocked] = useState(false);
-  const [isFixed, setIsFixed] = useState(false);
+  const [category, setCategory] = useState<string>("all");
+  const [isLocked, setIsLocked] = useState<boolean>(false);
+  const [isFixed, setIsFixed] = useState<boolean>(false);
 
   const [tasks, setTasks] = useState([]);
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     const data = {
       status,
       priority,
@@ -51,17 +51,18 @@ export default function TaskHomePage() {
         const result = await response.json();
         setTasks(result.tasks);
       } else {
-        const error = await response.json();
+        // const error = await response.json();
         // handle error
       }
     } catch (err) {
       // handle error
+      console.log(err);
     }
-  };
+  }, [status, priority, dateMode, isLocked, isFixed, chosenMonth, chosenYear, chosenDate, dateField, category]);
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [fetchTasks]);
 
   return (
     <div className="flex flex-col lg:flex-row h-full p-2 md:p-4 gap-4">

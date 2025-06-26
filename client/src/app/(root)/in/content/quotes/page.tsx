@@ -1,10 +1,10 @@
 export const experimental_ppr = true;
+export const dynamic = 'force-dynamic';
 
 
 import AllQuotesSection from "@/components/quote/AllQuotesSection";
 import QuoteOfTheDay from "@/components/quote/QuoteOfTheDay";
 import {
-  GET_QUOTE_OF_THE_DAY_ROUTE,
   GET_USER_MIND_STATUS_ROUTE,
 } from "@/lib/apiRoutes";
 import { cookies } from "next/headers";

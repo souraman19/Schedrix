@@ -1,7 +1,6 @@
 "use client";
 import { GET_TASK_7days, RESCHEDULE_TASKLISTS_ROUTE } from "@/lib/apiRoutes";
-import React, { useEffect, useRef, useState } from "react";
-import { start } from "repl";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 type UndoStep = {
@@ -112,7 +111,7 @@ export default function SchedulerViewCenter({
   //key is task._id, value is the updated task object
 
   const [SLOT_HEIGHT, SET_SLOT_HEIGHT] = useState(1);
-  const [timeMarksList, setTimeMarksList] = useState<String[]>(["00"]);
+  const [timeMarksList, setTimeMarksList] = useState<string[]>(["00"]);
   const [undoStack, setUndoStack] = useState<UndoStep[]>([]);
 
   const draggingTaskRef = useRef<Task | null>(null);
@@ -121,7 +120,7 @@ export default function SchedulerViewCenter({
   const [hoveringDayIndex, setHoveringDayIndex] = useState<number | null>(null);
   const offsetYRef = useRef<number>(0);
 
-  const setUpTimeMarkings = () => {
+  const setUpTimeMarkings = useCallback(() => {
     if (SLOT_HEIGHT === 1) {
       setTimeMarksList(["00"]);
     } else if (SLOT_HEIGHT === 6) {
@@ -146,7 +145,7 @@ export default function SchedulerViewCenter({
         "55",
       ]);
     }
-  };
+  }, [SLOT_HEIGHT, setTimeMarksList]);
 
   const priorityColors = {
     low: "bg-green-600/70",
@@ -226,9 +225,9 @@ export default function SchedulerViewCenter({
 
   useEffect(() => {
     setUpTimeMarkings();
-  }, [SLOT_HEIGHT]);
+  }, [SLOT_HEIGHT, setUpTimeMarkings]);
 
-  const get7DaysTasks = async () => {
+  const get7DaysTasks = useCallback(async () => {
     try {
       const startDay = daysArray[0];
       const response: Response = await fetch(`${GET_TASK_7days}/${startDay}`, {
@@ -257,11 +256,11 @@ export default function SchedulerViewCenter({
     } catch (err) {
       console.error("Error in fetching task of 7 days", err);
     }
-  };
+  }, [daysArray, setTasks, setOriginalTasks]);
 
   useEffect(() => {
     get7DaysTasks();
-  }, []);
+  }, [get7DaysTasks]);
 
   const handleMouseDown = (task: Task, e: React.MouseEvent<HTMLDivElement>) => {
     draggingTaskRef.current = task;
@@ -415,7 +414,7 @@ export default function SchedulerViewCenter({
         toast.error("Error rescheduling tasks");
       }
     } catch (err) {
-      // console.error("Error in rescheduling task lists, err");
+      console.error("Error in rescheduling task lists", err);
       toast.error("Error rescheduling tasks");
     }
   };
@@ -471,7 +470,7 @@ export default function SchedulerViewCenter({
               }}
               onDragEnter={() => setHoveringDayIndex(dayIndex)}
               onDragLeave={(e) => {
-                if (!e.currentTarget.contains(e.relatedTarget)) {
+                if (e.currentTarget && !e.currentTarget.contains(e.relatedTarget as Node)) {
                   setHoveringDayIndex(null);
                 }
               }}

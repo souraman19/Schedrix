@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import {Toaster} from "@/components/ui/sonner";
 import Footer from "@/components/ui/Footer";
 

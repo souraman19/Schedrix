@@ -6,24 +6,34 @@ import {
 } from "@/lib/apiRoutes";
 import { useUserStore } from "@/store/useUserStore";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { ChevronDown, ChevronUp } from "lucide-react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
+
+type Video = {
+  videoId: string;
+  title: string;
+  description: string;
+  publishedAt: string;
+  channelTitle: string;
+  searchTerms: string[];
+  link: string;
+  aspect: string;
+};
+
+
 export default function VideosPage() {
-  const [videoItems, setVideoItems] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [videoItems, setVideoItems] = useState<Video[]>([]);
   const [mindStatus, setMindStatus] = useState("Default");
   const { user, setUser } = useUserStore();
   const router = useRouter();
 
-  const NAVBAR_HEIGHT = 64; // Adjust if your navbar is taller or shorter
 
-  const fetchMindStatus = async () => {
+  const fetchMindStatus = useCallback(async () => {
     if (user?.mindStatus) {
       setMindStatus(user.mindStatus);
       return;
@@ -37,9 +47,9 @@ export default function VideosPage() {
     } catch (error: any) {
       if (error.response?.status === 401) router.push("/");
     }
-  };
+  }, [user, setUser, router]);
 
-  const loadVideos = async () => {
+  const loadVideos = useCallback(async () => {
     try {
       const response = await fetch(
         `${GET_MOTIVATIONAL_VIDEOS_ROUTE}?mindStatus=${mindStatus}`,
@@ -58,31 +68,24 @@ export default function VideosPage() {
       }
     } catch (err) {
       toast.error("Failed to fetch videos");
+      console.log(err);
     }
-  };
+  }, [mindStatus]);
 
   useEffect(() => {
     const init = async () => {
       await fetchMindStatus();
-    };
+    }
     init();
-  }, []);
+  }, [fetchMindStatus]);
 
   useEffect(() => {
     if (mindStatus) {
       loadVideos();
     }
-  }, [mindStatus]);
+  }, [mindStatus, loadVideos]);
 
-  const goNext = () => {
-    setCurrentIndex((prev) => Math.min(prev + 1, videoItems.length - 1));
-  };
 
-  const goPrev = () => {
-    setCurrentIndex((prev) => Math.max(prev - 1, 0));
-  };
-
-  const currentVideo = videoItems[currentIndex];
 
   return (
     <div className="w-full min-h-screen bg-black px-4 py-8">

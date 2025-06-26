@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 const moodSequence = [
   { label: "Default", emoji: "🔄" },
@@ -82,7 +83,7 @@ export default function FeatureMoodBasedVideos() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 + idx * 0.2 }}
                 >
-                  <img
+                  <Image
                     src={video.thumbnail}
                     alt={video.title}
                     className="w-full h-40 object-cover"

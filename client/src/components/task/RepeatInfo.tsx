@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Box, Chip, Divider } from "@mui/material";
 import { GET_TASK_REPEAT_INFO_ROUTE } from "@/lib/apiRoutes";
 
@@ -27,7 +27,7 @@ export default function RepeatInfo({ _id }: { _id: string }) {
 
   const [taskData, setTaskData] = useState<TaskType | null>(null);
 
-  const getTaskRepeatInfo = async () => {
+  const getTaskRepeatInfo = useCallback(async () => {
     try {
       const response = await fetch(`${GET_TASK_REPEAT_INFO_ROUTE}/${_id}`, {
         method: "GET",
@@ -36,13 +36,13 @@ export default function RepeatInfo({ _id }: { _id: string }) {
       const result = await response.json();
       setTaskData(result.task);
     } catch (err) {
-      // console.error("Error fetching task details:", err);
+      console.error("Error fetching task details:", err);
     }
-  };
+  }, [_id, setTaskData]);
 
   useEffect(() => {
     getTaskRepeatInfo();
-  }, []);
+  }, [getTaskRepeatInfo]);
 
   const containerStyle = {
     background: "linear-gradient(135deg, #121212, #111)",
@@ -157,34 +157,34 @@ export default function RepeatInfo({ _id }: { _id: string }) {
             <Chip label={`${repeatInterval} ${repeatUnit}(s)`} size="small" sx={chipStyle} />
           </div>
 
-          {repeatUnit === "week" && weekDaysIfWeekInterval?.length > 0 && (
+          {repeatUnit === "week" && (weekDaysIfWeekInterval as any).length > 0 && (
             <Box>
               <div style={{ fontSize: "1rem", marginBottom: "10px" }}>
                 📆 <strong>Repeats On (Weekdays):</strong>
               </div>
-              {weekDaysIfWeekInterval.map((day) => (
+              {(weekDaysIfWeekInterval as any).map((day : any) => (
                 <Chip key={day} label={day} sx={{ ...chipStyle, m: 0.5 }} />
               ))}
             </Box>
           )}
 
-          {repeatUnit === "month" && monthDaysIfMonthInterval?.length > 0 && (
+          {repeatUnit === "month" && (monthDaysIfMonthInterval as any).length > 0 && (
             <Box>
               <div style={{ fontSize: "1rem", marginBottom: "10px" }}>
                 📆 <strong>Repeats On (Month Days):</strong>
               </div>
-              {monthDaysIfMonthInterval.map((day) => (
+              {(monthDaysIfMonthInterval as any).map((day:any) => (
                 <Chip key={day} label={`Day ${day}`} sx={{ ...chipStyle, m: 0.5 }} />
               ))}
             </Box>
           )}
 
-          {repeatUnit === "year" && yearDatesIfYearInterval?.length > 0 && (
+          {repeatUnit === "year" && (yearDatesIfYearInterval as any).length > 0 && (
             <Box>
               <div style={{ fontSize: "1rem", marginBottom: "10px" }}>
                 📆 <strong>Repeats On (Year Dates):</strong>
               </div>
-              {yearDatesIfYearInterval.map((date, idx) => (
+              {(yearDatesIfYearInterval as any).map((date:any, idx:any) => (
                 <Chip
                   key={idx}
                   label={new Date(date).toLocaleDateString()}

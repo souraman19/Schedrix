@@ -4,21 +4,32 @@
 import { GET_QUOTES_ROUTE, USER_INFO_ROUTE } from "@/lib/apiRoutes";
 import { useUserStore } from "@/store/useUserStore";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import QuoteCard from "./QuoteCard";
 import axios from "axios";
 
+type Quote = {
+  type: string;           // e.g., "quote", "video"
+  content: string;        // actual quote or message
+  author: string;
+  link?: string;          // optional YouTube or external link
+  tags: string[];         // array of tags
+  source: string;
+  fetchedAt: Date;
+  contentHash: string;
+};
+
 export default function AllQuotesSection() {
-  const [hashMore, setHashMore] = useState(true);
-  const [quotes, setQuotes] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [mindStatus, setMindStatus] = useState("Default");
+  const [hashMore, setHashMore] = useState<boolean>(true);
+  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [mindStatus, setMindStatus] = useState<string>("Default");
 
   const { user, setUser } = useUserStore();
   const router = useRouter();
 
-  const fetchMindStatus = async () => {
+  const fetchMindStatus = useCallback(async () => {
     if (user && user.mindStatus) {
       setMindStatus(user.mindStatus);
       // toast.success("Mind status already set");
@@ -40,18 +51,18 @@ export default function AllQuotesSection() {
         console.error("Error fetching user data:", error);
       }
     }
-  };
+  }, [user, setUser, router]);
 
-  const loadMore = async () => {
+  const loadMore = useCallback(async () => {
     try {
       if (loading || !hashMore) return;
       setLoading(true);
 
       const last = quotes[quotes.length - 1];
-      const cursor = last?.fetchedAt;
+      const cursor = last && (last as any).fetchedAt;
 
       const response = await fetch(
-        `${GET_QUOTES_ROUTE}?mindStatus=${mindStatus}$cursor=${
+        `${GET_QUOTES_ROUTE}?mindStatus=${mindStatus}${
           cursor ? `&cursor=${cursor}` : ""
         }`,
         {
@@ -80,7 +91,7 @@ export default function AllQuotesSection() {
       console.error("Error fetching quotes:", err);
       toast.error("Failed to fetch quotes");
     }
-  };
+  }, [loading, hashMore, quotes, mindStatus]);
 
   useEffect(() => {
     const init = async () => {
@@ -88,7 +99,7 @@ export default function AllQuotesSection() {
       await loadMore();
     };
     init();
-  }, []);
+  }, [loadMore, fetchMindStatus]);
 
   return (
     <div className="pt-5 grid gap-6 max-w-3xl mx-auto">

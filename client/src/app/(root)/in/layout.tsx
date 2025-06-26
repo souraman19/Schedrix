@@ -1,9 +1,8 @@
 import { ReactNode } from "react";
 import Navbar from "@/components/Navbar";
 import TokenGenerator from "@/lib/TokenGenerator";
-import toast, { Toaster } from 'react-hot-toast';  //2nd toast notification`library
+import { Toaster } from 'react-hot-toast';  //2nd toast notification`library
 import AskMindStatusModal from "@/lib/AskMindStatusModal";
-import AddTaskButton from "@/components/ui/AddTaskButton";
 
 export default function RootLayout({children}: {children: ReactNode}) {
     return (

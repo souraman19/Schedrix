@@ -1,12 +1,25 @@
 import { GET_QUOTE_OF_THE_DAY_ROUTE } from "@/lib/apiRoutes";
 import { cookies } from "next/headers";
+import Image from "next/image";
+
+type Quote = {
+  type: string;           // e.g., "quote", "video"
+  content: string;        // actual quote or message
+  author: string;
+  link?: string;          // optional YouTube or external link
+  tags: string[];         // array of tags
+  source: string;
+  fetchedAt: Date;
+  contentHash: string;
+};
+
 
 export default async function QuoteOfTheDay({
   mindStatus,
 }: {
   mindStatus: string | null;
 }) {
-  let QOTD: string | null = null;
+  let QOTD: Quote | null = null;
   let QOTD_image_url: string | null = null;
 
   try {
@@ -46,7 +59,7 @@ export default async function QuoteOfTheDay({
             <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-24 h-[2px] bg-gradient-to-r from-[#00c853] to-[#b2ff59] rounded-full blur-sm group-hover:blur group-hover:w-32 transition-all duration-300"></div>
 
             {/* Quote Image */}
-            <img
+            <Image
               src={`http://localhost:5000/${QOTD_image_url}`}
               alt="Motivational Quote"
               className="w-full h-auto rounded-lg border border-[#2a2a2a] mb-4 shadow-inner"

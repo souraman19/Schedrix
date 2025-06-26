@@ -4,12 +4,13 @@ import React from "react";
 import { useEffect } from "react";
 import { AlarmClock } from "lucide-react";
 import toast from "react-hot-toast";
+import { Messaging } from "firebase/messaging";
 
 export default function TokenGenerator() {
   useEffect(() => {
     const setup = async () => {
       const { generateToken } = await import("@/notifications/firebase");
-      const { messaging } = await import("@/notifications/firebase");
+      const { messaging}:{ messaging: Messaging } = await import("@/notifications/firebase");
       const { onMessage } = await import("firebase/messaging");
 
       await generateToken();

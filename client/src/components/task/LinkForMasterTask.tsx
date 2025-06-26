@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Button, TextField, Box } from "@mui/material";
+import React, { useCallback, useEffect, useState } from "react";
+import { Button } from "@mui/material";
 import { GET_TASK_STATIC_DETAILS_ROUTE } from "@/lib/apiRoutes";
 import { ArrowBigRight } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -27,12 +27,14 @@ export default function LinkForMasterTask({ _id }: { _id: string }) {
     
         const router = useRouter();
     
+       //eslint-disable-next-line @typescript-eslint/no-unused-vars
       const experimantal_ppr = "true";
+
     
       const [taskData, setTaskData] = useState<TaskType | null>(null);
     
     
-      const getTaskData = async () => {
+      const getTaskData = useCallback(async () => {
 
         try {
             const response: Response = await fetch(`${GET_TASK_STATIC_DETAILS_ROUTE}/${_id}`, {
@@ -43,13 +45,13 @@ export default function LinkForMasterTask({ _id }: { _id: string }) {
             setTaskData(result.task);
             // console.log("Task data fetched successfully: ", taskData);
           } catch (err) {
-            // console.error("Error fetching task details:", err);
+            console.error("Error fetching task details:", err);
           }
-      }
+      }, [_id, setTaskData]);
 
       useEffect(() => {
         getTaskData();
-      }, [])
+      }, [getTaskData])
     
       const containerStyle = {
         background: "linear-gradient(135deg, #121212, #111)",
@@ -112,35 +114,35 @@ export default function LinkForMasterTask({ _id }: { _id: string }) {
 
 
 
-const containerStyle = {
-    background: "linear-gradient(135deg, #121212, #111)",
-    color: "white",
-    padding: "40px",
-    borderRadius: "20px",
-    boxShadow: "0 15px 30px rgba(0, 0, 0, 0.4)",
-    maxWidth: "800px",
-    margin: "40px auto",
-    animation: "fadeIn 1.5s ease-out",
-    border: "1px solid rgba(255, 255, 255, 0.1)",
-  };
+// const containerStyle = {
+//     background: "linear-gradient(135deg, #121212, #111)",
+//     color: "white",
+//     padding: "40px",
+//     borderRadius: "20px",
+//     boxShadow: "0 15px 30px rgba(0, 0, 0, 0.4)",
+//     maxWidth: "800px",
+//     margin: "40px auto",
+//     animation: "fadeIn 1.5s ease-out",
+//     border: "1px solid rgba(255, 255, 255, 0.1)",
+//   };
 
-  // Title Style with Bright Neon and glowing effect
-  const titleStyle = {
-    fontSize: "1.8rem",
-    fontWeight: "700",
-    textAlign: "center",
-    marginBottom: "40px",
-    color: "#00c853",
-    letterSpacing: "1.5px",
-    textTransform: "uppercase",
-    background: "linear-gradient(45deg, #00c853, #b2ff59)",
-    WebkitBackgroundClip: "text",
-    color: "transparent",
-    textShadow: "0 0 12px rgba(0, 200, 83, 0.8), 0 0 20px rgba(0, 200, 83, 0.6)",
-  };
+  // // Title Style with Bright Neon and glowing effect
+  // const titleStyle = {
+  //   fontSize: "1.8rem",
+  //   fontWeight: "700",
+  //   textAlign: "center",
+  //   marginBottom: "40px",
+  //   color: "#00c853",
+  //   letterSpacing: "1.5px",
+  //   textTransform: "uppercase",
+  //   background: "linear-gradient(45deg, #00c853, #b2ff59)",
+  //   WebkitBackgroundClip: "text",
+  //   color: "transparent",
+  //   textShadow: "0 0 12px rgba(0, 200, 83, 0.8), 0 0 20px rgba(0, 200, 83, 0.6)",
+  // };
 
   // Card Style with Hover Effect, Smooth Shadow and Gradient
-  const cardStyle = {
+  const cardStyle:React.CSSProperties = {
     backgroundColor: "#222222",
     borderRadius: "12px",
     padding: "20px 25px",
@@ -159,7 +161,7 @@ const containerStyle = {
   };
 
   // Label Style with Neon Glow and Smooth Transition
-  const labelStyle = {
+  const labelStyle:React.CSSProperties = {
     fontSize: "0.95rem",
     fontWeight: "600",
     color: "#b2ff59",
@@ -170,23 +172,23 @@ const containerStyle = {
   };
 
   // Value Style with Subtle Light Text and Padding for Clarity
-  const valueStyle = {
-    fontSize: "1rem",
-    fontWeight: "500",
-    color: "#e0e0e0",
-    paddingLeft: "10px",
-    transition: "color 0.3s ease",
-  };
+  // const valueStyle = {
+  //   fontSize: "1rem",
+  //   fontWeight: "500",
+  //   color: "#e0e0e0",
+  //   paddingLeft: "10px",
+  //   transition: "color 0.3s ease",
+  // };
 
   // Locked and Fixed Status Styles with Glowing Effects
-  const lockedStyle = {
-    color: "#ff1744",
-    fontWeight: "600",
-    textShadow: "0 0 8px rgba(255, 23, 68, 0.6)",
-  };
+  // const lockedStyle = {
+  //   color: "#ff1744",
+  //   fontWeight: "600",
+  //   textShadow: "0 0 8px rgba(255, 23, 68, 0.6)",
+  // };
 
-  const fixedStyle = {
-    color: "#ff9800",
-    fontWeight: "600",
-    textShadow: "0 0 8px rgba(255, 152, 0, 0.6)",
-  };
+  // const fixedStyle = {
+  //   color: "#ff9800",
+  //   fontWeight: "600",
+  //   textShadow: "0 0 8px rgba(255, 152, 0, 0.6)",
+  // };

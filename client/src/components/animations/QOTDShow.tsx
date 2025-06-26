@@ -47,8 +47,7 @@ export default function FeatureQOTDImage() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.6, duration: 0.8 }}
           >
-            "Success doesn’t come from what you do occasionally, it comes from
-            what you do consistently."
+            Success doesn&apos;t come from what you do occasionally, it comes from what you do consistently.
           </motion.p>
         </motion.div>
       </div>

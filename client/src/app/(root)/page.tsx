@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import axios from "axios";
 import { Box, Typography, Paper, Divider } from "@mui/material";
 import { Button } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";

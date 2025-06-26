@@ -1,8 +1,7 @@
 "use client";
 
 import { Button, TextField, Box } from "@mui/material";
-import { resolve } from "path";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import axios from "axios";
 import { GET_TASK_TIMINGS_ROUTE, RESOLVE_TASK_ROUTE, RESCHEDULE_TASK_ROUTE } from "@/lib/apiRoutes";
@@ -46,7 +45,7 @@ export default function TaskActions({ _id }: { _id: string }) {
           withCredentials: true,
         }
       );
-      // console.log("Response: ", response);
+      console.log("Response: ", response);
 
       toast.success("Task resolved successfully!");
       
@@ -68,7 +67,7 @@ export default function TaskActions({ _id }: { _id: string }) {
     }
   };
 
-  const fetchTimings = async () => {
+  const fetchTimings = useCallback(async () => {
     try {
       const response: Response = await fetch(
         `${GET_TASK_TIMINGS_ROUTE}/${_id}`,
@@ -86,7 +85,7 @@ export default function TaskActions({ _id }: { _id: string }) {
         // toast.error("Error fetching task timings!");
       }
     } catch (error: any) {
-      // console.log("Error fetching timings:", error);
+      console.log("Error fetching timings:", error);
       if (error.response && error.response.status === 499) {
         // toast.error(error.response.data.error);
       } else if (error.response && error.response.status === 404) {
@@ -97,7 +96,7 @@ export default function TaskActions({ _id }: { _id: string }) {
         // toast.error("Error fetching timings!");
       }
     }
-  };
+  }, [_id, setRescheduleStartTime, setRescheduleEndTime, setRescheduleDeadline]);
 
   const handleResolveClick = () => {
     if (showForm === false) {
@@ -133,7 +132,7 @@ export default function TaskActions({ _id }: { _id: string }) {
           toast.error("You have to chose new time!");
         }
     }catch(error: any){
-      // console.log("Error rescheduling task:", error);
+      console.log("Error rescheduling task:", error);
       if (error.response && error.response.status === 499) {
         toast.error(error.response.data.error);
       } else if (error.response && error.response.status === 404) {
@@ -160,7 +159,7 @@ export default function TaskActions({ _id }: { _id: string }) {
 
   useEffect(() => {
     fetchTimings();
-  }, []);
+  }, [fetchTimings]);
 
 
   return (
@@ -190,20 +189,20 @@ export default function TaskActions({ _id }: { _id: string }) {
     transition: 'transform 0.1s ease, box-shadow 0.2s ease',
   }}
   onMouseEnter={(e) => {
-    e.target.style.transform = 'translateY(0px)';
-    e.target.style.boxShadow = '0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.08)';
+    (e.target as HTMLElement).style.transform = 'translateY(0px)';
+    (e.target as HTMLElement).style.boxShadow = '0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.08)';
   }}
   onMouseLeave={(e) => {
-    e.target.style.transform = 'translateY(4px)';
-    e.target.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)';
+    (e.target as HTMLElement).style.transform = 'translateY(4px)';
+    (e.target as HTMLElement).style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)';
   }}
   onMouseDown={(e) => {
-    e.target.style.transform = 'translateY(1px)'; // Simulate a button press
-    e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08)';
+    (e.target as HTMLElement).style.transform = 'translateY(1px)'; // Simulate a button press
+    (e.target as HTMLElement).style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08)';
   }}
   onMouseUp={(e) => {
-    e.target.style.transform = 'translateY(4px)'; // Return to original position
-    e.target.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)';
+    (e.target as HTMLElement).style.transform = 'translateY(4px)'; // Return to original position
+    (e.target as HTMLElement).style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)';
   }}
 >
   Reschedule

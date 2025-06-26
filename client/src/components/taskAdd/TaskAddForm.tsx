@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useActionState, useEffect, useState } from "react";
-import { useUserStore } from "@/store/useUserStore";
 import { Button } from "@mui/material";
 import { z } from "zod";
 import { taskSchema } from "@/lib/validation";
@@ -10,19 +9,14 @@ import axios from "axios";
 import { toast } from "sonner";
 import CustomRepeat from "../CustomRepeat";
 import { flattenZodErrors } from "@/lib/flattenedZodErrors";
-import { start } from "repl";
-import { Mic } from "lucide-react";
 import QuickTask from "../voiceAssitant/QuickTask";
 import { useRouter } from "next/navigation"; 
-import { set } from "date-fns";
 import UploadTaskImages from "./UploadTaskImages";
 import RecordVoiceNote from "./RecordVoiceNote";
 
 export default function TaskAddForm() {
-  const { user } = useUserStore();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [repeat, setRepeat] = useState<string>("no repeat");
-  const [repeatsEvery, setRepeatsEvery] = useState<string>("week");
   const [customModalOpen, setCustomModalOpen] = useState(false);
   const [title, setTitle] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
@@ -48,7 +42,6 @@ export default function TaskAddForm() {
     monthDaysIfMonthInterval: [],
     yearDaysIfYearInterval: [],
   });
-  const [customRepeatError, setCustomRepeatError] = useState<string>("");
 
   useEffect(() => {
     if (repeat !== "repeat") {
@@ -88,10 +81,9 @@ export default function TaskAddForm() {
 
       // check if input is file and size is 0 and set it to undefined
       // this is to prevent empty file inputs from being sent to the server
-      const sanitizeFile = (val: FormDataEntryValue | null) =>
-        val instanceof File && val.size === 0 ? undefined : val;
 
-      let formValues: any = {
+
+      const formValues: any = {
         title: title as string,
         duration: sanitizeString(duration) ?? undefined,
         whenReminder: sanitizeString(whenReminder) ?? undefined,
@@ -221,6 +213,13 @@ export default function TaskAddForm() {
     status: "initial",
   });
 
+  useEffect(() => {
+    if (state.status === "ERROR") {
+    }
+    if (state.status === "SUCCESS") {
+    }
+  }, [state.status, state.error, router]);
+
   return (
     <form
       action={formAction}
@@ -247,14 +246,15 @@ export default function TaskAddForm() {
         }}
       >
         <div
-          style={{
-            fontSize: "1.7rem",
-            background: "linear-gradient(to right, #00c853, #b2ff59)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            fontWeight: 800,
-            textAlign: "center",
-          }}
+       style={{
+  fontSize: "1.7rem",
+  background: "linear-gradient(to right, #00c853, #b2ff59)",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  fontWeight: 800,
+  textAlign: "center",
+}}
+
         >
           ✏️ Add a New Task
         </div>
@@ -599,7 +599,7 @@ const inputBase = {
   fontSize: "0.85rem", // Smaller font size
 };
 
-const textareaStyle = {
+const textareaStyle:React.CSSProperties = {
   ...inputBase,
   borderRadius: "1rem",
   resize: "vertical",

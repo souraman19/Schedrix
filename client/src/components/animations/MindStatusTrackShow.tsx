@@ -35,7 +35,6 @@ export default function FeatureMindStatusTracking() {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    let current = 0;
     const interval = setInterval(() => {
       setStep((prev) => {
         if (prev >= mockData.length - 1) {
@@ -89,7 +88,7 @@ export default function FeatureMindStatusTracking() {
                 cx={i * 100}
                 cy={100 - i * 10}
                 r="6"
-                fill={statusColor[status]}
+                fill={(statusColor as any)[status]}
               />
             ))}
           </svg>

@@ -2,7 +2,7 @@
 import React from "react";
 import { cookies } from "next/headers";
 import { GET_TASK_DYNAMIC_DETAILS_ROUTE } from "@/lib/apiRoutes";
-import { FaCheckCircle, FaTimesCircle, FaClock, FaUserAlt, FaCoins, FaExclamationTriangle } from "react-icons/fa";
+import { FaCheckCircle, FaCoins, FaExclamationTriangle } from "react-icons/fa";
 import EditReminderTimeBefore from "./EditReminderTImeBefore";
 
 export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string }) {
@@ -41,7 +41,7 @@ export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string 
     taskData = result.task;
     // console.log("Task data fetched successfully: ", taskData);
   } catch (err) {
-    // console.error("Error fetching task details:", err);
+    console.error("Error fetching task details:", err);
   }
 
   const isDeadlinePassed = taskData?.deadline && new Date(taskData.deadline) < new Date();
@@ -215,7 +215,7 @@ export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string 
         </div>
       )}
 
-      {taskData?.pointsContributed?.length > 0 && (
+      {(taskData as any).pointsContributed?.length > 0 && (
         <>
           <h3
             style={{
@@ -230,7 +230,7 @@ export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string 
           </h3>
 
           <ul style={{ listStyle: "none", padding: 0, marginBottom: "2rem" }}>
-            {taskData.pointsContributed.map((point, index) => (
+            {(taskData as any).pointsContributed.map((point:any, index:any) => (
               <li
                 key={index}
                 style={{

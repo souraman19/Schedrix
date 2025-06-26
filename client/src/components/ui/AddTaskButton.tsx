@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-export default function () {
+export default function AddTaskButton() {
   return (
     <Link href="/in/task/add" className="no-underline">
       <button

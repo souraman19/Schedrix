@@ -1,10 +1,7 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 export default function CustomRepeat({
-  repeat,
-  setRepeat,
   errors,
-  setErrors,
   customModalOpen,
   setCustomModalOpen,
   customRepeat,
@@ -41,7 +38,7 @@ export default function CustomRepeat({
       return;
 
     setCustomRepeat((prev: any) => {
-      let updated = { ...prev };
+      const updated = { ...prev };
       let temp = updated;
 
       for (let i = 0; i < keys.length - 1; i++) {
@@ -346,7 +343,7 @@ export default function CustomRepeat({
 }
 
 /* Styles */
-const labelStyle = {
+const labelStyle:React.CSSProperties = {
   marginBottom: "0.6rem",
   display: "block",
   fontWeight: 600,
@@ -354,7 +351,7 @@ const labelStyle = {
   fontSize: "0.85rem", // Smaller font size
 };
 
-const inputBase = {
+const inputBase:React.CSSProperties = {
   padding: "0.6rem",
   borderRadius: "8px",
   border: "1px solid #333",
@@ -363,7 +360,7 @@ const inputBase = {
   fontSize: "1rem",
 };
 
-const modalOverlayStyle = {
+const modalOverlayStyle: React.CSSProperties = {
   position: "fixed",
   top: 0,
   left: 0,
@@ -376,7 +373,7 @@ const modalOverlayStyle = {
   zIndex: 9999,
 };
 
-const modalContentStyle = {
+const modalContentStyle: React.CSSProperties = {
   backgroundColor: "#121212",
   padding: "2rem",
   borderRadius: "12px",
@@ -387,19 +384,19 @@ const modalContentStyle = {
   color: "#fff",
 };
 
-const modalHeaderStyle = {
+const modalHeaderStyle:React.CSSProperties = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
   marginBottom: "1.5rem",
 };
 
-const modalTitleStyle = {
+const modalTitleStyle:React.CSSProperties = {
   margin: 0,
   fontSize: "1.5rem",
 };
 
-const closeButtonStyle = {
+const closeButtonStyle:React.CSSProperties = {
   background: "transparent",
   border: "none",
   fontSize: "2rem",
@@ -407,46 +404,46 @@ const closeButtonStyle = {
   cursor: "pointer",
 };
 
-const modalBodyStyle = {
+const modalBodyStyle:React.CSSProperties = {
   marginBottom: "2rem",
 };
 
-const sectionStyle = {
+const sectionStyle:React.CSSProperties = {
   marginBottom: "2rem",
 };
 
-const inputRowStyle = {
+const inputRowStyle:React.CSSProperties = {
   display: "flex",
   gap: "1rem",
   alignItems: "center",
   marginTop: "0.5rem",
 };
 
-const radioGroupStyle = {
+const radioGroupStyle:React.CSSProperties  = {
   marginTop: "1rem",
   display: "flex",
   flexDirection: "column",
   gap: "1rem",
 };
 
-const radioLabelStyle = {
+const radioLabelStyle:React.CSSProperties = {
   display: "flex",
   alignItems: "center",
 };
 
-const checkboxGroupStyle = {
+const checkboxGroupStyle:React.CSSProperties = {
   marginTop: "0.8rem",
   display: "flex",
   flexWrap: "wrap",
   gap: "0.8rem",
 };
 
-const checkboxLabelStyle = {
+const checkboxLabelStyle:React.CSSProperties = {
   display: "flex",
   alignItems: "center",
 };
 
-const saveButtonStyle = {
+const saveButtonStyle:React.CSSProperties = {
   marginTop: "2rem",
   width: "100%",
   padding: "0.8rem",
@@ -460,7 +457,7 @@ const saveButtonStyle = {
   transition: "all 0.3s",
 };
 
-const errorTextStyle = {
+const errorTextStyle:React.CSSProperties = {
   color: "#f44336",
   marginTop: "0.4rem",
   fontSize: "0.75rem",

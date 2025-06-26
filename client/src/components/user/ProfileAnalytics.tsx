@@ -6,11 +6,9 @@ import {
   GET_USER_PROFILE_ROUTE,
 } from "@/lib/apiRoutes";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import TaskProgress from "../task/TaskProgress";
 import PointProgress from "../task/PointProgress";
 import { getMindStatusIcon } from "../../utils/icons";
-import { date } from "zod";
 
 
 const mindStatusOptions = [
@@ -40,7 +38,7 @@ export default function ProfileAnalytics() {
         // toast.success("Fetched profile analytics successfully!");
       }
     } catch (err: any) {
-      // console.log("Error fetching profile analytics: ", err);
+      console.log("Error fetching profile analytics: ", err);
       // toast.error("Error fetching profile analytics: ", err);
     }
   };
@@ -65,7 +63,7 @@ export default function ProfileAnalytics() {
         // toast.success("Fetched mind status successfully!");
       }
     } catch (err: any) {
-      // console.log("Error fetching mind status: ", err);
+      console.log("Error fetching mind status: ", err);
       // toast.error("Error fetching mind status: ", err);
     }
   };
@@ -92,11 +90,11 @@ export default function ProfileAnalytics() {
           mindStatus: selectedStatus,
         }));
       } else {
-        // console.error("Failed to update mind status: ", response.statusText);
+        console.error("Failed to update mind status: ", response.statusText);
         // toast.error("Failed to update mind status.");
       }
     }catch(err: any) {
-      // console.error("Error submitting mind status: ", err);
+      console.error("Error submitting mind status: ", err);
       // toast.error("Error submitting mind status.");
     }
   }
@@ -119,25 +117,25 @@ export default function ProfileAnalytics() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div className="p-4 rounded-lg shadow-md">
                 <TaskProgress
-                  completed={userAnalysisData.progress.completedTasks}
-                  overdue={userAnalysisData.progress.overdueTasks}
+                  completed={(userAnalysisData as any).progress.completedTasks}
+                  overdue={(userAnalysisData as any).progress.overdueTasks}
                   pending={
-                    userAnalysisData.progress.totalTasks -
-                    userAnalysisData.progress.overdueTasks -
-                    userAnalysisData.progress.completedTasks
+                    (userAnalysisData as any).progress.totalTasks -
+                    (userAnalysisData as any).progress.overdueTasks -
+                    (userAnalysisData as any).progress.completedTasks
                   }
-                  total={userAnalysisData.progress.totalTasks}
+                  total={(userAnalysisData as any).progress.totalTasks}
                 />
               </div>
 
               <div className=" p-4 rounded-lg shadow-md">
                 <PointProgress
-                  pointsGained={userAnalysisData.progress.pointsGained}
+                  pointsGained={(userAnalysisData as any).progress.pointsGained}
                   pointsLost={
-                    userAnalysisData.progress.points -
-                    userAnalysisData.progress.pointsGained
+                    (userAnalysisData as any).progress.points -
+                    (userAnalysisData as any).progress.pointsGained
                   }
-                  total={userAnalysisData.progress.points}
+                  total={(userAnalysisData as any).progress.points}
                 />
               </div>
             </div>
@@ -169,7 +167,7 @@ export default function ProfileAnalytics() {
       </span>
 
       {/* Submit button (show only if changed) */}
-      {selectedStatus !== userAnalysisData.mindStatus && (
+      {selectedStatus !== (userAnalysisData as any).mindStatus && (
         <button
           onClick={handleMindStatusSubmit}
           className="cursor-pointer bg-green-600 hover:bg-green-500 text-black px-4 py-2 rounded-full font-semibold shadow-lg"

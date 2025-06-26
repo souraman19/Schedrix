@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Edit } from "lucide-react";
 import axios from "axios";
 import { EDIT_REMINDER_TIME_ROUTE } from "@/lib/apiRoutes";
@@ -37,7 +37,7 @@ export default function EditReminderTimeBefore({taskData}: {taskData: any}) {
 
     return (
         <>
-            {taskData?.reminder?.enabled! && (
+            {taskData?.reminder?.enabled && (
                 <div style={{ marginBottom: "1.5rem" }}>
                   <h3
                     style={{

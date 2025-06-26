@@ -26,7 +26,6 @@ const TaskCard = ({ task }: { task: any }) => {
   const endTime = task.endTime ? new Date(task.endTime).toLocaleString() : 'N/A';
   const duration = task.duration ? `${task.duration} hour` : 'N/A';
 
-  const isOverdue = deadline && new Date() > deadline;
 
   return (
     <div

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   Modal,
   Box,
@@ -58,7 +58,6 @@ export default function ChatModal({
   isChatOpen,
   handleChatClose,
   messages,
-  setMessages,
   handleStopVoiceAssistance
 }: {
   isChatOpen: boolean;
@@ -67,8 +66,6 @@ export default function ChatModal({
   setMessages: React.Dispatch<React.SetStateAction<string[]>>;
   handleStopVoiceAssistance: () => void;
 }) {
-  const [inputMessage, setInputMessage] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
 

@@ -41,7 +41,7 @@ export default function FeatureTaskCreation() {
         transition: { duration: 1.2 },
       });
     }
-  }, [taskComplete]);
+  }, [taskComplete, controls]);
 
   return (
     <section className="m-5 min-h-scree flex items-center justify-center px-4 py-20">

@@ -4,7 +4,6 @@ export default function RecordVoiceNote({
   labelStyle,
   audioBlob,
   setAudioBlob,
-  inputBase,
   isRecording,
   setIsRecording,
 }: {

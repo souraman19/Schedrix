@@ -59,14 +59,14 @@ export default function FeatureTaskRescheduling() {
           <div className="grid grid-cols-8 border border-zinc-700 rounded-xl overflow-hidden">
             {/* Time Column */}
             <div className="bg-zinc-800 border-r border-zinc-700 p-2 text-white text-xs font-semibold flex flex-col gap-4 items-center">
-              {times.map((t) => (
-                <div key={t}>{t}</div>
+              {times.map((t, ind) => (
+                <div key={ind}>{t}</div>
               ))}
             </div>
 
             {/* Day Columns */}
             {days.map((day, colIdx) => (
-              <div key={day} className="flex flex-col border-r border-zinc-700">
+              <div key={colIdx} className="flex flex-col border-r border-zinc-700">
                 <div className="text-center text-white text-sm py-2 bg-zinc-800 border-b border-zinc-700 font-medium">
                   {day}
                 </div>
