@@ -36,6 +36,10 @@ app.use(cors({
   credentials: true
 }))
 
+// Trust proxy so secure cookies work (needed for Render + Vercel combo)
+app.set('trust proxy', 1);
+
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET!,
