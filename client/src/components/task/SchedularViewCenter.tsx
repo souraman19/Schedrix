@@ -1,5 +1,5 @@
 "use client";
-import { GET_TASK_7days, RESCHEDULE_TASKLISTS_ROUTE } from "@/lib/apiRoutes";
+import { GET_TASK_SEVEN_days, RESCHEDULE_TASKLISTS_ROUTE } from "@/lib/apiRoutes";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -227,10 +227,10 @@ export default function SchedulerViewCenter({
     setUpTimeMarkings();
   }, [SLOT_HEIGHT, setUpTimeMarkings]);
 
-  const get7DaysTasks = useCallback(async () => {
+  const getTask7Days = useCallback(async () => {
     try {
       const startDay = daysArray[0];
-      const response: Response = await fetch(`${GET_TASK_7days}/${startDay}`, {
+      const response: Response = await fetch(`${GET_TASK_SEVEN_days}/${startDay}`, {
         method: "GET",
         credentials: "include",
       });
@@ -259,8 +259,8 @@ export default function SchedulerViewCenter({
   }, [daysArray, setTasks, setOriginalTasks]);
 
   useEffect(() => {
-    get7DaysTasks();
-  }, [get7DaysTasks]);
+    getTask7Days();
+  }, [getTask7Days]);
 
   const handleMouseDown = (task: Task, e: React.MouseEvent<HTMLDivElement>) => {
     draggingTaskRef.current = task;
@@ -408,7 +408,7 @@ export default function SchedulerViewCenter({
       });
       if (response.ok) {
         setChangedTasks({});
-        await get7DaysTasks();
+        await getTask7Days();
         toast.success("Task rescheduled successfully");
       } else {
         toast.error("Error rescheduling tasks");

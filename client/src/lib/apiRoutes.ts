@@ -2,7 +2,7 @@ export const HOST = "https://schedrix-main-server.onrender.com";
 
 const AUTH_ROUTES = `${HOST}/api/auth`;
 const TASK_ROUTES = `${HOST}/api/task`;
-const USER_ROUTES = `${HOST}/api/user`;pas
+const USER_ROUTES = `${HOST}/api/user`;
 const CONTENT_ROUTES = `${HOST}/api/content`;
 
 
@@ -20,7 +20,7 @@ export const GET_TASK_REPEAT_INFO_ROUTE = `${TASK_ROUTES}/get/repeatInfo`;
 export const RESOLVE_TASK_ROUTE = `${TASK_ROUTES}/resolve`;
 export const RESCHEDULE_TASK_ROUTE = `${TASK_ROUTES}/reschedule`;
 export const GET_TASK_TIMINGS_ROUTE = `${TASK_ROUTES}/get/timings`;
-export const GET_TASK_7days = `${TASK_ROUTES}/get/7days`;
+export const GET_TASK_SEVEN_days = `${TASK_ROUTES}/get/7days`;
 export const RESCHEDULE_TASKLISTS_ROUTE = `${TASK_ROUTES}/tasklists/reschedule`;
 export const EDIT_REMINDER_TIME_ROUTE = `${TASK_ROUTES}/edit/reminder_time`;
 
