@@ -1,3 +1,26 @@
+# client side cmds
+
+## npx tsc --noEmit
+Run the TypeScript compiler to check for type errors only, without outputting .js files.
+
+## eslint error check and resolving  
+Run ESLint, which checks for code quality, style, and some logic issues
+
+* next lint --fix     or,
+* npm run lint -- --fix
+=> This runs ESLint and automatically fixes fixable problems: Can fix things like indentation, spacing, quotes, unused imports, etc.
+
+
+
+* next lint --quiet    or,
+* npm run lint -- --quiet
+=> This runs ESLint in quiet mode: Suppresses warnings, only shows errors, Useful for cleaner CI logs or debugging only critical issues
+
+
+
+
+
+
 # get all process listening on port 5000
 netstat -ano | grep :5000
 

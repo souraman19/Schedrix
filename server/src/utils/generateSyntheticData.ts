@@ -48,6 +48,7 @@ const generateDefaultData = (days = 7) => {
       pointsGain,
       pointsDeduct,
       mindStatus,
+      isSetMindStatus: true, // Default data does not set mind status
     });
   }
 
@@ -71,6 +72,7 @@ const generateMotivatedData = (days = 7) => {
       pointsGain,
       pointsDeduct,
       mindStatus,
+      isSetMindStatus: true, // Motivated data sets mind status
     });
   }
 
@@ -94,6 +96,7 @@ const generateDistractedData = (days = 7) => {
       pointsGain,
       pointsDeduct,
       mindStatus,
+      isSetMindStatus: true, // Distracted data sets mind status
     });
   }
 
@@ -117,6 +120,7 @@ const generateTiredData = (days = 7) => {
       pointsGain,
       pointsDeduct,
       mindStatus,
+      isSetMindStatus: true, // Tired data sets mind status
     });
   }
 
@@ -140,6 +144,7 @@ const generateStressedData = (days = 7) => {
       pointsGain,
       pointsDeduct,
       mindStatus,
+      isSetMindStatus: true, // Stressed data sets mind status
     });
   }
 
@@ -163,6 +168,7 @@ const generateFocusedData = (days = 30) => {
       pointsGain,
       pointsDeduct,
       mindStatus,
+      isSetMindStatus: true,
     });
   }
 
@@ -198,7 +204,9 @@ const generateDataForTraining = async (userId: mongoose.Types.ObjectId) => {
     return;
   }
 
-  existingDoc.points.push(...allData);
+  allData.forEach((data) => {
+    existingDoc.points.push(data);
+  });
   existingDoc.markModified("points");
 
   try {

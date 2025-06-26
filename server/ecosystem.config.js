@@ -26,5 +26,23 @@ module.exports = {
       out_file: "./logs/reminder-out.log",
       error_file: "./logs/reminder-error.log",
     },
+    {
+      name: "motivational-video-worker",
+      script: "src/lib/queues/motivationalVideoFetchWorker.ts",
+      interpreter: "node",
+      interpreter_args: "-r ts-node/register",
+      watch: ["src/lib/queues"],
+      out_file: "./logs/motivational-video-out.log",
+      error_file: "./logs/motivational-video-error.log",
+    },
+    {
+      name: "quote-fetch-worker",
+      script: "src/lib/queues/quoteFetchWorker.ts",
+      interpreter: "node",
+      interpreter_args: "-r ts-node/register",
+      watch: ["src/lib/queues"],
+      out_file: "./logs/quote-fetch-out.log",
+      error_file: "./logs/quote-fetch-error.log",
+    },
   ],
 };

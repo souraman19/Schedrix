@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { createTask, getFilteredTasks, getTaskStaticDetails, getTaskDynamicDetails, resolveTask, getTaskRepeatInfo, getTaskTimings, rescheduleTask, fetch7DaysTasks, rescheduleTaskLists, editReminderTime } from '../controllers/TaskControllers';
+import { createTask, getFilteredTasks, getTaskStaticDetails, getTaskDynamicDetails, resolveTask, getTaskRepeatInfo, getTaskTimings, rescheduleTask, fetch7DaysTasks, rescheduleTaskLists, editReminderTime } from '../controllers/taskControllers';
 import upload from "./../middlewares/multerConfig";
 
 const router = Router();
