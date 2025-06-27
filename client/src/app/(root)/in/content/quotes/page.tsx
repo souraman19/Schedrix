@@ -1,3 +1,6 @@
+
+
+
 import AllQuotesSection from "@/components/quote/AllQuotesSection";
 import QuoteOfTheDay from "@/components/quote/QuoteOfTheDay";
 import { Suspense } from "react";
@@ -7,28 +10,28 @@ import { GET_USER_MIND_STATUS_ROUTE } from "@/lib/apiRoutes";
 export default async function ContentHomePage() {
   let mindStatus: string | null = null;
 
-  try {
+  // try {
     const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get("connect.sid");
+    console.log("next server", cookieStore.getAll());
 
-    const response = await fetch(`${GET_USER_MIND_STATUS_ROUTE}`, {
-      method: "GET",
-      headers: {
-        Cookie: `${sessionCookie?.name}=${sessionCookie?.value}`,
-      },
-      cache: "no-store",
-    });
+  //   const response = await fetch(`${GET_USER_MIND_STATUS_ROUTE}`, {
+  //     method: "GET",
+  //     headers: {
+  //       Cookie: `${sessionCookie?.name}=${sessionCookie?.value}`,
+  //     },
+  //     cache: "no-store",
+  //   });
 
-    console.log("next server", sessionCookie, response.status);
+  //   console.log("next server", sessionCookie, response.status);
 
-    if (response.status === 200) {
-      const result = await response.json();
-      mindStatus = result.mindStatus || "Default";
-    }
-  } catch (err) {
-    console.error("Error fetching mind status:", err);
-  }
-  console.log("Mind Status fetched: ", mindStatus);
+  //   if (response.status === 200) {
+  //     const result = await response.json();
+  //     mindStatus = result.mindStatus || "Default";
+  //   }
+  // } catch (err) {
+  //   console.error("Error fetching mind status:", err);
+  // }
+  // console.log("Mind Status fetched: ", mindStatus);
 
   return (
     <div className="min-h-screen px-4 pt-0 bg-black text-white">
