@@ -74,7 +74,7 @@ export default async function ContentHomePage() {
           {mindStatus && (
             <div>
               <h2 className="text-xl font-semibold text-center mb-4">
-                Today's Mind Status: {mindStatus}
+                Todays Mind Status: {mindStatus}
               </h2>
               <QuoteOfTheDay mindStatus={mindStatus} />
             </div>
