@@ -16,7 +16,7 @@ export default async function ContentHomePage() {
 
   const fetchMindStatus = async () => {
     try {
-      toast("Fetching today's mind status...");
+      console.log("Fetching today's mind status...");
       const cookieStore = await cookies();
       const sessionCookie = cookieStore.get("connect.sid");
 

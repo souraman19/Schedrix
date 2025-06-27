@@ -42,7 +42,6 @@ export default async function QuoteOfTheDay({
       QOTD = result.quote;
       QOTD_image_url = result.quoteImageURL;
       console.log("Quote of the Day fetched successfully: ", result);
-      toast.success("Quote of the Day fetched successfully!");
     }
   } catch (err) {
     console.error("Error fetching task details:", err);
