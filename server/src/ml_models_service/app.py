@@ -9,6 +9,11 @@ model = tf.keras.models.load_model(model_path)
 # Initialize Flask app
 app = Flask(__name__) 
 
+@app.route('/ping', methods=['GET'])
+def ping():
+    return jsonify({'message': 'Service is up and running!'})
+
+
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.json['input']
