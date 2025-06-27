@@ -1,6 +1,7 @@
 import { GET_QUOTE_OF_THE_DAY_ROUTE } from "@/lib/apiRoutes";
 import { cookies } from "next/headers";
 import Image from "next/image";
+import toast from "react-hot-toast";
 
 type Quote = {
   type: string;           // e.g., "quote", "video"
@@ -40,7 +41,8 @@ export default async function QuoteOfTheDay({
       const result = await response.json();
       QOTD = result.quote;
       QOTD_image_url = result.quoteImageURL;
-      // console.log("Quote of the Day fetched successfully: ", result);
+      console.log("Quote of the Day fetched successfully: ", result);
+      toast.success("Quote of the Day fetched successfully!");
     }
   } catch (err) {
     console.error("Error fetching task details:", err);

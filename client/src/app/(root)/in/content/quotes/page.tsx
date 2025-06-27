@@ -29,6 +29,7 @@ export default async function ContentHomePage() {
       if (response.status === 200) {
         const result = await response.json();
         mindStatus = result.mindStatus || "Default";
+        console.log("Mind status fetched successfully:", mindStatus);
       }
     } catch (err) {
       console.error("Error fetching mind status:", err);
