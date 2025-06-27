@@ -1,6 +1,3 @@
-export const experimental_ppr = true;
-export const dynamic = 'force-dynamic';
-
 
 import AllQuotesSection from "@/components/quote/AllQuotesSection";
 import QuoteOfTheDay from "@/components/quote/QuoteOfTheDay";
