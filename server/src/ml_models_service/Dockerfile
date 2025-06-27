@@ -24,5 +24,5 @@ RUN pip install -r requirements.txt
 # Expose the Flask port
 EXPOSE 6000
 
-# Start with Gunicorn
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:6000"]
+# Start the app
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:6000", "--log-level", "debug"]
