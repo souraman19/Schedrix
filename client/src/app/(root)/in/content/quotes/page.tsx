@@ -8,7 +8,7 @@ export default async function ContentHomePage() {
   let mindStatus: string | null = null;
 
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const sessionCookie = cookieStore.get("connect.sid");
 
     const response = await fetch(`${GET_USER_MIND_STATUS_ROUTE}`, {
