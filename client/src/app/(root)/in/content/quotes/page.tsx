@@ -1,7 +1,5 @@
 import AllQuotesSection from "@/components/quote/AllQuotesSection";
 import QuoteOfTheDay from "@/components/quote/QuoteOfTheDay";
-import { GET_USER_MIND_STATUS_ROUTE } from "@/lib/apiRoutes";
-import { cookies } from "next/headers";
 import { Suspense } from "react";
 
 export default async function ContentHomePage() {
