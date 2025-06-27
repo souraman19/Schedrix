@@ -9,12 +9,12 @@ import TaskActions from "@/components/task/TaskActions";
 import React from "react";
 import AddTaskButton from "@/components/ui/AddTaskButton";
 
-export default function Task({
+export default async function Task({
   params,
 }: {
-  params: { _id: string };
+  params: Promise<{ _id: string }>;
 }) {
-  const _id = params._id;
+  const _id = (await params)._id;
 
   return (
     <div className="space-y-6">
