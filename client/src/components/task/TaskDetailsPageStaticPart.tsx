@@ -137,6 +137,30 @@ export default function TaskDetailsPageStaticPart({
     textShadow: "0 0 8px rgba(255, 152, 0, 0.6)",
   };
 
+  
+  if(taskData === null) {
+    return (
+      <div
+        style={{
+          maxWidth: "800px",
+          margin: "3rem auto",
+          padding: "2.5rem",
+          background: "linear-gradient(145deg, #0d0d0d, #1a1a1a)",
+          borderRadius: "1.5rem",
+          boxShadow: "0 0 30px rgba(0, 255, 128, 0.25)",
+          color: "#e0ffe0",
+          fontFamily: "Inter, system-ui, sans-serif",
+          fontSize: "1rem",
+          lineHeight: 1.75,
+        }}
+      >
+        <h2 style={{ textAlign: "center", color: "#76ff03" }}>Loading task details...</h2>
+      </div>
+    );
+  }
+
+
+
   return (
     <div style={containerStyle}>
       <h2 style={titleStyle}>Task Details</h2>
