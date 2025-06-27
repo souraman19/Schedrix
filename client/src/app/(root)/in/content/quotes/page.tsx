@@ -7,7 +7,7 @@ export default async function ContentHomePage() {
 
  try {
     console.log("next xclient");
-    const res = await fetch("https://schedrix.vercel.app/api/mindstatus", {
+    const res = await fetch("/api/mindstatus", {
       cache: "no-store",
     });
 
