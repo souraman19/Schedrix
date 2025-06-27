@@ -5,8 +5,10 @@ import { cookies } from "next/headers";
 export async function GET() {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get("connect.sid");
+    console.log("next server");
 
   if (!sessionCookie) {
+    console.warn("No session cookie found");
     return Response.json({ error: "No session" }, { status: 401 });
   }
 
