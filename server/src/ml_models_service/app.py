@@ -26,7 +26,3 @@ def predict():
     print(f"Predicted Mind Status: {result}")
 
     return jsonify({'predictedMindStatus': result})
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 10000))  # fallback to 10000 locally
-    app.run(host='0.0.0.0', port=port)
