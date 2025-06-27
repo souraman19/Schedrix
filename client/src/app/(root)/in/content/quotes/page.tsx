@@ -8,36 +8,33 @@ import { cookies } from "next/headers";
 import { Suspense } from "react";
 
 export default async function ContentHomePage() {
-  let mindStatus: string | null = null;
+   let mindStatus: string | null = null;
 
-  const fetchMindStatus = async () => {
-    try {
-      const cookieStore = await cookies();
-      const sessionCookie = cookieStore.get("connect.sid");
-      console.log("Fetching today's mind status...");
-      console.log("Session Cookie:", sessionCookie);
+  const cookieStore = cookies(); // 🔑 FIXED: Call this outside
+  const sessionCookie = cookieStore.get("connect.sid");
+  console.log("Session Cookie:", sessionCookie);
 
+  try {
+    console.log("Fetching today's mind status...");
 
-      const response = await fetch(`${GET_USER_MIND_STATUS_ROUTE}`, {
-        method: "GET",
-        headers: {
-          Cookie: `${sessionCookie?.name}=${sessionCookie?.value}`,
-        },
-        cache: "no-store",
-      });
+    const response = await fetch(`${GET_USER_MIND_STATUS_ROUTE}`, {
+      method: "GET",
+      headers: {
+        Cookie: `${sessionCookie?.name}=${sessionCookie?.value}`,
+      },
+      cache: "no-store",
+    });
 
-      console.log("Response status:", response.status);
+    console.log("Response status:", response.status);
 
-      if (response.status === 200) {
-        const result = await response.json();
-        mindStatus = result.mindStatus || "Default";
-        console.log("Mind status fetched successfully:", mindStatus);
-      }
-    } catch (err) {
-      console.error("Error fetching mind status:", err);
+    if (response.status === 200) {
+      const result = await response.json();
+      mindStatus = result.mindStatus || "Default";
+      console.log("Mind status fetched successfully:", mindStatus);
     }
-  };
-  await fetchMindStatus();
+  } catch (err) {
+    console.error("Error fetching mind status:", err);
+  }
 
   return (
     <div className="min-h-screen px-4 pt-0 bg-black text-white">
