@@ -9,7 +9,6 @@ import {
 } from "@/lib/apiRoutes";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
-import { toast } from "sonner";
 
 export default async function ContentHomePage() {
   let mindStatus: string | null = null;

@@ -1,7 +1,6 @@
 import { GET_QUOTE_OF_THE_DAY_ROUTE } from "@/lib/apiRoutes";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import toast from "react-hot-toast";
 
 type Quote = {
   type: string;           // e.g., "quote", "video"
