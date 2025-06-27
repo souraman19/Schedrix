@@ -6,6 +6,7 @@ export async function fetchMindStatus() {
   const sessionCookie = cookieStore.get("connect.sid");
 
   if (!sessionCookie) {
+    console.warn("No session cookie found");
     return null;
   }
 
