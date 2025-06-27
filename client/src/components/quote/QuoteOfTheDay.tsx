@@ -52,9 +52,6 @@ export default function QuoteOfTheDay({
     <div className="mb-10 mt-0 flex items-center justify-center min-h-screen px-4 py-10 bg-gradient-to-br from-black via-[#0d0d0d] to-[#1a1a1a] text-white">
       {QOTD ? (
         <div className="flex flex-col items-center justify-center w-full max-w-3xl">
-          <h1 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-green-400 to-lime-300 bg-clip-text text-transparent">
-            Quote of the Day <span className="text-white">✨</span>
-          </h1>
 
           <div className="relative bg-gradient-to-br py-5 px-10 from-[#0f0f0f] to-[#1c1c1c] p-4 rounded-2xl max-w-sm w-full shadow-[0_0_20px_#00c85333] border border-[#2e2e2e] hover:shadow-[0_0_40px_#00e67666] transition-all duration-500 group">
             {/* Top Glow Accent */}
