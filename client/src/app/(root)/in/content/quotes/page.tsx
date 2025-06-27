@@ -5,7 +5,7 @@ import { fetchMindStatus } from "@/lib/fetchMindstatus";
 
 export default async function ContentHomePage() {
   
-  let mindStatus: string | null = await fetchMindStatus();
+  const mindStatus: string | null = await fetchMindStatus();
 
   return (
     <div className="min-h-screen px-4 pt-0 bg-black text-white">

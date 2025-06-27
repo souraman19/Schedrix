@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { GET_USER_MIND_STATUS_ROUTE } from "@/lib/apiRoutes";
 
 export async function fetchMindStatus() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const sessionCookie = cookieStore.get("connect.sid");
 
   if (!sessionCookie) {
@@ -21,4 +21,3 @@ export async function fetchMindStatus() {
   const data = await res.json();
   return data.mindStatus || "Default";
 }
-    
