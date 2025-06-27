@@ -19,6 +19,8 @@ export default async function ContentHomePage() {
       cache: "no-store",
     });
 
+    console.log("next server", sessionCookie?.value, response.status);
+
     if (response.status === 200) {
       const result = await response.json();
       mindStatus = result.mindStatus || "Default";
