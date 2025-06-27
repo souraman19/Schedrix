@@ -15,6 +15,4 @@ WORKDIR /app/src/ml_models_service
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-EXPOSE 6000
-
 CMD ["python", "app.py"]
