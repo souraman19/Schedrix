@@ -5,24 +5,18 @@ FROM python:3.11.9-slim
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Set working directory
+# Set work directory inside container
 WORKDIR /app
 
-# Install OS-level dependencies
-RUN apt-get update && apt-get install -y build-essential
-
-# Copy project files
+# Copy only necessary files
 COPY . .
 
-# Move to service directory
-WORKDIR /app/src/ml_models_service
-
-# Install Python dependencies
+# Install dependencies
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Expose the Flask port
+# Expose the port your Flask app uses
 EXPOSE 6000
 
-# Start the app
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:6000", "--log-level", "debug"]
+# Start the Flask app using Gunicorn
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:6000"]
