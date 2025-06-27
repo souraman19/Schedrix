@@ -68,8 +68,14 @@ export default async function ContentHomePage() {
         }
       >
         <div>
+          <h1 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-green-400 to-lime-300 bg-clip-text text-transparent">
+            Quote of the Day <span className="text-white">✨</span>
+          </h1>
           {mindStatus && (
             <div>
+              <h2 className="text-xl font-semibold text-center mb-4">
+                Today's Mind Status: {mindStatus}
+              </h2>
               <QuoteOfTheDay mindStatus={mindStatus} />
             </div>
           )}
