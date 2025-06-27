@@ -7,12 +7,22 @@ import { Suspense } from "react";
 export default async function ContentHomePage() {
   let mindStatus: string | null = null;
 
-  const res = await fetch("https://schedrix.vercel.app/api/mindstatus", {
-    cache: "no-store",
-  });
-  const result = await res.json();
-  mindStatus = result.mindStatus || "Default";
+ try {
+    const res = await fetch("https://schedrix.vercel.app/api/mindstatus", {
+      cache: "no-store",
+    });
 
+    console.log("Fetching mind status from API...", res.status);
+
+    if (res.ok) {
+      const result = await res.json();
+      mindStatus = result.mindStatus || "Default";
+    } else {
+      console.warn("Mind status API returned:", res.status);
+    }
+  } catch (err) {
+    console.error("Failed to fetch mind status:", err);
+  }
   return (
     <div className="min-h-screen px-4 pt-0 bg-black text-white">
       <Suspense
