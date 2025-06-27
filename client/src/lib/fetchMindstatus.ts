@@ -10,6 +10,8 @@ export async function fetchMindStatus() {
     return null;
   }
 
+  console.log(sessionCookie.value, "next server");
+
   const res = await fetch(GET_USER_MIND_STATUS_ROUTE, {
     headers: {
       Cookie: `connect.sid=${sessionCookie.value}`,
