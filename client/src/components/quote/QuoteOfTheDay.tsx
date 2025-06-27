@@ -1,5 +1,4 @@
 import { GET_QUOTE_OF_THE_DAY_ROUTE } from "@/lib/apiRoutes";
-import { cookies } from "next/headers";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
