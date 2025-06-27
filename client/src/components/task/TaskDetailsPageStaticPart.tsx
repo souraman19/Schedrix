@@ -1,10 +1,11 @@
-import React from "react";
-import { cookies } from "next/headers";
+'use client';
+
+import React, { useCallback, useEffect, useState } from "react";
 import { GET_TASK_STATIC_DETAILS_ROUTE } from "@/lib/apiRoutes";
 import { formatDate } from "@/lib/utils";
 import Image from "next/image";
 
-export default async function TaskDetailsPageStaticPart({
+export default function TaskDetailsPageStaticPart({
   _id,
 }: {
   _id: string;
@@ -30,30 +31,30 @@ export default async function TaskDetailsPageStaticPart({
     masterTaskId: string | null;
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const experimantal_ppr = "true";
+    const [taskData, setTaskData] = useState<TaskType | null>(null);
 
-  let taskData: TaskType | null = null;
 
-  try {
-    const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get("connect.sid");
-    const response: Response = await fetch(
-      `${GET_TASK_STATIC_DETAILS_ROUTE}/${_id}`,
-      {
-        method: "GET",
-        headers: {
-          Cookie: `${sessionCookie?.name}=${sessionCookie?.value}`,
-        },
-        cache: "no-store",
-      }
-    );
-    const result = await response.json();
-    taskData = result.task;
-    console.log("Task data fetched successfully: ", taskData);
-  } catch (err) {
-    console.error("Error fetching task details:", err);
-  }
+  const fetchTask = useCallback(async () => {
+    try {
+      const response = await fetch(
+        `${GET_TASK_STATIC_DETAILS_ROUTE}/${_id}`,
+        {
+          method: "GET",
+          credentials: "include", // ✅ sends cookies
+          cache: "no-store",
+        }
+      );
+      const result = await response.json();
+      setTaskData(result.task);
+      console.log("Task data fetched successfully:", result.task);
+    } catch (err) {
+      console.error("Error fetching task details:", err);
+    }
+  }, [_id, setTaskData]);
+
+  useEffect(() => {
+    fetchTask();
+  }, [_id, fetchTask]);
 
   // Container Style with a dark gradient and soft shadows
   const containerStyle:React.CSSProperties = {

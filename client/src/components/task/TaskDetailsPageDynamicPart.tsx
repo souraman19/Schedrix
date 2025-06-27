@@ -1,11 +1,12 @@
+'use client';
 
-import React from "react";
-import { cookies } from "next/headers";
+
+import React, { useCallback, useEffect, useState } from "react";
 import { GET_TASK_DYNAMIC_DETAILS_ROUTE } from "@/lib/apiRoutes";
 import { FaCheckCircle, FaCoins, FaExclamationTriangle } from "react-icons/fa";
 import EditReminderTimeBefore from "./EditReminderTImeBefore";
 
-export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string }) {
+export default function TaskDetailsPageDynamicPart({ _id }: { _id: string }) {
   type TaskType = {
     _id: string;
     status?: string;
@@ -25,27 +26,51 @@ export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string 
     };
   };
 
-  let taskData: TaskType | null = null;
+const [taskData, setTaskData] = useState<TaskType | null>(null);
 
-  try {
-    const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get("connect.sid");
-    const response: Response = await fetch(`${GET_TASK_DYNAMIC_DETAILS_ROUTE}/${_id}`, {
-      method: "GET",
-      headers: {
-        Cookie: `${sessionCookie?.name}=${sessionCookie?.value}`,
-      },
-      cache: "no-store",
-    });
-    const result = await response.json();
-    taskData = result.task;
-    // console.log("Task data fetched successfully: ", taskData);
-  } catch (err) {
-    console.error("Error fetching task details:", err);
-  }
+  const fetchTask = useCallback(async () => {
+    try {
+      const response = await fetch(`${GET_TASK_DYNAMIC_DETAILS_ROUTE}/${_id}`, {
+        method: "GET",
+        credentials: "include", // send cookie automatically
+        cache: "no-store",
+      });
+      const result = await response.json();
+      setTaskData(result.task);
+      console.log("Dynamic task data:", result.task);
+    } catch (err) {
+      console.error("Error fetching dynamic task details:", err);
+    }
+  }, [_id, setTaskData]);
+
+  useEffect(() => {
+    fetchTask();
+  }, [fetchTask]);
 
   const isDeadlinePassed = taskData?.deadline && new Date(taskData.deadline) < new Date();
   const isNegativePoints = taskData?.totalPointsContributed && taskData.totalPointsContributed < 0;
+
+
+  if(taskData === null) {
+    return (
+      <div
+        style={{
+          maxWidth: "800px",
+          margin: "3rem auto",
+          padding: "2.5rem",
+          background: "linear-gradient(145deg, #0d0d0d, #1a1a1a)",
+          borderRadius: "1.5rem",
+          boxShadow: "0 0 30px rgba(0, 255, 128, 0.25)",
+          color: "#e0ffe0",
+          fontFamily: "Inter, system-ui, sans-serif",
+          fontSize: "1rem",
+          lineHeight: 1.75,
+        }}
+      >
+        <h2 style={{ textAlign: "center", color: "#76ff03" }}>Loading task details...</h2>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -215,7 +240,7 @@ export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string 
         </div>
       )}
 
-      {(taskData as any).pointsContributed?.length > 0 && (
+      {(taskData as any)?.pointsContributed?.length > 0 && (
         <>
           <h3
             style={{
@@ -230,7 +255,7 @@ export default async function TaskDetailsPageDynamicPart({ _id }: { _id: string 
           </h3>
 
           <ul style={{ listStyle: "none", padding: 0, marginBottom: "2rem" }}>
-            {(taskData as any).pointsContributed.map((point:any, index:any) => (
+            {(taskData as any)?.pointsContributed.map((point:any, index:any) => (
               <li
                 key={index}
                 style={{
