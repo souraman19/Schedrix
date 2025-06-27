@@ -9,6 +9,13 @@ export const generateImageFromQuote = async (
 ) => {
   const today = new Date().toISOString().split("T")[0];
   const fileName = `quote-${today}-${mindStatus}.png`;
+
+  try {
+  const result = await cloudinary.api.resource(`schedrix_qotd/${fileName}`);
+  return result.secure_url;
+} catch (err : any) {
+  if (err.http_code !== 404) throw err; 
+}
  
 
   let elaboratedText = await elaborateQuoteWithGemini((quote as any).content);
