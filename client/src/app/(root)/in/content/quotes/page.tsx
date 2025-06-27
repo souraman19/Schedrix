@@ -1,27 +1,12 @@
 import AllQuotesSection from "@/components/quote/AllQuotesSection";
 import QuoteOfTheDay from "@/components/quote/QuoteOfTheDay";
 import { Suspense } from "react";
+import { fetchMindStatus } from "@/lib/fetchMindstatus";
 
 export default async function ContentHomePage() {
-  let mindStatus: string | null = null;
+  
+  let mindStatus: string | null = await fetchMindStatus();
 
- try {
-    console.log("next xclient");
-    const res = await fetch("/api/mindstatus", {
-      cache: "no-store",
-    });
-
-    console.log("Fetching mind status from API...", res.status);
-
-    if (res.ok) {
-      const result = await res.json();
-      mindStatus = result.mindStatus || "Default";
-    } else {
-      console.warn("Mind status API returned:", res.status);
-    }
-  } catch (err) {
-    console.error("Failed to fetch mind status:", err);
-  }
   return (
     <div className="min-h-screen px-4 pt-0 bg-black text-white">
       <Suspense
