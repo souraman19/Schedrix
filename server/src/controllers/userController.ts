@@ -76,7 +76,7 @@ export const getMindStatus = async(req: any, res: any) => {
         // console.log("Input data:", inputData);
 
         //send data to python ml service
-        const predictedResponse = await axios.post("http://localhost:6000/predict", {
+        const predictedResponse = await axios.post("https://schedrix-ml.onrender.com/predict", {
             input: inputData
         });
 
