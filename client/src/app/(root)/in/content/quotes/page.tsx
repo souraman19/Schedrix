@@ -5,7 +5,7 @@ import AllQuotesSection from "@/components/quote/AllQuotesSection";
 import QuoteOfTheDay from "@/components/quote/QuoteOfTheDay";
 import { Suspense } from "react";
 import { cookies } from "next/headers";
-import { GET_USER_MIND_STATUS_ROUTE } from "@/lib/apiRoutes";
+// import { GET_USER_MIND_STATUS_ROUTE } from "@/lib/apiRoutes";
 
 export default async function ContentHomePage() {
   let mindStatus: string | null = null;
