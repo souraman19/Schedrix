@@ -8,7 +8,7 @@ import { cookies } from "next/headers";
 // import { GET_USER_MIND_STATUS_ROUTE } from "@/lib/apiRoutes";
 
 export default async function ContentHomePage() {
-  let mindStatus: string | null = null;
+  const mindStatus: string | null = null;
 
   // try {
     const cookieStore = await cookies();
