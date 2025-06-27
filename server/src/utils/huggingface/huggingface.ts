@@ -1,26 +1,19 @@
-import path from "path";
 import "../../env";
-import fs from "fs";
 import { elaborateQuoteWithGemini } from "../gemini/elaborateQuote";
+import cloudinary from "./../../lib/cloudinary/cloudinary";
 
-export const generateImageFromQuote = async (quote: string, mindStatus: string) => {
+export const generateImageFromQuote = async (
+  quote: string,
+  mindStatus: string
+) => {
+  const today = new Date().toISOString().split("T")[0];
+  const fileName = `quote-${today}-${mindStatus}.png`;
+ 
 
-    const today = new Date().toISOString().split("T")[0];
-    // console.log(mindStatus);
-    const fileName = `quote-${today}-${mindStatus}.png`;
-    const filePath = path.join(__dirname, "../../../public/QOTD_images", fileName);
-    // console.log("Dir name:", __dirname); 
-    // console.log("Saving image to:", filePath);
-  
-    if(fs.existsSync(filePath)) {
-        // console.log("Image already exists, skipping generation:", filePath);
-        return `/QOTD_images/${fileName}`; // Return the PUBLIC URL
-    }
+  let elaboratedText = await elaborateQuoteWithGemini((quote as any).content);
+  // console.log("Elaborated text for quote:", elaboratedText);
 
-    let elaboratedText = await elaborateQuoteWithGemini( (quote as any).content);
-    // console.log("Elaborated text for quote:", elaboratedText);
-    
-    const response = await fetch(
+  const response = await fetch(
     "https://router.huggingface.co/nebius/v1/images/generations",
     {
       method: "POST",
@@ -47,7 +40,20 @@ export const generateImageFromQuote = async (quote: string, mindStatus: string) 
   const base64 = result.data?.[0]?.b64_json;
   if (!base64) throw new Error("No base64 image returned");
 
-
-  fs.writeFileSync(filePath, Buffer.from(base64, "base64"));
-  return `/QOTD_images/${fileName}`; // Return the PUBLIC URL
+  const imageBuffer = Buffer.from(base64, "base64");
+  return new Promise<string>((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'schedrix_qotd',
+        public_id: fileName,
+        resource_type: 'image',
+      },
+      (error, result) => {
+        if(error) return reject(error);
+        resolve(result?.secure_url || "");
+        console.log("Uploaded image URL:", result?.secure_url);
+      }
+    );
+    stream.end(imageBuffer);
+  })
 };

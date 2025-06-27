@@ -62,7 +62,7 @@ export default function QuoteOfTheDay({
 
             {/* Quote Image */}
             <Image
-              src={`https://schedrix-main-server.onrender.com/${QOTD_image_url}`}
+              src={QOTD_image_url || 'https://images.unsplash.com/photo-1658611694395-60e62e5353f3?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}
               alt="Motivational Quote"
               height={240}
               width={400}
