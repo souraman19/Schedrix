@@ -9,12 +9,14 @@ import {
 } from "@/lib/apiRoutes";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
+import { toast } from "sonner";
 
 export default async function ContentHomePage() {
   let mindStatus: string | null = null;
 
   const fetchMindStatus = async () => {
     try {
+      toast("Fetching today's mind status...");
       const cookieStore = await cookies();
       const sessionCookie = cookieStore.get("connect.sid");
 
@@ -25,6 +27,8 @@ export default async function ContentHomePage() {
         },
         cache: "no-store",
       });
+
+      console.log("Response status:", response.status);
 
       if (response.status === 200) {
         const result = await response.json();
