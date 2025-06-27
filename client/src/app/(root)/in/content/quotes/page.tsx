@@ -1,11 +1,31 @@
 import AllQuotesSection from "@/components/quote/AllQuotesSection";
 import QuoteOfTheDay from "@/components/quote/QuoteOfTheDay";
 import { Suspense } from "react";
-import { fetchMindStatus } from "@/lib/fetchMindstatus";
+import { cookies } from "next/headers";
+import { GET_USER_MIND_STATUS_ROUTE } from "@/lib/apiRoutes";
 
 export default async function ContentHomePage() {
-  
-  const mindStatus: string | null = await fetchMindStatus();
+  let mindStatus: string | null = null;
+
+  try {
+    const cookieStore = cookies();
+    const sessionCookie = cookieStore.get("connect.sid");
+
+    const response = await fetch(`${GET_USER_MIND_STATUS_ROUTE}`, {
+      method: "GET",
+      headers: {
+        Cookie: `${sessionCookie?.name}=${sessionCookie?.value}`,
+      },
+      cache: "no-store",
+    });
+
+    if (response.status === 200) {
+      const result = await response.json();
+      mindStatus = result.mindStatus || "Default";
+    }
+  } catch (err) {
+    console.error("Error fetching mind status:", err);
+  }
   console.log("Mind Status fetched: ", mindStatus);
 
   return (

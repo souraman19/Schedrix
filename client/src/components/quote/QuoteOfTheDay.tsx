@@ -23,7 +23,7 @@ export default async function QuoteOfTheDay({
   let QOTD_image_url: string | null = null;
 
   try {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     const sessionCookie = cookieStore.get("connect.sid");
     const response = await fetch(
       `${GET_QUOTE_OF_THE_DAY_ROUTE}?mindStatus=${mindStatus}`,
