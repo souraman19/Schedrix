@@ -12,9 +12,11 @@ export default async function ContentHomePage() {
 
   const fetchMindStatus = async () => {
     try {
-      console.log("Fetching today's mind status...");
       const cookieStore = await cookies();
       const sessionCookie = cookieStore.get("connect.sid");
+      console.log("Fetching today's mind status...");
+      console.log("Session Cookie:", sessionCookie);
+
 
       const response = await fetch(`${GET_USER_MIND_STATUS_ROUTE}`, {
         method: "GET",
