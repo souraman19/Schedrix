@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
+set -e
 
-# Create virtual environment
+echo "Python version:"
+python --version
+
 python -m venv venv
 source venv/bin/activate
 
-# Upgrade pip and install dependencies
 pip install --upgrade pip
 pip install -r requirements.txt
