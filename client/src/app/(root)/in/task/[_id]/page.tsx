@@ -6,10 +6,10 @@ import RepeatInfo from "@/components/task/RepeatInfo";
 import TaskDetailsPageDynamicPart from "@/components/task/TaskDetailsPageDynamicPart";
 import TaskDetailsPageStaticPart from "@/components/task/TaskDetailsPageStaticPart";
 import TaskActions from "@/components/task/TaskActions";
-import React, { Suspense } from "react";
+import React from "react";
 import AddTaskButton from "@/components/ui/AddTaskButton";
 
-export default async function Task({
+export default function Task({
   params,
 }: {
   params: Promise<{ _id: string }>;
