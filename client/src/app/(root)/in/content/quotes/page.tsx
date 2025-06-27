@@ -10,7 +10,7 @@ import { Suspense } from "react";
 export default async function ContentHomePage() {
    let mindStatus: string | null = null;
 
-  const cookieStore = cookies(); // 🔑 FIXED: Call this outside
+  const cookieStore = await cookies(); // 🔑 FIXED: Call this outside
   const sessionCookie = cookieStore.get("connect.sid");
   console.log("Session Cookie:", sessionCookie);
 
