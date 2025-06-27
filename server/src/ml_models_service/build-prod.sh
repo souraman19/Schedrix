@@ -17,9 +17,6 @@ pyenv global 3.11.9
 # Confirm version
 python --version
 
-# Create and activate virtual environment
-python -m venv venv
-source venv/bin/activate
 
 # Install dependencies
 pip install --upgrade pip
