@@ -9,7 +9,7 @@ import TaskActions from "@/components/task/TaskActions";
 import React from "react";
 import AddTaskButton from "@/components/ui/AddTaskButton";
 
-export default async function Task({
+export default function Task({
   params,
 }: {
   params: { _id: string };
