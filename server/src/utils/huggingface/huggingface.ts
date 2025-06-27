@@ -2,6 +2,7 @@ import "../../env";
 import { elaborateQuoteWithGemini } from "../gemini/elaborateQuote";
 import cloudinary from "./../../lib/cloudinary/cloudinary";
 
+
 export const generateImageFromQuote = async (
   quote: string,
   mindStatus: string
