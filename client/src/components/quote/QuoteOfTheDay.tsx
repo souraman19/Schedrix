@@ -28,7 +28,7 @@ export default function QuoteOfTheDay({
         `${GET_QUOTE_OF_THE_DAY_ROUTE}?mindStatus=${mindStatus}`,
         {
           method: "GET",
-          credentials: "include", // ✅ sends cookies with request
+          credentials: "include", 
         }
       );
 
