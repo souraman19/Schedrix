@@ -25,4 +25,4 @@ RUN pip install -r requirements.txt
 EXPOSE 6000
 
 # Start the application with gunicorn
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5000"]
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:6000"]
