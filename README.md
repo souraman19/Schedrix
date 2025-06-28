@@ -237,7 +237,7 @@ cookie: {
 
 ## 🙌 Author
 
-Crafted by **Soura Man**
+Crafted by **souraman19**
 
 🔗 Powered by:
 
