@@ -1,24 +1,18 @@
-import express,  { Request, Response }  from "express";
 import { connectDB } from "./config/db";
 
-import "./tasks/cronJob";
-import "./tasks/CheckMissedCron";
-import "./lib/queues/reminderWorker";
-import "./lib/queues/motivationalVideoFetchWorker";
-import "./lib/queues/quoteFetchWorker";
+async function initBackgroundServices() {
+  await connectDB();
 
-const app = express();
-const port = process.env.PORT || 8000;
+  await import("./tasks/cronJob");
+  await import("./tasks/CheckMissedCron");
+  await import("./lib/queues/reminderWorker");
+  await import("./lib/queues/motivationalVideoFetchWorker");
+  await import("./lib/queues/quoteFetchWorker");
 
-connectDB();
+  console.log("🔄 Background services initialized");
+}
 
-
-app.get('/', (req: Request, res: Response) => {
-    res.send('Hello World!');
+initBackgroundServices().catch((err) => {
+  console.error("❌ Failed to initialize services:", err);
+  process.exit(1);
 });
-  
-  app.listen(port, () => {
-      console.log(`Server is running on http://localhost:${port}`);
-    });
-    
-    console.log("🔄 Background services initialized");
