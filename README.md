@@ -539,4 +539,172 @@ Caching effectively reduces redundant work, improves user experience, and lowers
   * Stored in `uploads/audio/`
   * Path linked in task schema
 
+
+
+
+---
+
+
+
+# 🚀 Schedrix Deployment & Infrastructure Setup
+
+## 🗓️ : June 2025
+
+---
+
+## ✅ 1. Smart Architecture Design Decisions
+
+### 🔁 Unified Background Service
+
+* Combined:
+
+  * Cron jobs (e.g., deadline penalties)
+  * BullMQ queue workers (e.g., reminderWorker, videoFetchWorker)
+  * Express server for `/` health check
+* Deployed as a **Render Web Service** to satisfy `app.listen(...)` requirement.
+
+### 🔁 Separate ML Service
+
+* Flask + TensorFlow model deployed as its own service.
+* Decoupled from Node.js backend for flexibility and reliability.
+
+---
+
+## ✅ 2. Dockerization Strategy
+
+### ✅ ML Service Docker Setup
+
+* Dockerfile created using `python:3.11.9-slim`.
+* Exposed port 6000.
+* Ran Flask app via `gunicorn app:app`.
+
+### 🧨 Issue With Native Deploy:
+
+* Render’s native Python environment failed due to:
+
+  * TensorFlow requiring system-level libraries
+  * Lack of control over Python version and system packages
+
+### 🧯 Solution:
+
+* Switched to **Docker-based deployment** to eliminate dependency issues.
+
+---
+
+## ✅ 3. Background Worker Deployment
+
+### ❗ Initial Challenge:
+
+* Planned to deploy workers as separate services.
+* Render Background Workers can’t use `app.listen()`.
+
+### ✅ Fix:
+
+* Created a single service that:
+
+  * Awaits `connectDB()`
+  * Dynamically imports workers and cron jobs
+  * Starts Express server afterward
+
+---
+
+## ✅ 4. Cookie & Session Issues on Server Components
+
+### ❗ Issue:
+
+* Server components in Next.js couldn’t access cookies properly.
+* Middleware like `req.cookies` didn’t work well with SSR.
+
+### ✅ Fix:
+
+* Converted all server components needing cookies into **client components**.
+* Ensured smooth access to session data on the client side.
+
+---
+
+## ✅ 5. Cloudinary Setup 
+
+  Use clodinary to upload images because we dont have write access to render server filesystem to get qotd images so upload in cloudinary.
+
+  For prevention of repeatative image genration in same day we use smart chahing based mechanism=> first through api check if image with filename exist if yes then return that existed image as qotd image.
+---
+
+## ✅ 6. TypeScript Compilation Strategy
+
+### ❗ Initial Setup:
+
+* Used `ts-node` with `--require ts-node/register` in Render.
+
+### ❗ Issues:
+
+* Cold starts
+* Type resolution issues
+* Unreliable module paths
+
+### ✅ Fix:
+
+* Switched to compiling with `tsc`
+* Used `node dist/server.js` for production
+
+---
+
+## ✅ 7. PM2 
+
+great for local dev but for prod not necessary
+
+---
+
+## ✅ 8. CORS & Proxy Config
+
+### ❗ Problems:
+
+* Cookies not returning from backend
+* CORS issues between frontend/backend
+* Sessions not persisting
+
+### ✅ Fixes:
+
+1. **Set trust proxy in Express:**
+
+```ts
+app.set("trust proxy", 1);
+```
+
+2. **Updated session cookie options for production:**
+
+```ts
+cookie: {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'none',
+}
+```
+
+3. **Updated CORS config:**
+
+```ts
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true,
+}));
+```
+
+---
+
+## ✅ 9. Deployment Tools Tried
+
+| Tool          | Purpose                 | Outcome             |
+| ------------- | ----------------------- | ------------------- |
+| `build.sh`    | Shell script for setup  | ❌ Not used          |
+| `runtime.txt` | Specify Python version  | ❌ Ignored on Render |
+| `Dockerfile`  | Final deployment method | ✅ Works reliably    |
+
+---
+
+## ✅ 10. Secure Deployment Practices
+
+* Set `cookie.secure: true` for production
+* Avoided memory store for sessions (to be replaced with Redis)
+* Used `process.env.PORT` instead of hardcoded ports
+
 ---
