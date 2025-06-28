@@ -1,3 +1,7 @@
+# to generate javascript in o/p directory
+* npx tsc           or,
+* npm run build
+
 
 ## npx tsc --noEmit
 Run the TypeScript compiler to check for type errors only, without outputting .js files.

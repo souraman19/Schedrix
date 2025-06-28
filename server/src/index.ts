@@ -26,7 +26,7 @@ setInterval(() => {
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 5000 || 7000 || 11000;
+const port = process.env.PORT || 5000;
 
 // For parsing json data
 app.use(express.json());
