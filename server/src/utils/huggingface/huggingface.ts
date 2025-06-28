@@ -9,11 +9,11 @@ export const generateImageFromQuote = async (
   const today = new Date().toISOString().split("T")[0];
   const fileName = `quote-${today}-${mindStatus}.png`;
 
-  // const imageUrl = await checkIfImageExists(fileName);
-  // if (imageUrl) {
-  //   console.log("Image already exists, returning existing URL:", imageUrl);
-  //   return imageUrl; // Return existing image URL if it exists
-  // }
+  const imageUrl = await checkIfImageExists(fileName);
+  if (imageUrl) {
+    console.log("Image already exists, returning existing URL:", imageUrl);
+    return imageUrl; // Return existing image URL if it exists
+  }
 
     let elaboratedText = await elaborateQuoteWithGemini((quote as any).content);
     // console.log("Elaborated text for quote:", elaboratedText);

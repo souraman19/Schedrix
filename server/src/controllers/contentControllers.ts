@@ -8,6 +8,7 @@ import { elaborateQuoteWithGemini } from "./../utils/gemini/elaborateQuote";
 export const getQuotes = async (req : any, res: any) => {
     try{
        const mindStatus = req.query.mindStatus;
+         console.log("Mind status for quotes:", mindStatus);
        const cursor = req.query.cursor;
        const limit = 10;
 
@@ -51,6 +52,7 @@ export const getQuoteOfTheDay = async (req: any, res: any) => {
     try{
         // console.log("Fetching quote of the day...", req.query);
         const mindStatus = req.query.mindStatus;
+        console.log("Mind status for QOTD:", mindStatus);
         const tagList = getSuggestedTagsForMindset(mindStatus);
 
         const query: any = {
