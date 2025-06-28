@@ -49,9 +49,10 @@ To fully appreciate what Schedrix offers, check out the visuals below.
 
 ## 🚀 Live Demo
 
-🔗 [Live App](https://schedrix-client.vercel.app)
-🔗 [API Server](https://schedrix-server.onrender.com)
+🔗 [Live App](https://schedrix.vercel.app)
+🔗 [API Server](https://schedrix-main-server.onrender.com)
 🔗 [ML Service](https://schedrix-ml.onrender.com)
+🔗 [BackgroundWorker Service](https://schedrix-background-services.onrender.com)
 
 ---
 
