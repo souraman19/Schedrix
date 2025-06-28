@@ -9,11 +9,11 @@ export const generateImageFromQuote = async (
   const today = new Date().toISOString().split("T")[0];
   const fileName = `quote-${today}-${mindStatus}.png`;
 
-  try {
-    const result = await cloudinary.api.resource(`schedrix_qotd/${fileName}`);
-    return result.secure_url;
-  } catch (err: any) {
-    if (err.http_code !== 404) throw err;
+  const imageUrl = await checkIfImageExists(fileName);
+  if (imageUrl) {
+    console.log("Image already exists, returning existing URL:", imageUrl);
+    return imageUrl; // Return existing image URL if it exists
+  }
 
     let elaboratedText = await elaborateQuoteWithGemini((quote as any).content);
     // console.log("Elaborated text for quote:", elaboratedText);
@@ -61,5 +61,19 @@ export const generateImageFromQuote = async (
       );
       stream.end(imageBuffer);
     });
+};
+
+
+export const checkIfImageExists = async (publicId: string): Promise<string | null> => {
+  try {
+    const result = await cloudinary.api.resource(`schedrix_qotd/${publicId}`);
+    return result.secure_url;
+  } catch (err: any) {
+    if (err.http_code === 404) {
+      // Image does not exist — don't throw
+      return null;
+    }
+    // Unknown error — rethrow
+    throw err;
   }
 };
